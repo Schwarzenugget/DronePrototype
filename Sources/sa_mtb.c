@@ -1,9 +1,3 @@
-/*
- * sa_mtb.c
- *
- *  Contains the definition of the buffer used for allocating SRAM space for the MTB trace.
- */
-
 #if (defined(__SA_MTB_SIZE) && (__SA_MTB_SIZE > 0))
 /* 
  * MTB (Micro Trace Buffer) is using its own section name, which is used in the linker script.

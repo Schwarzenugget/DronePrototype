@@ -5,10 +5,6 @@
 
 /* Include the derivative-specific header file */
 #include <MKL25Z4.h>
-#include "pwm.h"
-#include "PID.h"
-#include "acc.h"
-#include "ConsoleIO.h"
 
 /******************************************************************************
 * Data
@@ -31,4 +27,5 @@ char PrintReady;
 * Functions
 ******************************************************************************/
 
-void SysTick_Init();
+void Measure_Distance(void);
+void SysTick_Init(void);

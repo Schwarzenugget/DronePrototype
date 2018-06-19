@@ -5,12 +5,9 @@
  *      Author: David
  */
 
-#include "acc.h"
-#include "I2C.h"
 
-#ifndef MKL25Z4_H_
 #include <MKL25Z4.h>
-#endif
+#include "acc.h"
 /******************************************************************************
 * MCU initialization function
 ******************************************************************************/ 
@@ -61,7 +58,7 @@ void Accelerometer_Init (void)
 	 */
 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, XYZ_DATA_CFG_REG, 0x00);		// +/-2g range -> 1g = 16384/4 = 4096 counts 
 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG2, 0x02);		// High Resolution mode 
-	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x1D);	// 0x5 ODR = 800Hz Fast mode , Reduced noise, Active mode	
+	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x25);	// 0x5 ODR = 800Hz Fast mode , Reduced noise, Active mode	
 }
 
 /******************************************************************************
@@ -94,7 +91,7 @@ void Calibrate (void)
 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG3, 0x00);		// Push-pull, active low interrupt 
 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG4, 0x01);		// Enable DRDY interrupt 
 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG5, 0x01);		// DRDY interrupt routed to INT1 - PTA14 
-	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x1D);		// ODR = 800Hz Fast mode , Reduced noise, Active mode		
+	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x25);		// ODR = 800Hz Fast mode , Reduced noise, Active mode		
 }
 
 void AccReadValues(float* Xout_g, float* Yout_g){
@@ -113,11 +110,12 @@ void AccReadValues(float* Xout_g, float* Yout_g){
 * PORT A Interrupt handler
 ******************************************************************************/ 
 
-void PORTA_IRQHandler()
+/*Using PE_ISR(Cpu_ivINT_PORTA) instead*/
+/*void PORTA_IRQHandler()
 {
 	//flag de interrupcio
 	PORTA_PCR14 |= PORT_PCR_ISF(1);
 	//avisar al bucle principal
 	AccReady = 1;
-}
+}*/
 

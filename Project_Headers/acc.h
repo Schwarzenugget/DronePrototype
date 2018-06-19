@@ -8,6 +8,10 @@
 #ifndef ACC_H_
 #define ACC_H_
 
+
+#include "I2C.h"
+#include "global.h"
+
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
@@ -96,7 +100,7 @@ void AccReadValues(float*, float*);
 unsigned char AccData[6];
 short Xout_14_bit, Yout_14_bit, Zout_14_bit;
 float Zout_g;
-char AccReady;
+//char AccReady;
 char Xoffset, Yoffset, Zoffset; 
 
 #endif /* ACC_H_ */

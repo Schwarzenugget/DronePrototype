@@ -1,5 +1,8 @@
 #include "derivative.h" 
+
+#ifndef I2C_H_
 #include "I2C.h"
+#endif
 
 /*
  * TODO: substituir els caracters "??" per el registre d'E/S del modul I2C. Tambe al fitxer I2C.h
