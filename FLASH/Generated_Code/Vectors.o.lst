@@ -1,0 +1,149 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"Vectors.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	AccReady,1,1
+  18              		.comm	PrintReady,1,1
+  19              		.comm	AccData,6,4
+  20              		.comm	Xout_14_bit,2,2
+  21              		.comm	Yout_14_bit,2,2
+  22              		.comm	Zout_14_bit,2,2
+  23              		.comm	Zout_g,4,4
+  24              		.comm	Xoffset,1,1
+  25              		.comm	Yoffset,1,1
+  26              		.comm	Zoffset,1,1
+  27              		.global	__vect_table
+  28              		.section	.vectortable,"a",%progbits
+  29              		.align	2
+  32              	__vect_table:
+  33 0000 00000000 		.word	__SP_INIT
+  34 0004 00000000 		.word	__thumb_startup
+  35 0008 00000000 		.word	Cpu_INT_NMIInterrupt
+  36 000c 00000000 		.word	Cpu_ivINT_Hard_Fault
+  37 0010 00000000 		.word	Cpu_ivINT_Reserved4
+  38 0014 00000000 		.word	Cpu_ivINT_Reserved5
+  39 0018 00000000 		.word	Cpu_ivINT_Reserved6
+  40 001c 00000000 		.word	Cpu_ivINT_Reserved7
+  41 0020 00000000 		.word	Cpu_ivINT_Reserved8
+  42 0024 00000000 		.word	Cpu_ivINT_Reserved9
+  43 0028 00000000 		.word	Cpu_ivINT_Reserved10
+  44 002c 00000000 		.word	Cpu_ivINT_SVCall
+  45 0030 00000000 		.word	Cpu_ivINT_Reserved12
+  46 0034 00000000 		.word	Cpu_ivINT_Reserved13
+  47 0038 00000000 		.word	Cpu_ivINT_PendableSrvReq
+  48 003c 00000000 		.word	Print
+  49 0040 00000000 		.word	Cpu_ivINT_DMA0
+  50 0044 00000000 		.word	Cpu_ivINT_DMA1
+  51 0048 00000000 		.word	Cpu_ivINT_DMA2
+  52 004c 00000000 		.word	Cpu_ivINT_DMA3
+  53 0050 00000000 		.word	Cpu_ivINT_Reserved20
+  54 0054 00000000 		.word	Cpu_ivINT_FTFA
+  55 0058 00000000 		.word	Cpu_ivINT_LVD_LVW
+  56 005c 00000000 		.word	Cpu_ivINT_LLW
+  57 0060 00000000 		.word	Cpu_ivINT_I2C0
+  58 0064 00000000 		.word	Cpu_ivINT_I2C1
+  59 0068 00000000 		.word	Cpu_ivINT_SPI0
+  60 006c 00000000 		.word	Cpu_ivINT_SPI1
+  61 0070 00000000 		.word	Cpu_ivINT_UART0
+  62 0074 00000000 		.word	Cpu_ivINT_UART1
+  63 0078 00000000 		.word	Cpu_ivINT_UART2
+  64 007c 00000000 		.word	Cpu_ivINT_ADC0
+  65 0080 00000000 		.word	Cpu_ivINT_CMP0
+  66 0084 00000000 		.word	TU1_Interrupt
+  67 0088 00000000 		.word	Cpu_ivINT_TPM1
+  68 008c 00000000 		.word	Cpu_ivINT_TPM2
+  69 0090 00000000 		.word	Cpu_ivINT_RTC
+  70 0094 00000000 		.word	Cpu_ivINT_RTC_Seconds
+  71 0098 00000000 		.word	Cpu_ivINT_PIT
+  72 009c 00000000 		.word	Cpu_ivINT_Reserved39
+  73 00a0 00000000 		.word	Cpu_ivINT_USB0
+  74 00a4 00000000 		.word	Cpu_ivINT_DAC0
+  75 00a8 00000000 		.word	Cpu_ivINT_TSI0
+  76 00ac 00000000 		.word	Cpu_ivINT_MCG
+  77 00b0 00000000 		.word	Cpu_ivINT_LPTimer
+  78 00b4 00000000 		.word	Cpu_ivINT_Reserved45
+  79 00b8 00000000 		.word	ExtIntLdd1_Interrupt
+  80 00bc 00000000 		.word	Cpu_ivINT_PORTD
+  81              		.text
+  82              	.Letext0:
+  83              		.file 1 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+  84              		.file 2 "../Generated_Code/Cpu.h"
+  85              		.file 3 "../Generated_Code/Vectors.c"
+  86              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h"
+  87              		.file 5 "C:/Users/David/Desktop/DronePrototype/Project_Headers/Acc.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Vectors.c
+                            *COM*:00000001 AccReady
+                            *COM*:00000001 PrintReady
+                            *COM*:00000006 AccData
+                            *COM*:00000002 Xout_14_bit
+                            *COM*:00000002 Yout_14_bit
+                            *COM*:00000002 Zout_14_bit
+                            *COM*:00000004 Zout_g
+                            *COM*:00000001 Xoffset
+                            *COM*:00000001 Yoffset
+                            *COM*:00000001 Zoffset
+C:\Users\David\AppData\Local\Temp\ccrcxrDd.s:32     .vectortable:00000000 __vect_table
+C:\Users\David\AppData\Local\Temp\ccrcxrDd.s:29     .vectortable:00000000 $d
+
+UNDEFINED SYMBOLS
+__SP_INIT
+__thumb_startup
+Cpu_INT_NMIInterrupt
+Cpu_ivINT_Hard_Fault
+Cpu_ivINT_Reserved4
+Cpu_ivINT_Reserved5
+Cpu_ivINT_Reserved6
+Cpu_ivINT_Reserved7
+Cpu_ivINT_Reserved8
+Cpu_ivINT_Reserved9
+Cpu_ivINT_Reserved10
+Cpu_ivINT_SVCall
+Cpu_ivINT_Reserved12
+Cpu_ivINT_Reserved13
+Cpu_ivINT_PendableSrvReq
+Print
+Cpu_ivINT_DMA0
+Cpu_ivINT_DMA1
+Cpu_ivINT_DMA2
+Cpu_ivINT_DMA3
+Cpu_ivINT_Reserved20
+Cpu_ivINT_FTFA
+Cpu_ivINT_LVD_LVW
+Cpu_ivINT_LLW
+Cpu_ivINT_I2C0
+Cpu_ivINT_I2C1
+Cpu_ivINT_SPI0
+Cpu_ivINT_SPI1
+Cpu_ivINT_UART0
+Cpu_ivINT_UART1
+Cpu_ivINT_UART2
+Cpu_ivINT_ADC0
+Cpu_ivINT_CMP0
+TU1_Interrupt
+Cpu_ivINT_TPM1
+Cpu_ivINT_TPM2
+Cpu_ivINT_RTC
+Cpu_ivINT_RTC_Seconds
+Cpu_ivINT_PIT
+Cpu_ivINT_Reserved39
+Cpu_ivINT_USB0
+Cpu_ivINT_DAC0
+Cpu_ivINT_TSI0
+Cpu_ivINT_MCG
+Cpu_ivINT_LPTimer
+Cpu_ivINT_Reserved45
+ExtIntLdd1_Interrupt
+Cpu_ivINT_PORTD

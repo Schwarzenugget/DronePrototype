@@ -1,0 +1,265 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"Events.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	AccReady,1,1
+  18              		.comm	PrintReady,1,1
+  19              		.comm	AccData,6,4
+  20              		.comm	Xout_14_bit,2,2
+  21              		.comm	Yout_14_bit,2,2
+  22              		.comm	Zout_14_bit,2,2
+  23              		.comm	Zout_g,4,4
+  24              		.comm	Xoffset,1,1
+  25              		.comm	Yoffset,1,1
+  26              		.comm	Zoffset,1,1
+  27              		.section	.text.Cpu_OnNMIINT,"ax",%progbits
+  28              		.align	2
+  29              		.global	Cpu_OnNMIINT
+  30              		.code	16
+  31              		.thumb_func
+  33              	Cpu_OnNMIINT:
+  34              	.LFB0:
+  35              		.file 1 "../Sources/Events.c"
+   1:../Sources/Events.c **** #include "Cpu.h"
+   2:../Sources/Events.c **** #include "Events.h"
+   3:../Sources/Events.c **** 
+   4:../Sources/Events.c **** /* User includes (#include below this line is not maintained by Processor Expert) */
+   5:../Sources/Events.c **** #include "Ultrasonic.h"
+   6:../Sources/Events.c **** #include "global.h"
+   7:../Sources/Events.c **** 
+   8:../Sources/Events.c **** /*
+   9:../Sources/Events.c **** ** ===================================================================
+  10:../Sources/Events.c **** **     Event       :  Cpu_OnNMIINT (module Events)
+  11:../Sources/Events.c **** **
+  12:../Sources/Events.c **** **     Component   :  Cpu [MKL25Z128LK4]
+  13:../Sources/Events.c **** **     Description :
+  14:../Sources/Events.c **** **         This event is called when the Non maskable interrupt had
+  15:../Sources/Events.c **** **         occurred. This event is automatically enabled when the <NMI
+  16:../Sources/Events.c **** **         interrrupt> property is set to 'Enabled'.
+  17:../Sources/Events.c **** **     Parameters  : None
+  18:../Sources/Events.c **** **     Returns     : Nothing
+  19:../Sources/Events.c **** ** ===================================================================
+  20:../Sources/Events.c **** */
+  21:../Sources/Events.c **** void Cpu_OnNMIINT(void)
+  22:../Sources/Events.c **** {
+  36              		.loc 1 22 0
+  37              		.cfi_startproc
+  38 0000 80B5     		push	{r7, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_register 7
+  23:../Sources/Events.c ****   /* Write your code here ... */
+  24:../Sources/Events.c **** }
+  46              		.loc 1 24 0
+  47 0004 BD46     		mov	sp, r7
+  48              		@ sp needed for prologue
+  49 0006 80BD     		pop	{r7, pc}
+  50              		.cfi_endproc
+  51              	.LFE0:
+  53              		.section	.text.TU1_OnChannel0,"ax",%progbits
+  54              		.align	2
+  55              		.global	TU1_OnChannel0
+  56              		.code	16
+  57              		.thumb_func
+  59              	TU1_OnChannel0:
+  60              	.LFB1:
+  25:../Sources/Events.c **** 
+  26:../Sources/Events.c **** /*
+  27:../Sources/Events.c **** ** ===================================================================
+  28:../Sources/Events.c **** **     Event       :  TU1_OnChannel0 (module Events)
+  29:../Sources/Events.c **** **
+  30:../Sources/Events.c **** **     Component   :  TU1 [TimerUnit_LDD]
+  31:../Sources/Events.c **** **     Description :
+  32:../Sources/Events.c **** **         Called if compare register match the counter registers or
+  33:../Sources/Events.c **** **         capture register has a new content. OnChannel0 event and
+  34:../Sources/Events.c **** **         Timer unit must be enabled. See <SetEventMask> and
+  35:../Sources/Events.c **** **         <GetEventMask> methods. This event is available only if a
+  36:../Sources/Events.c **** **         <Interrupt> is enabled.
+  37:../Sources/Events.c **** **     Parameters  :
+  38:../Sources/Events.c **** **         NAME            - DESCRIPTION
+  39:../Sources/Events.c **** **       * UserDataPtr     - Pointer to the user or
+  40:../Sources/Events.c **** **                           RTOS specific data. The pointer passed as
+  41:../Sources/Events.c **** **                           the parameter of Init method.
+  42:../Sources/Events.c **** **     Returns     : Nothing
+  43:../Sources/Events.c **** ** ===================================================================
+  44:../Sources/Events.c **** */
+  45:../Sources/Events.c **** void TU1_OnChannel0(LDD_TUserData *UserDataPtr)
+  46:../Sources/Events.c **** {
+  61              		.loc 1 46 0
+  62              		.cfi_startproc
+  63 0000 80B5     		push	{r7, lr}
+  64              	.LCFI2:
+  65              		.cfi_def_cfa_offset 8
+  66              		.cfi_offset 7, -8
+  67              		.cfi_offset 14, -4
+  68 0002 82B0     		sub	sp, sp, #8
+  69              	.LCFI3:
+  70              		.cfi_def_cfa_offset 16
+  71 0004 00AF     		add	r7, sp, #0
+  72              	.LCFI4:
+  73              		.cfi_def_cfa_register 7
+  74 0006 7860     		str	r0, [r7, #4]
+  47:../Sources/Events.c ****   US_EventEchoCapture(UserDataPtr);
+  75              		.loc 1 47 0
+  76 0008 7B68     		ldr	r3, [r7, #4]
+  77 000a 181C     		mov	r0, r3
+  78 000c FFF7FEFF 		bl	US_EventEchoCapture
+  48:../Sources/Events.c **** }
+  79              		.loc 1 48 0
+  80 0010 BD46     		mov	sp, r7
+  81 0012 02B0     		add	sp, sp, #8
+  82              		@ sp needed for prologue
+  83 0014 80BD     		pop	{r7, pc}
+  84              		.cfi_endproc
+  85              	.LFE1:
+  87 0016 C046     		.section	.text.TU1_OnCounterRestart,"ax",%progbits
+  88              		.align	2
+  89              		.global	TU1_OnCounterRestart
+  90              		.code	16
+  91              		.thumb_func
+  93              	TU1_OnCounterRestart:
+  94              	.LFB2:
+  49:../Sources/Events.c **** 
+  50:../Sources/Events.c **** /*
+  51:../Sources/Events.c **** ** ===================================================================
+  52:../Sources/Events.c **** **     Event       :  TU1_OnCounterRestart (module Events)
+  53:../Sources/Events.c **** **
+  54:../Sources/Events.c **** **     Component   :  TU1 [TimerUnit_LDD]
+  55:../Sources/Events.c **** **     Description :
+  56:../Sources/Events.c **** **         Called if counter overflow/underflow or counter is
+  57:../Sources/Events.c **** **         reinitialized by modulo or compare register matching.
+  58:../Sources/Events.c **** **         OnCounterRestart event and Timer unit must be enabled. See
+  59:../Sources/Events.c **** **         <SetEventMask> and <GetEventMask> methods. This event is
+  60:../Sources/Events.c **** **         available only if a <Interrupt> is enabled.
+  61:../Sources/Events.c **** **     Parameters  :
+  62:../Sources/Events.c **** **         NAME            - DESCRIPTION
+  63:../Sources/Events.c **** **       * UserDataPtr     - Pointer to the user or
+  64:../Sources/Events.c **** **                           RTOS specific data. The pointer passed as
+  65:../Sources/Events.c **** **                           the parameter of Init method.
+  66:../Sources/Events.c **** **     Returns     : Nothing
+  67:../Sources/Events.c **** ** ===================================================================
+  68:../Sources/Events.c **** */
+  69:../Sources/Events.c **** void TU1_OnCounterRestart(LDD_TUserData *UserDataPtr)
+  70:../Sources/Events.c **** {
+  95              		.loc 1 70 0
+  96              		.cfi_startproc
+  97 0000 80B5     		push	{r7, lr}
+  98              	.LCFI5:
+  99              		.cfi_def_cfa_offset 8
+ 100              		.cfi_offset 7, -8
+ 101              		.cfi_offset 14, -4
+ 102 0002 82B0     		sub	sp, sp, #8
+ 103              	.LCFI6:
+ 104              		.cfi_def_cfa_offset 16
+ 105 0004 00AF     		add	r7, sp, #0
+ 106              	.LCFI7:
+ 107              		.cfi_def_cfa_register 7
+ 108 0006 7860     		str	r0, [r7, #4]
+  71:../Sources/Events.c ****   US_EventEchoOverflow(UserDataPtr);
+ 109              		.loc 1 71 0
+ 110 0008 7B68     		ldr	r3, [r7, #4]
+ 111 000a 181C     		mov	r0, r3
+ 112 000c FFF7FEFF 		bl	US_EventEchoOverflow
+  72:../Sources/Events.c **** }
+ 113              		.loc 1 72 0
+ 114 0010 BD46     		mov	sp, r7
+ 115 0012 02B0     		add	sp, sp, #8
+ 116              		@ sp needed for prologue
+ 117 0014 80BD     		pop	{r7, pc}
+ 118              		.cfi_endproc
+ 119              	.LFE2:
+ 121 0016 C046     		.section	.text.Acc_OnInterrupt,"ax",%progbits
+ 122              		.align	2
+ 123              		.global	Acc_OnInterrupt
+ 124              		.code	16
+ 125              		.thumb_func
+ 127              	Acc_OnInterrupt:
+ 128              	.LFB3:
+  73:../Sources/Events.c **** /*
+  74:../Sources/Events.c **** ** ===================================================================
+  75:../Sources/Events.c **** **     Event       :  AccInt_OnInterrupt (module Events)
+  76:../Sources/Events.c **** **
+  77:../Sources/Events.c **** **     Component   :  AccInt [ExtInt]
+  78:../Sources/Events.c **** **     Description :
+  79:../Sources/Events.c **** **         This event is called when an active signal edge/level has
+  80:../Sources/Events.c **** **         occurred.
+  81:../Sources/Events.c **** **     Parameters  : None
+  82:../Sources/Events.c **** **     Returns     : Nothing
+  83:../Sources/Events.c **** ** ===================================================================
+  84:../Sources/Events.c **** */
+  85:../Sources/Events.c **** 
+  86:../Sources/Events.c **** void Acc_OnInterrupt(void)
+  87:../Sources/Events.c **** {
+ 129              		.loc 1 87 0
+ 130              		.cfi_startproc
+ 131 0000 80B5     		push	{r7, lr}
+ 132              	.LCFI8:
+ 133              		.cfi_def_cfa_offset 8
+ 134              		.cfi_offset 7, -8
+ 135              		.cfi_offset 14, -4
+ 136 0002 00AF     		add	r7, sp, #0
+ 137              	.LCFI9:
+ 138              		.cfi_def_cfa_register 7
+  88:../Sources/Events.c **** 	  AccReady = 1;
+ 139              		.loc 1 88 0
+ 140 0004 024B     		ldr	r3, .L5
+ 141 0006 0122     		mov	r2, #1
+ 142 0008 1A70     		strb	r2, [r3]
+  89:../Sources/Events.c **** }
+ 143              		.loc 1 89 0
+ 144 000a BD46     		mov	sp, r7
+ 145              		@ sp needed for prologue
+ 146 000c 80BD     		pop	{r7, pc}
+ 147              	.L6:
+ 148 000e C046     		.align	2
+ 149              	.L5:
+ 150 0010 00000000 		.word	AccReady
+ 151              		.cfi_endproc
+ 152              	.LFE3:
+ 154              		.text
+ 155              	.Letext0:
+ 156              		.file 2 "C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h"
+ 157              		.file 3 "C:/Users/David/Desktop/DronePrototype/Project_Headers/Acc.h"
+ 158              		.file 4 "C:/Users/David/Desktop/DronePrototype/Generated_Code/PE_Types.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Events.c
+                            *COM*:00000001 AccReady
+                            *COM*:00000001 PrintReady
+                            *COM*:00000006 AccData
+                            *COM*:00000002 Xout_14_bit
+                            *COM*:00000002 Yout_14_bit
+                            *COM*:00000002 Zout_14_bit
+                            *COM*:00000004 Zout_g
+                            *COM*:00000001 Xoffset
+                            *COM*:00000001 Yoffset
+                            *COM*:00000001 Zoffset
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:28     .text.Cpu_OnNMIINT:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:33     .text.Cpu_OnNMIINT:00000000 Cpu_OnNMIINT
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:54     .text.TU1_OnChannel0:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:59     .text.TU1_OnChannel0:00000000 TU1_OnChannel0
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:88     .text.TU1_OnCounterRestart:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:93     .text.TU1_OnCounterRestart:00000000 TU1_OnCounterRestart
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:122    .text.Acc_OnInterrupt:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:127    .text.Acc_OnInterrupt:00000000 Acc_OnInterrupt
+C:\Users\David\AppData\Local\Temp\ccQw2edI.s:150    .text.Acc_OnInterrupt:00000010 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+US_EventEchoCapture
+US_EventEchoOverflow

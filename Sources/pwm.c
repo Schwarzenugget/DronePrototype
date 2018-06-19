@@ -77,11 +77,11 @@ void PWM_Motors_Init(){
 	
 }
 
-void PWM_Motor_Duty_Cycle(float xA, float xB, float yA, float yB){
-	TPM1_C0V = 4000;//xA;
-	TPM1_C1V = 4000;//yA;
-	TPM2_C0V = 4000;//xB;
-	TPM2_C1V = 4000;//yB;
+void PWM_Motor_Duty_Cycle(float xA, float xB, float yA, float yB, float h){
+	TPM1_C0V = xA+h;
+	TPM1_C1V = yA+h;
+	TPM2_C0V = xB+h;
+	TPM2_C1V = yB+h;
 	
 }
 

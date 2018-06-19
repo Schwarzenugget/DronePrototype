@@ -1,0 +1,1359 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"PID.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.PID_Init,"ax",%progbits
+  18              		.align	2
+  19              		.global	PID_Init
+  20              		.code	16
+  21              		.thumb_func
+  23              	PID_Init:
+  24              	.LFB0:
+  25              		.file 1 "../Sources/PID.c"
+   1:../Sources/PID.c **** /**********************************************************************************************
+   2:../Sources/PID.c ****  * Arduino PID Library - Version 1.2.1
+   3:../Sources/PID.c ****  * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
+   4:../Sources/PID.c ****  *
+   5:../Sources/PID.c ****  * This Library is licensed under the MIT License
+   6:../Sources/PID.c ****  **********************************************************************************************/
+   7:../Sources/PID.c **** #if 0
+   8:../Sources/PID.c **** 	#if ARDUINO >= 100
+   9:../Sources/PID.c **** 	  #include "Arduino.h"
+  10:../Sources/PID.c **** 	#else
+  11:../Sources/PID.c **** 	  #include "WProgram.h"
+  12:../Sources/PID.c **** 	#endif
+  13:../Sources/PID.c **** #endif
+  14:../Sources/PID.c **** 
+  15:../Sources/PID.c **** #include <PID.h>
+  16:../Sources/PID.c **** 
+  17:../Sources/PID.c **** 
+  18:../Sources/PID.c **** /*Constructor (...)*********************************************************
+  19:../Sources/PID.c ****  *    The parameters specified here are those for for which we can't set up
+  20:../Sources/PID.c ****  *    reliable defaults, so we need to have the user set them.
+  21:../Sources/PID.c ****  ***************************************************************************/
+  22:../Sources/PID.c **** void PID_Init(PID* PID, REAL* Input, REAL* Output, REAL* Setpoint,
+  23:../Sources/PID.c ****         REAL Kp, REAL Ki, REAL Kd, int POn, int ControllerDirection)
+  24:../Sources/PID.c **** {
+  26              		.loc 1 24 0
+  27              		.cfi_startproc
+  28 0000 90B5     		push	{r4, r7, lr}
+  29              	.LCFI0:
+  30              		.cfi_def_cfa_offset 12
+  31              		.cfi_offset 4, -12
+  32              		.cfi_offset 7, -8
+  33              		.cfi_offset 14, -4
+  34 0002 87B0     		sub	sp, sp, #28
+  35              	.LCFI1:
+  36              		.cfi_def_cfa_offset 40
+  37 0004 02AF     		add	r7, sp, #8
+  38              	.LCFI2:
+  39              		.cfi_def_cfa 7, 32
+  40 0006 F860     		str	r0, [r7, #12]
+  41 0008 B960     		str	r1, [r7, #8]
+  42 000a 7A60     		str	r2, [r7, #4]
+  43 000c 3B60     		str	r3, [r7]
+  25:../Sources/PID.c **** 	PID->myOutput = Output;
+  44              		.loc 1 25 0
+  45 000e FB68     		ldr	r3, [r7, #12]
+  46 0010 7A68     		ldr	r2, [r7, #4]
+  47 0012 5A62     		str	r2, [r3, #36]
+  26:../Sources/PID.c **** 	PID-> myInput = Input;
+  48              		.loc 1 26 0
+  49 0014 FB68     		ldr	r3, [r7, #12]
+  50 0016 BA68     		ldr	r2, [r7, #8]
+  51 0018 1A62     		str	r2, [r3, #32]
+  27:../Sources/PID.c **** 	PID->mySetpoint = Setpoint;
+  52              		.loc 1 27 0
+  53 001a FB68     		ldr	r3, [r7, #12]
+  54 001c 3A68     		ldr	r2, [r7]
+  55 001e 9A62     		str	r2, [r3, #40]
+  28:../Sources/PID.c **** 	PID->inAuto = 0;
+  56              		.loc 1 28 0
+  57 0020 FA68     		ldr	r2, [r7, #12]
+  58 0022 4423     		mov	r3, #68
+  59 0024 0021     		mov	r1, #0
+  60 0026 D154     		strb	r1, [r2, r3]
+  29:../Sources/PID.c **** 
+  30:../Sources/PID.c ****     PID_SetOutputLimits(PID, 0, 8000);				//default output limit corresponds to
+  61              		.loc 1 30 0
+  62 0028 F968     		ldr	r1, [r7, #12]
+  63 002a 0022     		mov	r2, #0
+  64 002c 0C4B     		ldr	r3, .L2
+  65 002e 081C     		mov	r0, r1
+  66 0030 111C     		add	r1, r2, #0
+  67 0032 1A1C     		add	r2, r3, #0
+  68 0034 FFF7FEFF 		bl	PID_SetOutputLimits
+  31:../Sources/PID.c **** 												//the TPM module counter limit
+  32:../Sources/PID.c **** 
+  33:../Sources/PID.c ****     PID->SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
+  69              		.loc 1 33 0
+  70 0038 FB68     		ldr	r3, [r7, #12]
+  71 003a 6422     		mov	r2, #100
+  72 003c 9A63     		str	r2, [r3, #56]
+  34:../Sources/PID.c **** 
+  35:../Sources/PID.c ****     PID_SetControllerDirection(PID, ControllerDirection);
+  73              		.loc 1 35 0
+  74 003e FA68     		ldr	r2, [r7, #12]
+  75 0040 3B6B     		ldr	r3, [r7, #48]
+  76 0042 101C     		mov	r0, r2
+  77 0044 191C     		mov	r1, r3
+  78 0046 FFF7FEFF 		bl	PID_SetControllerDirection
+  36:../Sources/PID.c ****     PID_SetTunings(PID, Kp, Ki, Kd, POn);
+  79              		.loc 1 36 0
+  80 004a F868     		ldr	r0, [r7, #12]
+  81 004c 396A     		ldr	r1, [r7, #32]
+  82 004e 7A6A     		ldr	r2, [r7, #36]
+  83 0050 BB6A     		ldr	r3, [r7, #40]
+  84 0052 FC6A     		ldr	r4, [r7, #44]
+  85 0054 0094     		str	r4, [sp]
+  86 0056 FFF7FEFF 		bl	PID_SetTunings
+  37:../Sources/PID.c **** 
+  38:../Sources/PID.c ****     //PID->lastTime = millis-PID->SampleTime; //TODO Check if it works
+  39:../Sources/PID.c **** }
+  87              		.loc 1 39 0
+  88 005a BD46     		mov	sp, r7
+  89 005c 05B0     		add	sp, sp, #20
+  90              		@ sp needed for prologue
+  91 005e 90BD     		pop	{r4, r7, pc}
+  92              	.L3:
+  93              		.align	2
+  94              	.L2:
+  95 0060 0000FA45 		.word	1174011904
+  96              		.cfi_endproc
+  97              	.LFE0:
+  99              		.global	__aeabi_fsub
+ 100              		.global	__aeabi_fmul
+ 101              		.global	__aeabi_fadd
+ 102              		.global	__aeabi_fcmpgt
+ 103              		.global	__aeabi_fcmplt
+ 104              		.section	.text.PID_Compute,"ax",%progbits
+ 105              		.align	2
+ 106              		.global	PID_Compute
+ 107              		.code	16
+ 108              		.thumb_func
+ 110              	PID_Compute:
+ 111              	.LFB1:
+  40:../Sources/PID.c **** 
+  41:../Sources/PID.c **** 
+  42:../Sources/PID.c **** /* Compute() **********************************************************************
+  43:../Sources/PID.c ****  *     This, as they say, is where the magic happens.  this function should be called
+  44:../Sources/PID.c ****  *   every time "void loop()" executes.  the function will decide for itself whether a new
+  45:../Sources/PID.c ****  *   pid Output needs to be computed.  returns true when the output is computed,
+  46:../Sources/PID.c ****  *   false when nothing has been done.
+  47:../Sources/PID.c ****  **********************************************************************************/
+  48:../Sources/PID.c **** char PID_Compute(PID* PID)
+  49:../Sources/PID.c **** {
+ 112              		.loc 1 49 0
+ 113              		.cfi_startproc
+ 114 0000 90B5     		push	{r4, r7, lr}
+ 115              	.LCFI3:
+ 116              		.cfi_def_cfa_offset 12
+ 117              		.cfi_offset 4, -12
+ 118              		.cfi_offset 7, -8
+ 119              		.cfi_offset 14, -4
+ 120 0002 87B0     		sub	sp, sp, #28
+ 121              	.LCFI4:
+ 122              		.cfi_def_cfa_offset 40
+ 123 0004 00AF     		add	r7, sp, #0
+ 124              	.LCFI5:
+ 125              		.cfi_def_cfa_register 7
+ 126 0006 7860     		str	r0, [r7, #4]
+  50:../Sources/PID.c ****    if(!PID->inAuto) return 0;
+ 127              		.loc 1 50 0
+ 128 0008 7A68     		ldr	r2, [r7, #4]
+ 129 000a 4423     		mov	r3, #68
+ 130 000c D35C     		ldrb	r3, [r2, r3]
+ 131 000e 002B     		cmp	r3, #0
+ 132 0010 01D1     		bne	.L5
+ 133              		.loc 1 50 0 is_stmt 0
+ 134 0012 0023     		mov	r3, #0
+ 135 0014 9CE0     		b	.L6
+ 136              	.L5:
+  51:../Sources/PID.c ****    //unsigned long now = millis;
+  52:../Sources/PID.c ****    //unsigned long timeChange = (now - PID->lastTime);
+  53:../Sources/PID.c ****    //if(timeChange>=PID->SampleTime)
+  54:../Sources/PID.c ****    //{
+  55:../Sources/PID.c ****       /*Compute all the working error variables*/
+  56:../Sources/PID.c ****       REAL input = *(PID->myInput);
+ 137              		.loc 1 56 0 is_stmt 1
+ 138 0016 7B68     		ldr	r3, [r7, #4]
+ 139 0018 1B6A     		ldr	r3, [r3, #32]
+ 140 001a 1B68     		ldr	r3, [r3]
+ 141 001c 3B61     		str	r3, [r7, #16]
+  57:../Sources/PID.c ****       REAL error = *(PID->mySetpoint) - input;
+ 142              		.loc 1 57 0
+ 143 001e 7B68     		ldr	r3, [r7, #4]
+ 144 0020 9B6A     		ldr	r3, [r3, #40]
+ 145 0022 1B68     		ldr	r3, [r3]
+ 146 0024 181C     		add	r0, r3, #0
+ 147 0026 3969     		ldr	r1, [r7, #16]
+ 148 0028 FFF7FEFF 		bl	__aeabi_fsub
+ 149 002c 031C     		add	r3, r0, #0
+ 150 002e FB60     		str	r3, [r7, #12]
+  58:../Sources/PID.c ****       REAL dInput = (input - PID->lastInput);
+ 151              		.loc 1 58 0
+ 152 0030 7B68     		ldr	r3, [r7, #4]
+ 153 0032 5B6B     		ldr	r3, [r3, #52]
+ 154 0034 3869     		ldr	r0, [r7, #16]
+ 155 0036 191C     		add	r1, r3, #0
+ 156 0038 FFF7FEFF 		bl	__aeabi_fsub
+ 157 003c 031C     		add	r3, r0, #0
+ 158 003e BB60     		str	r3, [r7, #8]
+  59:../Sources/PID.c ****       PID->outputSum+= (PID->ki * error);
+ 159              		.loc 1 59 0
+ 160 0040 7B68     		ldr	r3, [r7, #4]
+ 161 0042 1C6B     		ldr	r4, [r3, #48]
+ 162 0044 7B68     		ldr	r3, [r7, #4]
+ 163 0046 1B69     		ldr	r3, [r3, #16]
+ 164 0048 181C     		add	r0, r3, #0
+ 165 004a F968     		ldr	r1, [r7, #12]
+ 166 004c FFF7FEFF 		bl	__aeabi_fmul
+ 167 0050 031C     		add	r3, r0, #0
+ 168 0052 201C     		add	r0, r4, #0
+ 169 0054 191C     		add	r1, r3, #0
+ 170 0056 FFF7FEFF 		bl	__aeabi_fadd
+ 171 005a 031C     		add	r3, r0, #0
+ 172 005c 1A1C     		add	r2, r3, #0
+ 173 005e 7B68     		ldr	r3, [r7, #4]
+ 174 0060 1A63     		str	r2, [r3, #48]
+  60:../Sources/PID.c **** 
+  61:../Sources/PID.c ****       /*Add Proportional on Measurement, if P_ON_M is specified*/
+  62:../Sources/PID.c ****       if(!PID->pOnE) PID->outputSum-= PID->kp * dInput;
+ 175              		.loc 1 62 0
+ 176 0062 7A68     		ldr	r2, [r7, #4]
+ 177 0064 4523     		mov	r3, #69
+ 178 0066 D35C     		ldrb	r3, [r2, r3]
+ 179 0068 002B     		cmp	r3, #0
+ 180 006a 10D1     		bne	.L7
+ 181              		.loc 1 62 0 is_stmt 0
+ 182 006c 7B68     		ldr	r3, [r7, #4]
+ 183 006e 1C6B     		ldr	r4, [r3, #48]
+ 184 0070 7B68     		ldr	r3, [r7, #4]
+ 185 0072 DB68     		ldr	r3, [r3, #12]
+ 186 0074 181C     		add	r0, r3, #0
+ 187 0076 B968     		ldr	r1, [r7, #8]
+ 188 0078 FFF7FEFF 		bl	__aeabi_fmul
+ 189 007c 031C     		add	r3, r0, #0
+ 190 007e 201C     		add	r0, r4, #0
+ 191 0080 191C     		add	r1, r3, #0
+ 192 0082 FFF7FEFF 		bl	__aeabi_fsub
+ 193 0086 031C     		add	r3, r0, #0
+ 194 0088 1A1C     		add	r2, r3, #0
+ 195 008a 7B68     		ldr	r3, [r7, #4]
+ 196 008c 1A63     		str	r2, [r3, #48]
+ 197              	.L7:
+  63:../Sources/PID.c **** 
+  64:../Sources/PID.c ****       if(PID->outputSum > PID->outMax) PID->outputSum= PID->outMax;
+ 198              		.loc 1 64 0 is_stmt 1
+ 199 008e 7B68     		ldr	r3, [r7, #4]
+ 200 0090 1A6B     		ldr	r2, [r3, #48]
+ 201 0092 7B68     		ldr	r3, [r7, #4]
+ 202 0094 1B6C     		ldr	r3, [r3, #64]
+ 203 0096 101C     		add	r0, r2, #0
+ 204 0098 191C     		add	r1, r3, #0
+ 205 009a FFF7FEFF 		bl	__aeabi_fcmpgt
+ 206 009e 031C     		mov	r3, r0
+ 207 00a0 002B     		cmp	r3, #0
+ 208 00a2 04D0     		beq	.L22
+ 209              	.L18:
+ 210              		.loc 1 64 0 is_stmt 0
+ 211 00a4 7B68     		ldr	r3, [r7, #4]
+ 212 00a6 1A6C     		ldr	r2, [r3, #64]
+ 213 00a8 7B68     		ldr	r3, [r7, #4]
+ 214 00aa 1A63     		str	r2, [r3, #48]
+ 215 00ac 0EE0     		b	.L10
+ 216              	.L22:
+  65:../Sources/PID.c ****       else if(PID->outputSum < PID->outMin) PID->outputSum= PID->outMin;
+ 217              		.loc 1 65 0 is_stmt 1
+ 218 00ae 7B68     		ldr	r3, [r7, #4]
+ 219 00b0 1A6B     		ldr	r2, [r3, #48]
+ 220 00b2 7B68     		ldr	r3, [r7, #4]
+ 221 00b4 DB6B     		ldr	r3, [r3, #60]
+ 222 00b6 101C     		add	r0, r2, #0
+ 223 00b8 191C     		add	r1, r3, #0
+ 224 00ba FFF7FEFF 		bl	__aeabi_fcmplt
+ 225 00be 031C     		mov	r3, r0
+ 226 00c0 002B     		cmp	r3, #0
+ 227 00c2 03D0     		beq	.L10
+ 228              	.L19:
+ 229              		.loc 1 65 0 is_stmt 0
+ 230 00c4 7B68     		ldr	r3, [r7, #4]
+ 231 00c6 DA6B     		ldr	r2, [r3, #60]
+ 232 00c8 7B68     		ldr	r3, [r7, #4]
+ 233 00ca 1A63     		str	r2, [r3, #48]
+ 234              	.L10:
+  66:../Sources/PID.c **** 
+  67:../Sources/PID.c ****       /*Add Proportional on Error, if P_ON_E is specified*/
+  68:../Sources/PID.c **** 	   REAL output;
+  69:../Sources/PID.c ****       if(PID->pOnE) output = PID->kp * error;
+ 235              		.loc 1 69 0 is_stmt 1
+ 236 00cc 7A68     		ldr	r2, [r7, #4]
+ 237 00ce 4523     		mov	r3, #69
+ 238 00d0 D35C     		ldrb	r3, [r2, r3]
+ 239 00d2 002B     		cmp	r3, #0
+ 240 00d4 08D0     		beq	.L12
+ 241              		.loc 1 69 0 is_stmt 0
+ 242 00d6 7B68     		ldr	r3, [r7, #4]
+ 243 00d8 DB68     		ldr	r3, [r3, #12]
+ 244 00da 181C     		add	r0, r3, #0
+ 245 00dc F968     		ldr	r1, [r7, #12]
+ 246 00de FFF7FEFF 		bl	__aeabi_fmul
+ 247 00e2 031C     		add	r3, r0, #0
+ 248 00e4 7B61     		str	r3, [r7, #20]
+ 249 00e6 01E0     		b	.L13
+ 250              	.L12:
+  70:../Sources/PID.c ****       else output = 0;
+ 251              		.loc 1 70 0 is_stmt 1
+ 252 00e8 0023     		mov	r3, #0
+ 253 00ea 7B61     		str	r3, [r7, #20]
+ 254              	.L13:
+  71:../Sources/PID.c **** 
+  72:../Sources/PID.c ****       /*Compute Rest of PID Output*/
+  73:../Sources/PID.c ****       output += PID->outputSum - PID->kd * dInput;
+ 255              		.loc 1 73 0
+ 256 00ec 7B68     		ldr	r3, [r7, #4]
+ 257 00ee 1C6B     		ldr	r4, [r3, #48]
+ 258 00f0 7B68     		ldr	r3, [r7, #4]
+ 259 00f2 5B69     		ldr	r3, [r3, #20]
+ 260 00f4 181C     		add	r0, r3, #0
+ 261 00f6 B968     		ldr	r1, [r7, #8]
+ 262 00f8 FFF7FEFF 		bl	__aeabi_fmul
+ 263 00fc 031C     		add	r3, r0, #0
+ 264 00fe 201C     		add	r0, r4, #0
+ 265 0100 191C     		add	r1, r3, #0
+ 266 0102 FFF7FEFF 		bl	__aeabi_fsub
+ 267 0106 031C     		add	r3, r0, #0
+ 268 0108 7869     		ldr	r0, [r7, #20]
+ 269 010a 191C     		add	r1, r3, #0
+ 270 010c FFF7FEFF 		bl	__aeabi_fadd
+ 271 0110 031C     		add	r3, r0, #0
+ 272 0112 7B61     		str	r3, [r7, #20]
+  74:../Sources/PID.c **** 
+  75:../Sources/PID.c **** 	    if(output > PID->outMax) output = PID->outMax;
+ 273              		.loc 1 75 0
+ 274 0114 7B68     		ldr	r3, [r7, #4]
+ 275 0116 1B6C     		ldr	r3, [r3, #64]
+ 276 0118 181C     		add	r0, r3, #0
+ 277 011a 7969     		ldr	r1, [r7, #20]
+ 278 011c FFF7FEFF 		bl	__aeabi_fcmplt
+ 279 0120 031C     		mov	r3, r0
+ 280 0122 002B     		cmp	r3, #0
+ 281 0124 03D0     		beq	.L23
+ 282              	.L20:
+ 283              		.loc 1 75 0 is_stmt 0
+ 284 0126 7B68     		ldr	r3, [r7, #4]
+ 285 0128 1B6C     		ldr	r3, [r3, #64]
+ 286 012a 7B61     		str	r3, [r7, #20]
+ 287 012c 0BE0     		b	.L16
+ 288              	.L23:
+  76:../Sources/PID.c ****       else if(output < PID->outMin) output = PID->outMin;
+ 289              		.loc 1 76 0 is_stmt 1
+ 290 012e 7B68     		ldr	r3, [r7, #4]
+ 291 0130 DB6B     		ldr	r3, [r3, #60]
+ 292 0132 181C     		add	r0, r3, #0
+ 293 0134 7969     		ldr	r1, [r7, #20]
+ 294 0136 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 295 013a 031C     		mov	r3, r0
+ 296 013c 002B     		cmp	r3, #0
+ 297 013e 02D0     		beq	.L16
+ 298              	.L21:
+ 299              		.loc 1 76 0 is_stmt 0
+ 300 0140 7B68     		ldr	r3, [r7, #4]
+ 301 0142 DB6B     		ldr	r3, [r3, #60]
+ 302 0144 7B61     		str	r3, [r7, #20]
+ 303              	.L16:
+  77:../Sources/PID.c **** 	    *(PID->myOutput) = output;
+ 304              		.loc 1 77 0 is_stmt 1
+ 305 0146 7B68     		ldr	r3, [r7, #4]
+ 306 0148 5B6A     		ldr	r3, [r3, #36]
+ 307 014a 7A69     		ldr	r2, [r7, #20]
+ 308 014c 1A60     		str	r2, [r3]
+  78:../Sources/PID.c **** 
+  79:../Sources/PID.c ****       /*Remember some variables for next time*/
+  80:../Sources/PID.c **** 	  //PID->lastInput = input;
+  81:../Sources/PID.c **** 	  //PID->lastTime = now;
+  82:../Sources/PID.c **** 	    return 1;
+ 309              		.loc 1 82 0
+ 310 014e 0123     		mov	r3, #1
+ 311              	.L6:
+  83:../Sources/PID.c ****    //}
+  84:../Sources/PID.c ****    //else return 0;
+  85:../Sources/PID.c **** }
+ 312              		.loc 1 85 0
+ 313 0150 181C     		mov	r0, r3
+ 314 0152 BD46     		mov	sp, r7
+ 315 0154 07B0     		add	sp, sp, #28
+ 316              		@ sp needed for prologue
+ 317 0156 90BD     		pop	{r4, r7, pc}
+ 318              		.cfi_endproc
+ 319              	.LFE1:
+ 321              		.global	__aeabi_ui2f
+ 322              		.global	__aeabi_fdiv
+ 323              		.section	.text.PID_SetTunings,"ax",%progbits
+ 324              		.align	2
+ 325              		.global	PID_SetTunings
+ 326              		.code	16
+ 327              		.thumb_func
+ 329              	PID_SetTunings:
+ 330              	.LFB2:
+  86:../Sources/PID.c **** 
+  87:../Sources/PID.c **** /* SetTunings(...)*************************************************************
+  88:../Sources/PID.c ****  * This function allows the controller's dynamic performance to be adjusted.
+  89:../Sources/PID.c ****  * it's called automatically from the constructor, but tunings can also
+  90:../Sources/PID.c ****  * be adjusted on the fly during normal operation
+  91:../Sources/PID.c ****  ******************************************************************************/
+  92:../Sources/PID.c **** void PID_SetTunings(PID* PID, REAL Kp, REAL Ki, REAL Kd, int POn)
+  93:../Sources/PID.c **** {
+ 331              		.loc 1 93 0
+ 332              		.cfi_startproc
+ 333 0000 80B5     		push	{r7, lr}
+ 334              	.LCFI6:
+ 335              		.cfi_def_cfa_offset 8
+ 336              		.cfi_offset 7, -8
+ 337              		.cfi_offset 14, -4
+ 338 0002 86B0     		sub	sp, sp, #24
+ 339              	.LCFI7:
+ 340              		.cfi_def_cfa_offset 32
+ 341 0004 00AF     		add	r7, sp, #0
+ 342              	.LCFI8:
+ 343              		.cfi_def_cfa_register 7
+ 344 0006 F860     		str	r0, [r7, #12]
+ 345 0008 B960     		str	r1, [r7, #8]
+ 346 000a 7A60     		str	r2, [r7, #4]
+ 347 000c 3B60     		str	r3, [r7]
+  94:../Sources/PID.c ****    if (Kp<0 || Ki<0 || Kd<0) return;
+ 348              		.loc 1 94 0
+ 349 000e B868     		ldr	r0, [r7, #8]
+ 350 0010 0021     		mov	r1, #0
+ 351 0012 FFF7FEFF 		bl	__aeabi_fcmplt
+ 352 0016 031C     		mov	r3, r0
+ 353 0018 002B     		cmp	r3, #0
+ 354 001a 64D1     		bne	.L29
+ 355              		.loc 1 94 0 is_stmt 0
+ 356 001c 7868     		ldr	r0, [r7, #4]
+ 357 001e 0021     		mov	r1, #0
+ 358 0020 FFF7FEFF 		bl	__aeabi_fcmplt
+ 359 0024 031C     		mov	r3, r0
+ 360 0026 002B     		cmp	r3, #0
+ 361 0028 5DD1     		bne	.L29
+ 362              		.loc 1 94 0
+ 363 002a 3868     		ldr	r0, [r7]
+ 364 002c 0021     		mov	r1, #0
+ 365 002e FFF7FEFF 		bl	__aeabi_fcmplt
+ 366 0032 031C     		mov	r3, r0
+ 367 0034 002B     		cmp	r3, #0
+ 368 0036 56D1     		bne	.L29
+  95:../Sources/PID.c **** 
+  96:../Sources/PID.c ****    PID->pOn = POn;
+ 369              		.loc 1 96 0 is_stmt 1
+ 370 0038 FB68     		ldr	r3, [r7, #12]
+ 371 003a 3A6A     		ldr	r2, [r7, #32]
+ 372 003c DA61     		str	r2, [r3, #28]
+  97:../Sources/PID.c ****    PID->pOnE = POn == P_ON_E;
+ 373              		.loc 1 97 0
+ 374 003e 3B6A     		ldr	r3, [r7, #32]
+ 375 0040 013B     		sub	r3, r3, #1
+ 376 0042 5A42     		neg	r2, r3
+ 377 0044 5341     		adc	r3, r3, r2
+ 378 0046 DBB2     		uxtb	r3, r3
+ 379 0048 191C     		mov	r1, r3
+ 380 004a FA68     		ldr	r2, [r7, #12]
+ 381 004c 4523     		mov	r3, #69
+ 382 004e D154     		strb	r1, [r2, r3]
+  98:../Sources/PID.c **** 
+  99:../Sources/PID.c ****    PID->dispKp = Kp; PID->dispKi = Ki; PID->dispKd = Kd;
+ 383              		.loc 1 99 0
+ 384 0050 FB68     		ldr	r3, [r7, #12]
+ 385 0052 BA68     		ldr	r2, [r7, #8]
+ 386 0054 1A60     		str	r2, [r3]
+ 387 0056 FB68     		ldr	r3, [r7, #12]
+ 388 0058 7A68     		ldr	r2, [r7, #4]
+ 389 005a 5A60     		str	r2, [r3, #4]
+ 390 005c FB68     		ldr	r3, [r7, #12]
+ 391 005e 3A68     		ldr	r2, [r7]
+ 392 0060 9A60     		str	r2, [r3, #8]
+ 100:../Sources/PID.c **** 
+ 101:../Sources/PID.c ****    REAL SampleTimeInSec = ((REAL)PID->SampleTime)/1000;
+ 393              		.loc 1 101 0
+ 394 0062 FB68     		ldr	r3, [r7, #12]
+ 395 0064 9B6B     		ldr	r3, [r3, #56]
+ 396 0066 181C     		mov	r0, r3
+ 397 0068 FFF7FEFF 		bl	__aeabi_ui2f
+ 398 006c 031C     		add	r3, r0, #0
+ 399 006e 181C     		add	r0, r3, #0
+ 400 0070 1F49     		ldr	r1, .L30
+ 401 0072 FFF7FEFF 		bl	__aeabi_fdiv
+ 402 0076 031C     		add	r3, r0, #0
+ 403 0078 7B61     		str	r3, [r7, #20]
+ 102:../Sources/PID.c ****    PID->kp = Kp;
+ 404              		.loc 1 102 0
+ 405 007a FB68     		ldr	r3, [r7, #12]
+ 406 007c BA68     		ldr	r2, [r7, #8]
+ 407 007e DA60     		str	r2, [r3, #12]
+ 103:../Sources/PID.c ****    PID->ki = Ki * SampleTimeInSec;
+ 408              		.loc 1 103 0
+ 409 0080 7868     		ldr	r0, [r7, #4]
+ 410 0082 7969     		ldr	r1, [r7, #20]
+ 411 0084 FFF7FEFF 		bl	__aeabi_fmul
+ 412 0088 031C     		add	r3, r0, #0
+ 413 008a 1A1C     		add	r2, r3, #0
+ 414 008c FB68     		ldr	r3, [r7, #12]
+ 415 008e 1A61     		str	r2, [r3, #16]
+ 104:../Sources/PID.c ****    PID->kd = Kd / SampleTimeInSec;
+ 416              		.loc 1 104 0
+ 417 0090 3868     		ldr	r0, [r7]
+ 418 0092 7969     		ldr	r1, [r7, #20]
+ 419 0094 FFF7FEFF 		bl	__aeabi_fdiv
+ 420 0098 031C     		add	r3, r0, #0
+ 421 009a 1A1C     		add	r2, r3, #0
+ 422 009c FB68     		ldr	r3, [r7, #12]
+ 423 009e 5A61     		str	r2, [r3, #20]
+ 105:../Sources/PID.c **** 
+ 106:../Sources/PID.c ****   if(PID->controllerDirection ==REVERSE)
+ 424              		.loc 1 106 0
+ 425 00a0 FB68     		ldr	r3, [r7, #12]
+ 426 00a2 9B69     		ldr	r3, [r3, #24]
+ 427 00a4 012B     		cmp	r3, #1
+ 428 00a6 1FD1     		bne	.L24
+ 107:../Sources/PID.c ****    {
+ 108:../Sources/PID.c **** 	  PID->kp = (0 - PID->kp);
+ 429              		.loc 1 108 0
+ 430 00a8 FB68     		ldr	r3, [r7, #12]
+ 431 00aa DB68     		ldr	r3, [r3, #12]
+ 432 00ac 0020     		mov	r0, #0
+ 433 00ae 191C     		add	r1, r3, #0
+ 434 00b0 FFF7FEFF 		bl	__aeabi_fsub
+ 435 00b4 031C     		add	r3, r0, #0
+ 436 00b6 1A1C     		add	r2, r3, #0
+ 437 00b8 FB68     		ldr	r3, [r7, #12]
+ 438 00ba DA60     		str	r2, [r3, #12]
+ 109:../Sources/PID.c **** 	  PID->ki = (0 - PID->ki);
+ 439              		.loc 1 109 0
+ 440 00bc FB68     		ldr	r3, [r7, #12]
+ 441 00be 1B69     		ldr	r3, [r3, #16]
+ 442 00c0 0020     		mov	r0, #0
+ 443 00c2 191C     		add	r1, r3, #0
+ 444 00c4 FFF7FEFF 		bl	__aeabi_fsub
+ 445 00c8 031C     		add	r3, r0, #0
+ 446 00ca 1A1C     		add	r2, r3, #0
+ 447 00cc FB68     		ldr	r3, [r7, #12]
+ 448 00ce 1A61     		str	r2, [r3, #16]
+ 110:../Sources/PID.c **** 	  PID->kd = (0 - PID->kd);
+ 449              		.loc 1 110 0
+ 450 00d0 FB68     		ldr	r3, [r7, #12]
+ 451 00d2 5B69     		ldr	r3, [r3, #20]
+ 452 00d4 0020     		mov	r0, #0
+ 453 00d6 191C     		add	r1, r3, #0
+ 454 00d8 FFF7FEFF 		bl	__aeabi_fsub
+ 455 00dc 031C     		add	r3, r0, #0
+ 456 00de 1A1C     		add	r2, r3, #0
+ 457 00e0 FB68     		ldr	r3, [r7, #12]
+ 458 00e2 5A61     		str	r2, [r3, #20]
+ 459 00e4 00E0     		b	.L24
+ 460              	.L29:
+  94:../Sources/PID.c ****    if (Kp<0 || Ki<0 || Kd<0) return;
+ 461              		.loc 1 94 0
+ 462 00e6 C046     		mov	r8, r8
+ 463              	.L24:
+ 111:../Sources/PID.c ****    }
+ 112:../Sources/PID.c **** }
+ 464              		.loc 1 112 0
+ 465 00e8 BD46     		mov	sp, r7
+ 466 00ea 06B0     		add	sp, sp, #24
+ 467              		@ sp needed for prologue
+ 468 00ec 80BD     		pop	{r7, pc}
+ 469              	.L31:
+ 470 00ee C046     		.align	2
+ 471              	.L30:
+ 472 00f0 00007A44 		.word	1148846080
+ 473              		.cfi_endproc
+ 474              	.LFE2:
+ 476              		.section	.text.PID_SetTunings_lr,"ax",%progbits
+ 477              		.align	2
+ 478              		.global	PID_SetTunings_lr
+ 479              		.code	16
+ 480              		.thumb_func
+ 482              	PID_SetTunings_lr:
+ 483              	.LFB3:
+ 113:../Sources/PID.c **** 
+ 114:../Sources/PID.c **** /* SetTunings(...)*************************************************************
+ 115:../Sources/PID.c ****  * Set Tunings using the last-rembered POn setting
+ 116:../Sources/PID.c ****  ******************************************************************************/
+ 117:../Sources/PID.c **** void PID_SetTunings_lr(PID* PID, REAL Kp, REAL Ki, REAL Kd){
+ 484              		.loc 1 117 0
+ 485              		.cfi_startproc
+ 486 0000 90B5     		push	{r4, r7, lr}
+ 487              	.LCFI9:
+ 488              		.cfi_def_cfa_offset 12
+ 489              		.cfi_offset 4, -12
+ 490              		.cfi_offset 7, -8
+ 491              		.cfi_offset 14, -4
+ 492 0002 87B0     		sub	sp, sp, #28
+ 493              	.LCFI10:
+ 494              		.cfi_def_cfa_offset 40
+ 495 0004 02AF     		add	r7, sp, #8
+ 496              	.LCFI11:
+ 497              		.cfi_def_cfa 7, 32
+ 498 0006 F860     		str	r0, [r7, #12]
+ 499 0008 B960     		str	r1, [r7, #8]
+ 500 000a 7A60     		str	r2, [r7, #4]
+ 501 000c 3B60     		str	r3, [r7]
+ 118:../Sources/PID.c ****     PID_SetTunings(PID, Kp, Ki, Kd, PID->pOn); 
+ 502              		.loc 1 118 0
+ 503 000e FB68     		ldr	r3, [r7, #12]
+ 504 0010 DC69     		ldr	r4, [r3, #28]
+ 505 0012 F868     		ldr	r0, [r7, #12]
+ 506 0014 B968     		ldr	r1, [r7, #8]
+ 507 0016 7A68     		ldr	r2, [r7, #4]
+ 508 0018 3B68     		ldr	r3, [r7]
+ 509 001a 0094     		str	r4, [sp]
+ 510 001c FFF7FEFF 		bl	PID_SetTunings
+ 119:../Sources/PID.c **** }
+ 511              		.loc 1 119 0
+ 512 0020 BD46     		mov	sp, r7
+ 513 0022 05B0     		add	sp, sp, #20
+ 514              		@ sp needed for prologue
+ 515 0024 90BD     		pop	{r4, r7, pc}
+ 516              		.cfi_endproc
+ 517              	.LFE3:
+ 519              		.global	__aeabi_i2f
+ 520 0026 C046     		.section	.text.PID_SetSampleTime,"ax",%progbits
+ 521              		.align	2
+ 522              		.global	PID_SetSampleTime
+ 523              		.code	16
+ 524              		.thumb_func
+ 526              	PID_SetSampleTime:
+ 527              	.LFB4:
+ 120:../Sources/PID.c **** 
+ 121:../Sources/PID.c **** /* SetSampleTime(...) *********************************************************
+ 122:../Sources/PID.c ****  * sets the period, in Milliseconds, at which the calculation is performed
+ 123:../Sources/PID.c ****  ******************************************************************************/
+ 124:../Sources/PID.c **** void PID_SetSampleTime(PID* PID, int NewSampleTime)
+ 125:../Sources/PID.c **** {
+ 528              		.loc 1 125 0
+ 529              		.cfi_startproc
+ 530 0000 90B5     		push	{r4, r7, lr}
+ 531              	.LCFI12:
+ 532              		.cfi_def_cfa_offset 12
+ 533              		.cfi_offset 4, -12
+ 534              		.cfi_offset 7, -8
+ 535              		.cfi_offset 14, -4
+ 536 0002 85B0     		sub	sp, sp, #20
+ 537              	.LCFI13:
+ 538              		.cfi_def_cfa_offset 32
+ 539 0004 00AF     		add	r7, sp, #0
+ 540              	.LCFI14:
+ 541              		.cfi_def_cfa_register 7
+ 542 0006 7860     		str	r0, [r7, #4]
+ 543 0008 3960     		str	r1, [r7]
+ 126:../Sources/PID.c ****    if (NewSampleTime > 0)
+ 544              		.loc 1 126 0
+ 545 000a 3B68     		ldr	r3, [r7]
+ 546 000c 002B     		cmp	r3, #0
+ 547 000e 26DD     		ble	.L33
+ 548              	.LBB2:
+ 127:../Sources/PID.c ****    {
+ 128:../Sources/PID.c ****       REAL ratio  = (REAL)NewSampleTime
+ 549              		.loc 1 128 0
+ 550 0010 3868     		ldr	r0, [r7]
+ 551 0012 FFF7FEFF 		bl	__aeabi_i2f
+ 552 0016 041C     		add	r4, r0, #0
+ 129:../Sources/PID.c ****                       / (REAL)PID->SampleTime;
+ 553              		.loc 1 129 0
+ 554 0018 7B68     		ldr	r3, [r7, #4]
+ 555 001a 9B6B     		ldr	r3, [r3, #56]
+ 556 001c 181C     		mov	r0, r3
+ 557 001e FFF7FEFF 		bl	__aeabi_ui2f
+ 558 0022 031C     		add	r3, r0, #0
+ 128:../Sources/PID.c ****       REAL ratio  = (REAL)NewSampleTime
+ 559              		.loc 1 128 0
+ 560 0024 201C     		add	r0, r4, #0
+ 561 0026 191C     		add	r1, r3, #0
+ 562 0028 FFF7FEFF 		bl	__aeabi_fdiv
+ 563 002c 031C     		add	r3, r0, #0
+ 564 002e FB60     		str	r3, [r7, #12]
+ 130:../Sources/PID.c ****       PID->ki *= ratio;
+ 565              		.loc 1 130 0
+ 566 0030 7B68     		ldr	r3, [r7, #4]
+ 567 0032 1B69     		ldr	r3, [r3, #16]
+ 568 0034 181C     		add	r0, r3, #0
+ 569 0036 F968     		ldr	r1, [r7, #12]
+ 570 0038 FFF7FEFF 		bl	__aeabi_fmul
+ 571 003c 031C     		add	r3, r0, #0
+ 572 003e 1A1C     		add	r2, r3, #0
+ 573 0040 7B68     		ldr	r3, [r7, #4]
+ 574 0042 1A61     		str	r2, [r3, #16]
+ 131:../Sources/PID.c ****       PID->kd /= ratio;
+ 575              		.loc 1 131 0
+ 576 0044 7B68     		ldr	r3, [r7, #4]
+ 577 0046 5B69     		ldr	r3, [r3, #20]
+ 578 0048 181C     		add	r0, r3, #0
+ 579 004a F968     		ldr	r1, [r7, #12]
+ 580 004c FFF7FEFF 		bl	__aeabi_fdiv
+ 581 0050 031C     		add	r3, r0, #0
+ 582 0052 1A1C     		add	r2, r3, #0
+ 583 0054 7B68     		ldr	r3, [r7, #4]
+ 584 0056 5A61     		str	r2, [r3, #20]
+ 132:../Sources/PID.c ****       PID->SampleTime = (unsigned long)NewSampleTime;
+ 585              		.loc 1 132 0
+ 586 0058 3A68     		ldr	r2, [r7]
+ 587 005a 7B68     		ldr	r3, [r7, #4]
+ 588 005c 9A63     		str	r2, [r3, #56]
+ 589              	.L33:
+ 590              	.LBE2:
+ 133:../Sources/PID.c ****    }
+ 134:../Sources/PID.c **** }
+ 591              		.loc 1 134 0
+ 592 005e BD46     		mov	sp, r7
+ 593 0060 05B0     		add	sp, sp, #20
+ 594              		@ sp needed for prologue
+ 595 0062 90BD     		pop	{r4, r7, pc}
+ 596              		.cfi_endproc
+ 597              	.LFE4:
+ 599              		.global	__aeabi_fcmpge
+ 600              		.section	.text.PID_SetOutputLimits,"ax",%progbits
+ 601              		.align	2
+ 602              		.global	PID_SetOutputLimits
+ 603              		.code	16
+ 604              		.thumb_func
+ 606              	PID_SetOutputLimits:
+ 607              	.LFB5:
+ 135:../Sources/PID.c **** 
+ 136:../Sources/PID.c **** /* SetOutputLimits(...)****************************************************
+ 137:../Sources/PID.c ****  *     This function will be used far more often than SetInputLimits.  while
+ 138:../Sources/PID.c ****  *  the input to the controller will generally be in the 0-1023 range (which is
+ 139:../Sources/PID.c ****  *  the default already,)  the output will be a little different.  maybe they'll
+ 140:../Sources/PID.c ****  *  be doing a time window and will need 0-8000 or something.  or maybe they'll
+ 141:../Sources/PID.c ****  *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
+ 142:../Sources/PID.c ****  *  here.
+ 143:../Sources/PID.c ****  **************************************************************************/
+ 144:../Sources/PID.c **** void PID_SetOutputLimits(PID* PID, REAL Min, REAL Max)
+ 145:../Sources/PID.c **** {
+ 608              		.loc 1 145 0
+ 609              		.cfi_startproc
+ 610 0000 80B5     		push	{r7, lr}
+ 611              	.LCFI15:
+ 612              		.cfi_def_cfa_offset 8
+ 613              		.cfi_offset 7, -8
+ 614              		.cfi_offset 14, -4
+ 615 0002 84B0     		sub	sp, sp, #16
+ 616              	.LCFI16:
+ 617              		.cfi_def_cfa_offset 24
+ 618 0004 00AF     		add	r7, sp, #0
+ 619              	.LCFI17:
+ 620              		.cfi_def_cfa_register 7
+ 621 0006 F860     		str	r0, [r7, #12]
+ 622 0008 B960     		str	r1, [r7, #8]
+ 623 000a 7A60     		str	r2, [r7, #4]
+ 146:../Sources/PID.c ****    if(Min >= Max) return;
+ 624              		.loc 1 146 0
+ 625 000c B868     		ldr	r0, [r7, #8]
+ 626 000e 7968     		ldr	r1, [r7, #4]
+ 627 0010 FFF7FEFF 		bl	__aeabi_fcmpge
+ 628 0014 031C     		mov	r3, r0
+ 629 0016 002B     		cmp	r3, #0
+ 630 0018 4DD1     		bne	.L52
+ 147:../Sources/PID.c ****    PID->outMin = Min;
+ 631              		.loc 1 147 0
+ 632 001a FB68     		ldr	r3, [r7, #12]
+ 633 001c BA68     		ldr	r2, [r7, #8]
+ 634 001e DA63     		str	r2, [r3, #60]
+ 148:../Sources/PID.c ****    PID->outMax = Max;
+ 635              		.loc 1 148 0
+ 636 0020 FB68     		ldr	r3, [r7, #12]
+ 637 0022 7A68     		ldr	r2, [r7, #4]
+ 638 0024 1A64     		str	r2, [r3, #64]
+ 149:../Sources/PID.c **** 
+ 150:../Sources/PID.c ****    if(PID->inAuto)
+ 639              		.loc 1 150 0
+ 640 0026 FA68     		ldr	r2, [r7, #12]
+ 641 0028 4423     		mov	r3, #68
+ 642 002a D35C     		ldrb	r3, [r2, r3]
+ 643 002c 002B     		cmp	r3, #0
+ 644 002e 43D0     		beq	.L35
+ 151:../Sources/PID.c ****    {
+ 152:../Sources/PID.c **** 	   if(*(PID->myOutput) > PID->outMax) *(PID->myOutput) = PID->outMax;
+ 645              		.loc 1 152 0
+ 646 0030 FB68     		ldr	r3, [r7, #12]
+ 647 0032 5B6A     		ldr	r3, [r3, #36]
+ 648 0034 1A68     		ldr	r2, [r3]
+ 649 0036 FB68     		ldr	r3, [r7, #12]
+ 650 0038 1B6C     		ldr	r3, [r3, #64]
+ 651 003a 101C     		add	r0, r2, #0
+ 652 003c 191C     		add	r1, r3, #0
+ 653 003e FFF7FEFF 		bl	__aeabi_fcmpgt
+ 654 0042 031C     		mov	r3, r0
+ 655 0044 002B     		cmp	r3, #0
+ 656 0046 05D0     		beq	.L50
+ 657              	.L46:
+ 658              		.loc 1 152 0 is_stmt 0
+ 659 0048 FB68     		ldr	r3, [r7, #12]
+ 660 004a 5B6A     		ldr	r3, [r3, #36]
+ 661 004c FA68     		ldr	r2, [r7, #12]
+ 662 004e 126C     		ldr	r2, [r2, #64]
+ 663 0050 1A60     		str	r2, [r3]
+ 664 0052 10E0     		b	.L41
+ 665              	.L50:
+ 153:../Sources/PID.c **** 	   else if(*(PID->myOutput) < PID->outMin) *(PID->myOutput) = PID->outMin;
+ 666              		.loc 1 153 0 is_stmt 1
+ 667 0054 FB68     		ldr	r3, [r7, #12]
+ 668 0056 5B6A     		ldr	r3, [r3, #36]
+ 669 0058 1A68     		ldr	r2, [r3]
+ 670 005a FB68     		ldr	r3, [r7, #12]
+ 671 005c DB6B     		ldr	r3, [r3, #60]
+ 672 005e 101C     		add	r0, r2, #0
+ 673 0060 191C     		add	r1, r3, #0
+ 674 0062 FFF7FEFF 		bl	__aeabi_fcmplt
+ 675 0066 031C     		mov	r3, r0
+ 676 0068 002B     		cmp	r3, #0
+ 677 006a 04D0     		beq	.L41
+ 678              	.L47:
+ 679              		.loc 1 153 0 is_stmt 0
+ 680 006c FB68     		ldr	r3, [r7, #12]
+ 681 006e 5B6A     		ldr	r3, [r3, #36]
+ 682 0070 FA68     		ldr	r2, [r7, #12]
+ 683 0072 D26B     		ldr	r2, [r2, #60]
+ 684 0074 1A60     		str	r2, [r3]
+ 685              	.L41:
+ 154:../Sources/PID.c **** 
+ 155:../Sources/PID.c **** 	   if(PID->outputSum > PID->outMax) PID->outputSum= PID->outMax;
+ 686              		.loc 1 155 0 is_stmt 1
+ 687 0076 FB68     		ldr	r3, [r7, #12]
+ 688 0078 1A6B     		ldr	r2, [r3, #48]
+ 689 007a FB68     		ldr	r3, [r7, #12]
+ 690 007c 1B6C     		ldr	r3, [r3, #64]
+ 691 007e 101C     		add	r0, r2, #0
+ 692 0080 191C     		add	r1, r3, #0
+ 693 0082 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 694 0086 031C     		mov	r3, r0
+ 695 0088 002B     		cmp	r3, #0
+ 696 008a 04D0     		beq	.L51
+ 697              	.L48:
+ 698              		.loc 1 155 0 is_stmt 0
+ 699 008c FB68     		ldr	r3, [r7, #12]
+ 700 008e 1A6C     		ldr	r2, [r3, #64]
+ 701 0090 FB68     		ldr	r3, [r7, #12]
+ 702 0092 1A63     		str	r2, [r3, #48]
+ 703 0094 10E0     		b	.L35
+ 704              	.L51:
+ 156:../Sources/PID.c **** 	   else if(PID->outputSum < PID->outMin) PID->outputSum= PID->outMin;
+ 705              		.loc 1 156 0 is_stmt 1
+ 706 0096 FB68     		ldr	r3, [r7, #12]
+ 707 0098 1A6B     		ldr	r2, [r3, #48]
+ 708 009a FB68     		ldr	r3, [r7, #12]
+ 709 009c DB6B     		ldr	r3, [r3, #60]
+ 710 009e 101C     		add	r0, r2, #0
+ 711 00a0 191C     		add	r1, r3, #0
+ 712 00a2 FFF7FEFF 		bl	__aeabi_fcmplt
+ 713 00a6 031C     		mov	r3, r0
+ 714 00a8 002B     		cmp	r3, #0
+ 715 00aa 05D0     		beq	.L35
+ 716              	.L49:
+ 717              		.loc 1 156 0 is_stmt 0
+ 718 00ac FB68     		ldr	r3, [r7, #12]
+ 719 00ae DA6B     		ldr	r2, [r3, #60]
+ 720 00b0 FB68     		ldr	r3, [r7, #12]
+ 721 00b2 1A63     		str	r2, [r3, #48]
+ 722 00b4 00E0     		b	.L35
+ 723              	.L52:
+ 146:../Sources/PID.c ****    if(Min >= Max) return;
+ 724              		.loc 1 146 0 is_stmt 1
+ 725 00b6 C046     		mov	r8, r8
+ 726              	.L35:
+ 157:../Sources/PID.c ****    }
+ 158:../Sources/PID.c **** }
+ 727              		.loc 1 158 0
+ 728 00b8 BD46     		mov	sp, r7
+ 729 00ba 04B0     		add	sp, sp, #16
+ 730              		@ sp needed for prologue
+ 731 00bc 80BD     		pop	{r7, pc}
+ 732              		.cfi_endproc
+ 733              	.LFE5:
+ 735 00be C046     		.section	.text.PID_SetMode,"ax",%progbits
+ 736              		.align	2
+ 737              		.global	PID_SetMode
+ 738              		.code	16
+ 739              		.thumb_func
+ 741              	PID_SetMode:
+ 742              	.LFB6:
+ 159:../Sources/PID.c **** 
+ 160:../Sources/PID.c **** /* SetMode(...)****************************************************************
+ 161:../Sources/PID.c ****  * Allows the controller Mode to be set to manual (0) or Automatic (non-zero)
+ 162:../Sources/PID.c ****  * when the transition from manual to auto occurs, the controller is
+ 163:../Sources/PID.c ****  * automatically initialized
+ 164:../Sources/PID.c ****  ******************************************************************************/
+ 165:../Sources/PID.c **** void PID_SetMode(PID* PID, int Mode)
+ 166:../Sources/PID.c **** {
+ 743              		.loc 1 166 0
+ 744              		.cfi_startproc
+ 745 0000 80B5     		push	{r7, lr}
+ 746              	.LCFI18:
+ 747              		.cfi_def_cfa_offset 8
+ 748              		.cfi_offset 7, -8
+ 749              		.cfi_offset 14, -4
+ 750 0002 84B0     		sub	sp, sp, #16
+ 751              	.LCFI19:
+ 752              		.cfi_def_cfa_offset 24
+ 753 0004 00AF     		add	r7, sp, #0
+ 754              	.LCFI20:
+ 755              		.cfi_def_cfa_register 7
+ 756 0006 7860     		str	r0, [r7, #4]
+ 757 0008 3960     		str	r1, [r7]
+ 167:../Sources/PID.c ****     char newAuto = (Mode == AUTOMATIC);
+ 758              		.loc 1 167 0
+ 759 000a 3B68     		ldr	r3, [r7]
+ 760 000c 013B     		sub	r3, r3, #1
+ 761 000e 5A42     		neg	r2, r3
+ 762 0010 5341     		adc	r3, r3, r2
+ 763 0012 DAB2     		uxtb	r2, r3
+ 764 0014 3B1C     		mov	r3, r7
+ 765 0016 0F33     		add	r3, r3, #15
+ 766 0018 1A70     		strb	r2, [r3]
+ 168:../Sources/PID.c ****     if(newAuto && !PID->inAuto)
+ 767              		.loc 1 168 0
+ 768 001a 3B1C     		mov	r3, r7
+ 769 001c 0F33     		add	r3, r3, #15
+ 770 001e 1B78     		ldrb	r3, [r3]
+ 771 0020 002B     		cmp	r3, #0
+ 772 0022 08D0     		beq	.L54
+ 773              		.loc 1 168 0 is_stmt 0
+ 774 0024 7A68     		ldr	r2, [r7, #4]
+ 775 0026 4423     		mov	r3, #68
+ 776 0028 D35C     		ldrb	r3, [r2, r3]
+ 777 002a 002B     		cmp	r3, #0
+ 778 002c 03D1     		bne	.L54
+ 169:../Sources/PID.c ****     {  /*we just went from manual to auto*/
+ 170:../Sources/PID.c ****     	PID_ManualToAuto_Init(PID);
+ 779              		.loc 1 170 0 is_stmt 1
+ 780 002e 7B68     		ldr	r3, [r7, #4]
+ 781 0030 181C     		mov	r0, r3
+ 782 0032 FFF7FEFF 		bl	PID_ManualToAuto_Init
+ 783              	.L54:
+ 171:../Sources/PID.c ****     }
+ 172:../Sources/PID.c ****     PID->inAuto = newAuto;
+ 784              		.loc 1 172 0
+ 785 0036 7A68     		ldr	r2, [r7, #4]
+ 786 0038 391C     		mov	r1, r7
+ 787 003a 0F31     		add	r1, r1, #15
+ 788 003c 4423     		mov	r3, #68
+ 789 003e 0978     		ldrb	r1, [r1]
+ 790 0040 D154     		strb	r1, [r2, r3]
+ 173:../Sources/PID.c **** }
+ 791              		.loc 1 173 0
+ 792 0042 BD46     		mov	sp, r7
+ 793 0044 04B0     		add	sp, sp, #16
+ 794              		@ sp needed for prologue
+ 795 0046 80BD     		pop	{r7, pc}
+ 796              		.cfi_endproc
+ 797              	.LFE6:
+ 799              		.section	.text.PID_ManualToAuto_Init,"ax",%progbits
+ 800              		.align	2
+ 801              		.global	PID_ManualToAuto_Init
+ 802              		.code	16
+ 803              		.thumb_func
+ 805              	PID_ManualToAuto_Init:
+ 806              	.LFB7:
+ 174:../Sources/PID.c **** 
+ 175:../Sources/PID.c **** /* Initialize()****************************************************************
+ 176:../Sources/PID.c ****  *	does all the things that need to happen to ensure a bumpless transfer
+ 177:../Sources/PID.c ****  *  from manual to automatic mode.
+ 178:../Sources/PID.c ****  ******************************************************************************/
+ 179:../Sources/PID.c **** void PID_ManualToAuto_Init(PID* PID)
+ 180:../Sources/PID.c **** {
+ 807              		.loc 1 180 0
+ 808              		.cfi_startproc
+ 809 0000 80B5     		push	{r7, lr}
+ 810              	.LCFI21:
+ 811              		.cfi_def_cfa_offset 8
+ 812              		.cfi_offset 7, -8
+ 813              		.cfi_offset 14, -4
+ 814 0002 82B0     		sub	sp, sp, #8
+ 815              	.LCFI22:
+ 816              		.cfi_def_cfa_offset 16
+ 817 0004 00AF     		add	r7, sp, #0
+ 818              	.LCFI23:
+ 819              		.cfi_def_cfa_register 7
+ 820 0006 7860     		str	r0, [r7, #4]
+ 181:../Sources/PID.c **** 	PID->outputSum = *(PID->myOutput);
+ 821              		.loc 1 181 0
+ 822 0008 7B68     		ldr	r3, [r7, #4]
+ 823 000a 5B6A     		ldr	r3, [r3, #36]
+ 824 000c 1A68     		ldr	r2, [r3]
+ 825 000e 7B68     		ldr	r3, [r7, #4]
+ 826 0010 1A63     		str	r2, [r3, #48]
+ 182:../Sources/PID.c **** 	PID->lastInput = *(PID->myInput);
+ 827              		.loc 1 182 0
+ 828 0012 7B68     		ldr	r3, [r7, #4]
+ 829 0014 1B6A     		ldr	r3, [r3, #32]
+ 830 0016 1A68     		ldr	r2, [r3]
+ 831 0018 7B68     		ldr	r3, [r7, #4]
+ 832 001a 5A63     		str	r2, [r3, #52]
+ 183:../Sources/PID.c ****    if(PID->outputSum > PID->outMax) PID->outputSum = PID->outMax;
+ 833              		.loc 1 183 0
+ 834 001c 7B68     		ldr	r3, [r7, #4]
+ 835 001e 1A6B     		ldr	r2, [r3, #48]
+ 836 0020 7B68     		ldr	r3, [r7, #4]
+ 837 0022 1B6C     		ldr	r3, [r3, #64]
+ 838 0024 101C     		add	r0, r2, #0
+ 839 0026 191C     		add	r1, r3, #0
+ 840 0028 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 841 002c 031C     		mov	r3, r0
+ 842 002e 002B     		cmp	r3, #0
+ 843 0030 04D0     		beq	.L62
+ 844              	.L60:
+ 845              		.loc 1 183 0 is_stmt 0
+ 846 0032 7B68     		ldr	r3, [r7, #4]
+ 847 0034 1A6C     		ldr	r2, [r3, #64]
+ 848 0036 7B68     		ldr	r3, [r7, #4]
+ 849 0038 1A63     		str	r2, [r3, #48]
+ 850 003a 0EE0     		b	.L55
+ 851              	.L62:
+ 184:../Sources/PID.c ****    else if(PID->outputSum < PID->outMin) PID->outputSum = PID->outMin;
+ 852              		.loc 1 184 0 is_stmt 1
+ 853 003c 7B68     		ldr	r3, [r7, #4]
+ 854 003e 1A6B     		ldr	r2, [r3, #48]
+ 855 0040 7B68     		ldr	r3, [r7, #4]
+ 856 0042 DB6B     		ldr	r3, [r3, #60]
+ 857 0044 101C     		add	r0, r2, #0
+ 858 0046 191C     		add	r1, r3, #0
+ 859 0048 FFF7FEFF 		bl	__aeabi_fcmplt
+ 860 004c 031C     		mov	r3, r0
+ 861 004e 002B     		cmp	r3, #0
+ 862 0050 03D0     		beq	.L55
+ 863              	.L61:
+ 864              		.loc 1 184 0 is_stmt 0
+ 865 0052 7B68     		ldr	r3, [r7, #4]
+ 866 0054 DA6B     		ldr	r2, [r3, #60]
+ 867 0056 7B68     		ldr	r3, [r7, #4]
+ 868 0058 1A63     		str	r2, [r3, #48]
+ 869              	.L55:
+ 185:../Sources/PID.c **** }
+ 870              		.loc 1 185 0 is_stmt 1
+ 871 005a BD46     		mov	sp, r7
+ 872 005c 02B0     		add	sp, sp, #8
+ 873              		@ sp needed for prologue
+ 874 005e 80BD     		pop	{r7, pc}
+ 875              		.cfi_endproc
+ 876              	.LFE7:
+ 878              		.section	.text.PID_SetControllerDirection,"ax",%progbits
+ 879              		.align	2
+ 880              		.global	PID_SetControllerDirection
+ 881              		.code	16
+ 882              		.thumb_func
+ 884              	PID_SetControllerDirection:
+ 885              	.LFB8:
+ 186:../Sources/PID.c **** 
+ 187:../Sources/PID.c **** /* SetControllerDirection(...)*************************************************
+ 188:../Sources/PID.c ****  * The PID will either be connected to a DIRECT acting process (+Output leads
+ 189:../Sources/PID.c ****  * to +Input) or a REVERSE acting process(+Output leads to -Input.)  we need to
+ 190:../Sources/PID.c ****  * know which one, because otherwise we may increase the output when we should
+ 191:../Sources/PID.c ****  * be decreasing.  This is called from the constructor.
+ 192:../Sources/PID.c ****  ******************************************************************************/
+ 193:../Sources/PID.c **** void PID_SetControllerDirection(PID* PID, int Direction)
+ 194:../Sources/PID.c **** {
+ 886              		.loc 1 194 0
+ 887              		.cfi_startproc
+ 888 0000 80B5     		push	{r7, lr}
+ 889              	.LCFI24:
+ 890              		.cfi_def_cfa_offset 8
+ 891              		.cfi_offset 7, -8
+ 892              		.cfi_offset 14, -4
+ 893 0002 82B0     		sub	sp, sp, #8
+ 894              	.LCFI25:
+ 895              		.cfi_def_cfa_offset 16
+ 896 0004 00AF     		add	r7, sp, #0
+ 897              	.LCFI26:
+ 898              		.cfi_def_cfa_register 7
+ 899 0006 7860     		str	r0, [r7, #4]
+ 900 0008 3960     		str	r1, [r7]
+ 195:../Sources/PID.c ****    if(PID->inAuto && Direction !=PID->controllerDirection)
+ 901              		.loc 1 195 0
+ 902 000a 7A68     		ldr	r2, [r7, #4]
+ 903 000c 4423     		mov	r3, #68
+ 904 000e D35C     		ldrb	r3, [r2, r3]
+ 905 0010 002B     		cmp	r3, #0
+ 906 0012 22D0     		beq	.L64
+ 907              		.loc 1 195 0 is_stmt 0
+ 908 0014 7B68     		ldr	r3, [r7, #4]
+ 909 0016 9A69     		ldr	r2, [r3, #24]
+ 910 0018 3B68     		ldr	r3, [r7]
+ 911 001a 9A42     		cmp	r2, r3
+ 912 001c 1DD0     		beq	.L64
+ 196:../Sources/PID.c ****    {
+ 197:../Sources/PID.c **** 	   PID->kp = (0 - PID->kp);
+ 913              		.loc 1 197 0 is_stmt 1
+ 914 001e 7B68     		ldr	r3, [r7, #4]
+ 915 0020 DB68     		ldr	r3, [r3, #12]
+ 916 0022 0020     		mov	r0, #0
+ 917 0024 191C     		add	r1, r3, #0
+ 918 0026 FFF7FEFF 		bl	__aeabi_fsub
+ 919 002a 031C     		add	r3, r0, #0
+ 920 002c 1A1C     		add	r2, r3, #0
+ 921 002e 7B68     		ldr	r3, [r7, #4]
+ 922 0030 DA60     		str	r2, [r3, #12]
+ 198:../Sources/PID.c **** 	   PID->ki = (0 - PID->ki);
+ 923              		.loc 1 198 0
+ 924 0032 7B68     		ldr	r3, [r7, #4]
+ 925 0034 1B69     		ldr	r3, [r3, #16]
+ 926 0036 0020     		mov	r0, #0
+ 927 0038 191C     		add	r1, r3, #0
+ 928 003a FFF7FEFF 		bl	__aeabi_fsub
+ 929 003e 031C     		add	r3, r0, #0
+ 930 0040 1A1C     		add	r2, r3, #0
+ 931 0042 7B68     		ldr	r3, [r7, #4]
+ 932 0044 1A61     		str	r2, [r3, #16]
+ 199:../Sources/PID.c **** 	   PID->kd = (0 - PID->kd);
+ 933              		.loc 1 199 0
+ 934 0046 7B68     		ldr	r3, [r7, #4]
+ 935 0048 5B69     		ldr	r3, [r3, #20]
+ 936 004a 0020     		mov	r0, #0
+ 937 004c 191C     		add	r1, r3, #0
+ 938 004e FFF7FEFF 		bl	__aeabi_fsub
+ 939 0052 031C     		add	r3, r0, #0
+ 940 0054 1A1C     		add	r2, r3, #0
+ 941 0056 7B68     		ldr	r3, [r7, #4]
+ 942 0058 5A61     		str	r2, [r3, #20]
+ 943              	.L64:
+ 200:../Sources/PID.c ****    }
+ 201:../Sources/PID.c ****    PID->controllerDirection = Direction;
+ 944              		.loc 1 201 0
+ 945 005a 7B68     		ldr	r3, [r7, #4]
+ 946 005c 3A68     		ldr	r2, [r7]
+ 947 005e 9A61     		str	r2, [r3, #24]
+ 202:../Sources/PID.c **** }
+ 948              		.loc 1 202 0
+ 949 0060 BD46     		mov	sp, r7
+ 950 0062 02B0     		add	sp, sp, #8
+ 951              		@ sp needed for prologue
+ 952 0064 80BD     		pop	{r7, pc}
+ 953              		.cfi_endproc
+ 954              	.LFE8:
+ 956              		.section	.text.PID_GetKp,"ax",%progbits
+ 957              		.align	2
+ 958              		.global	PID_GetKp
+ 959              		.code	16
+ 960              		.thumb_func
+ 962              	PID_GetKp:
+ 963              	.LFB9:
+ 203:../Sources/PID.c **** 
+ 204:../Sources/PID.c **** /* Status Funcions*************************************************************
+ 205:../Sources/PID.c ****  * Just because you set the Kp=-1 doesn't mean it actually happened.  these
+ 206:../Sources/PID.c ****  * functions query the internal state of the PID.  they're here for display
+ 207:../Sources/PID.c ****  * purposes.  this are the functions the PID Front-end uses for example
+ 208:../Sources/PID.c ****  ******************************************************************************/
+ 209:../Sources/PID.c **** REAL PID_GetKp(PID* PID){ return  PID->dispKp; }
+ 964              		.loc 1 209 0
+ 965              		.cfi_startproc
+ 966 0000 80B5     		push	{r7, lr}
+ 967              	.LCFI27:
+ 968              		.cfi_def_cfa_offset 8
+ 969              		.cfi_offset 7, -8
+ 970              		.cfi_offset 14, -4
+ 971 0002 82B0     		sub	sp, sp, #8
+ 972              	.LCFI28:
+ 973              		.cfi_def_cfa_offset 16
+ 974 0004 00AF     		add	r7, sp, #0
+ 975              	.LCFI29:
+ 976              		.cfi_def_cfa_register 7
+ 977 0006 7860     		str	r0, [r7, #4]
+ 978              		.loc 1 209 0
+ 979 0008 7B68     		ldr	r3, [r7, #4]
+ 980 000a 1B68     		ldr	r3, [r3]
+ 981 000c 181C     		add	r0, r3, #0
+ 982 000e BD46     		mov	sp, r7
+ 983 0010 02B0     		add	sp, sp, #8
+ 984              		@ sp needed for prologue
+ 985 0012 80BD     		pop	{r7, pc}
+ 986              		.cfi_endproc
+ 987              	.LFE9:
+ 989              		.section	.text.PID_GetKi,"ax",%progbits
+ 990              		.align	2
+ 991              		.global	PID_GetKi
+ 992              		.code	16
+ 993              		.thumb_func
+ 995              	PID_GetKi:
+ 996              	.LFB10:
+ 210:../Sources/PID.c **** REAL PID_GetKi(PID* PID){ return  PID->dispKi;}
+ 997              		.loc 1 210 0
+ 998              		.cfi_startproc
+ 999 0000 80B5     		push	{r7, lr}
+ 1000              	.LCFI30:
+ 1001              		.cfi_def_cfa_offset 8
+ 1002              		.cfi_offset 7, -8
+ 1003              		.cfi_offset 14, -4
+ 1004 0002 82B0     		sub	sp, sp, #8
+ 1005              	.LCFI31:
+ 1006              		.cfi_def_cfa_offset 16
+ 1007 0004 00AF     		add	r7, sp, #0
+ 1008              	.LCFI32:
+ 1009              		.cfi_def_cfa_register 7
+ 1010 0006 7860     		str	r0, [r7, #4]
+ 1011              		.loc 1 210 0
+ 1012 0008 7B68     		ldr	r3, [r7, #4]
+ 1013 000a 5B68     		ldr	r3, [r3, #4]
+ 1014 000c 181C     		add	r0, r3, #0
+ 1015 000e BD46     		mov	sp, r7
+ 1016 0010 02B0     		add	sp, sp, #8
+ 1017              		@ sp needed for prologue
+ 1018 0012 80BD     		pop	{r7, pc}
+ 1019              		.cfi_endproc
+ 1020              	.LFE10:
+ 1022              		.section	.text.PID_GetKd,"ax",%progbits
+ 1023              		.align	2
+ 1024              		.global	PID_GetKd
+ 1025              		.code	16
+ 1026              		.thumb_func
+ 1028              	PID_GetKd:
+ 1029              	.LFB11:
+ 211:../Sources/PID.c **** REAL PID_GetKd(PID* PID){ return  PID->dispKd;}
+ 1030              		.loc 1 211 0
+ 1031              		.cfi_startproc
+ 1032 0000 80B5     		push	{r7, lr}
+ 1033              	.LCFI33:
+ 1034              		.cfi_def_cfa_offset 8
+ 1035              		.cfi_offset 7, -8
+ 1036              		.cfi_offset 14, -4
+ 1037 0002 82B0     		sub	sp, sp, #8
+ 1038              	.LCFI34:
+ 1039              		.cfi_def_cfa_offset 16
+ 1040 0004 00AF     		add	r7, sp, #0
+ 1041              	.LCFI35:
+ 1042              		.cfi_def_cfa_register 7
+ 1043 0006 7860     		str	r0, [r7, #4]
+ 1044              		.loc 1 211 0
+ 1045 0008 7B68     		ldr	r3, [r7, #4]
+ 1046 000a 9B68     		ldr	r3, [r3, #8]
+ 1047 000c 181C     		add	r0, r3, #0
+ 1048 000e BD46     		mov	sp, r7
+ 1049 0010 02B0     		add	sp, sp, #8
+ 1050              		@ sp needed for prologue
+ 1051 0012 80BD     		pop	{r7, pc}
+ 1052              		.cfi_endproc
+ 1053              	.LFE11:
+ 1055              		.section	.text.PID_GetMode,"ax",%progbits
+ 1056              		.align	2
+ 1057              		.global	PID_GetMode
+ 1058              		.code	16
+ 1059              		.thumb_func
+ 1061              	PID_GetMode:
+ 1062              	.LFB12:
+ 212:../Sources/PID.c **** int PID_GetMode(PID* PID){ return  PID->inAuto ? AUTOMATIC : MANUAL;}
+ 1063              		.loc 1 212 0
+ 1064              		.cfi_startproc
+ 1065 0000 80B5     		push	{r7, lr}
+ 1066              	.LCFI36:
+ 1067              		.cfi_def_cfa_offset 8
+ 1068              		.cfi_offset 7, -8
+ 1069              		.cfi_offset 14, -4
+ 1070 0002 82B0     		sub	sp, sp, #8
+ 1071              	.LCFI37:
+ 1072              		.cfi_def_cfa_offset 16
+ 1073 0004 00AF     		add	r7, sp, #0
+ 1074              	.LCFI38:
+ 1075              		.cfi_def_cfa_register 7
+ 1076 0006 7860     		str	r0, [r7, #4]
+ 1077              		.loc 1 212 0
+ 1078 0008 7A68     		ldr	r2, [r7, #4]
+ 1079 000a 4423     		mov	r3, #68
+ 1080 000c D35C     		ldrb	r3, [r2, r3]
+ 1081 000e 5A1E     		sub	r2, r3, #1
+ 1082 0010 9341     		sbc	r3, r3, r2
+ 1083 0012 DBB2     		uxtb	r3, r3
+ 1084 0014 181C     		mov	r0, r3
+ 1085 0016 BD46     		mov	sp, r7
+ 1086 0018 02B0     		add	sp, sp, #8
+ 1087              		@ sp needed for prologue
+ 1088 001a 80BD     		pop	{r7, pc}
+ 1089              		.cfi_endproc
+ 1090              	.LFE12:
+ 1092              		.section	.text.PID_GetDirection,"ax",%progbits
+ 1093              		.align	2
+ 1094              		.global	PID_GetDirection
+ 1095              		.code	16
+ 1096              		.thumb_func
+ 1098              	PID_GetDirection:
+ 1099              	.LFB13:
+ 213:../Sources/PID.c **** int PID_GetDirection(PID* PID){ return PID->controllerDirection;}
+ 1100              		.loc 1 213 0
+ 1101              		.cfi_startproc
+ 1102 0000 80B5     		push	{r7, lr}
+ 1103              	.LCFI39:
+ 1104              		.cfi_def_cfa_offset 8
+ 1105              		.cfi_offset 7, -8
+ 1106              		.cfi_offset 14, -4
+ 1107 0002 82B0     		sub	sp, sp, #8
+ 1108              	.LCFI40:
+ 1109              		.cfi_def_cfa_offset 16
+ 1110 0004 00AF     		add	r7, sp, #0
+ 1111              	.LCFI41:
+ 1112              		.cfi_def_cfa_register 7
+ 1113 0006 7860     		str	r0, [r7, #4]
+ 1114              		.loc 1 213 0
+ 1115 0008 7B68     		ldr	r3, [r7, #4]
+ 1116 000a 9B69     		ldr	r3, [r3, #24]
+ 1117 000c 181C     		mov	r0, r3
+ 1118 000e BD46     		mov	sp, r7
+ 1119 0010 02B0     		add	sp, sp, #8
+ 1120              		@ sp needed for prologue
+ 1121 0012 80BD     		pop	{r7, pc}
+ 1122              		.cfi_endproc
+ 1123              	.LFE13:
+ 1125              		.text
+ 1126              	.Letext0:
+ 1127              		.file 2 "C:/Users/David/Desktop/DronePrototype/Project_Headers/PID.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 PID.c
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:18     .text.PID_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:23     .text.PID_Init:00000000 PID_Init
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:606    .text.PID_SetOutputLimits:00000000 PID_SetOutputLimits
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:884    .text.PID_SetControllerDirection:00000000 PID_SetControllerDirection
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:329    .text.PID_SetTunings:00000000 PID_SetTunings
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:95     .text.PID_Init:00000060 $d
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:105    .text.PID_Compute:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:110    .text.PID_Compute:00000000 PID_Compute
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:324    .text.PID_SetTunings:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:472    .text.PID_SetTunings:000000f0 $d
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:477    .text.PID_SetTunings_lr:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:482    .text.PID_SetTunings_lr:00000000 PID_SetTunings_lr
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:521    .text.PID_SetSampleTime:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:526    .text.PID_SetSampleTime:00000000 PID_SetSampleTime
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:601    .text.PID_SetOutputLimits:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:736    .text.PID_SetMode:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:741    .text.PID_SetMode:00000000 PID_SetMode
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:805    .text.PID_ManualToAuto_Init:00000000 PID_ManualToAuto_Init
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:800    .text.PID_ManualToAuto_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:879    .text.PID_SetControllerDirection:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:957    .text.PID_GetKp:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:962    .text.PID_GetKp:00000000 PID_GetKp
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:990    .text.PID_GetKi:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:995    .text.PID_GetKi:00000000 PID_GetKi
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1023   .text.PID_GetKd:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1028   .text.PID_GetKd:00000000 PID_GetKd
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1056   .text.PID_GetMode:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1061   .text.PID_GetMode:00000000 PID_GetMode
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1093   .text.PID_GetDirection:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccWFp2js.s:1098   .text.PID_GetDirection:00000000 PID_GetDirection
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fsub
+__aeabi_fmul
+__aeabi_fadd
+__aeabi_fcmpgt
+__aeabi_fcmplt
+__aeabi_ui2f
+__aeabi_fdiv
+__aeabi_i2f
+__aeabi_fcmpge

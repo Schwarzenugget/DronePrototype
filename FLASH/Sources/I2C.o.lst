@@ -1,0 +1,1061 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"I2C.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	PrintReady,1,1
+  18              		.section	.text.I2C_WriteRegister,"ax",%progbits
+  19              		.align	2
+  20              		.global	I2C_WriteRegister
+  21              		.code	16
+  22              		.thumb_func
+  24              	I2C_WriteRegister:
+  25              	.LFB0:
+  26              		.file 1 "../Sources/I2C.c"
+   1:../Sources/I2C.c **** #include "derivative.h" 
+   2:../Sources/I2C.c **** 
+   3:../Sources/I2C.c **** #ifndef I2C_H_
+   4:../Sources/I2C.c **** #include "I2C.h"
+   5:../Sources/I2C.c **** #endif
+   6:../Sources/I2C.c **** 
+   7:../Sources/I2C.c **** /*
+   8:../Sources/I2C.c ****  * TODO: substituir els caracters "??" per el registre d'E/S del modul I2C. Tambe al fitxer I2C.h
+   9:../Sources/I2C.c ****  * TODO: substituir "Especificar primer pas comunicacio" per la primera funcio del protocol I2C
+  10:../Sources/I2C.c ****  * TODO EXTRA: implementar funcio write multiple registers.
+  11:../Sources/I2C.c ****  */
+  12:../Sources/I2C.c **** 
+  13:../Sources/I2C.c **** 
+  14:../Sources/I2C.c **** void I2C_WriteRegister(unsigned char u8SlaveAddress, unsigned char u8RegisterAddress, /*unsigned*/ 
+  15:../Sources/I2C.c **** {
+  27              		.loc 1 15 0
+  28              		.cfi_startproc
+  29 0000 80B5     		push	{r7, lr}
+  30              	.LCFI0:
+  31              		.cfi_def_cfa_offset 8
+  32              		.cfi_offset 7, -8
+  33              		.cfi_offset 14, -4
+  34 0002 82B0     		sub	sp, sp, #8
+  35              	.LCFI1:
+  36              		.cfi_def_cfa_offset 16
+  37 0004 00AF     		add	r7, sp, #0
+  38              	.LCFI2:
+  39              		.cfi_def_cfa_register 7
+  40 0006 FB1D     		add	r3, r7, #7
+  41 0008 1870     		strb	r0, [r3]
+  42 000a BB1D     		add	r3, r7, #6
+  43 000c 1970     		strb	r1, [r3]
+  44 000e 7B1D     		add	r3, r7, #5
+  45 0010 1A70     		strb	r2, [r3]
+  16:../Sources/I2C.c **** 	I2C_Start();
+  46              		.loc 1 16 0
+  47 0012 304B     		ldr	r3, .L5
+  48 0014 2F4A     		ldr	r2, .L5
+  49 0016 9278     		ldrb	r2, [r2, #2]
+  50 0018 D2B2     		uxtb	r2, r2
+  51 001a 1021     		mov	r1, #16
+  52 001c 0A43     		orr	r2, r1
+  53 001e D2B2     		uxtb	r2, r2
+  54 0020 9A70     		strb	r2, [r3, #2]
+  55 0022 2C4B     		ldr	r3, .L5
+  56 0024 2B4A     		ldr	r2, .L5
+  57 0026 9278     		ldrb	r2, [r2, #2]
+  58 0028 D2B2     		uxtb	r2, r2
+  59 002a 2021     		mov	r1, #32
+  60 002c 0A43     		orr	r2, r1
+  61 002e D2B2     		uxtb	r2, r2
+  62 0030 9A70     		strb	r2, [r3, #2]
+  17:../Sources/I2C.c **** 	
+  18:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h	        
+  19:../Sources/I2C.c **** 	I2C0_D = u8SlaveAddress << 1;									/* Send I2C device address with W/R bit = 0 */
+  63              		.loc 1 19 0
+  64 0032 284B     		ldr	r3, .L5
+  65 0034 FA1D     		add	r2, r7, #7
+  66 0036 1278     		ldrb	r2, [r2]
+  67 0038 5200     		lsl	r2, r2, #1
+  68 003a D2B2     		uxtb	r2, r2
+  69 003c 1A71     		strb	r2, [r3, #4]
+  70              	.L2:
+  20:../Sources/I2C.c **** 	I2C_Wait();
+  71              		.loc 1 20 0
+  72 003e 254B     		ldr	r3, .L5
+  73 0040 DB78     		ldrb	r3, [r3, #3]
+  74 0042 DBB2     		uxtb	r3, r3
+  75 0044 1A1C     		mov	r2, r3
+  76 0046 0223     		mov	r3, #2
+  77 0048 1340     		and	r3, r2
+  78 004a F8D0     		beq	.L2
+  79              		.loc 1 20 0 is_stmt 0
+  80 004c 214B     		ldr	r3, .L5
+  81 004e 214A     		ldr	r2, .L5
+  82 0050 D278     		ldrb	r2, [r2, #3]
+  83 0052 D2B2     		uxtb	r2, r2
+  84 0054 0221     		mov	r1, #2
+  85 0056 0A43     		orr	r2, r1
+  86 0058 D2B2     		uxtb	r2, r2
+  87 005a DA70     		strb	r2, [r3, #3]
+  21:../Sources/I2C.c **** 	
+  22:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h	
+  23:../Sources/I2C.c **** 
+  24:../Sources/I2C.c **** 	I2C0_D = u8RegisterAddress;										/* Send register address */
+  88              		.loc 1 24 0 is_stmt 1
+  89 005c 1D4B     		ldr	r3, .L5
+  90 005e BA1D     		add	r2, r7, #6
+  91 0060 1278     		ldrb	r2, [r2]
+  92 0062 1A71     		strb	r2, [r3, #4]
+  93              	.L3:
+  25:../Sources/I2C.c **** 	I2C_Wait();
+  94              		.loc 1 25 0
+  95 0064 1B4B     		ldr	r3, .L5
+  96 0066 DB78     		ldrb	r3, [r3, #3]
+  97 0068 DBB2     		uxtb	r3, r3
+  98 006a 1A1C     		mov	r2, r3
+  99 006c 0223     		mov	r3, #2
+ 100 006e 1340     		and	r3, r2
+ 101 0070 F8D0     		beq	.L3
+ 102              		.loc 1 25 0 is_stmt 0
+ 103 0072 184B     		ldr	r3, .L5
+ 104 0074 174A     		ldr	r2, .L5
+ 105 0076 D278     		ldrb	r2, [r2, #3]
+ 106 0078 D2B2     		uxtb	r2, r2
+ 107 007a 0221     		mov	r1, #2
+ 108 007c 0A43     		orr	r2, r1
+ 109 007e D2B2     		uxtb	r2, r2
+ 110 0080 DA70     		strb	r2, [r3, #3]
+  26:../Sources/I2C.c **** 
+  27:../Sources/I2C.c **** 	I2C0_D = u8Data;												/* Send the data */
+ 111              		.loc 1 27 0 is_stmt 1
+ 112 0082 144B     		ldr	r3, .L5
+ 113 0084 7A1D     		add	r2, r7, #5
+ 114 0086 1278     		ldrb	r2, [r2]
+ 115 0088 1A71     		strb	r2, [r3, #4]
+ 116              	.L4:
+  28:../Sources/I2C.c **** 	I2C_Wait();
+ 117              		.loc 1 28 0
+ 118 008a 124B     		ldr	r3, .L5
+ 119 008c DB78     		ldrb	r3, [r3, #3]
+ 120 008e DBB2     		uxtb	r3, r3
+ 121 0090 1A1C     		mov	r2, r3
+ 122 0092 0223     		mov	r3, #2
+ 123 0094 1340     		and	r3, r2
+ 124 0096 F8D0     		beq	.L4
+ 125              		.loc 1 28 0 is_stmt 0
+ 126 0098 0E4B     		ldr	r3, .L5
+ 127 009a 0E4A     		ldr	r2, .L5
+ 128 009c D278     		ldrb	r2, [r2, #3]
+ 129 009e D2B2     		uxtb	r2, r2
+ 130 00a0 0221     		mov	r1, #2
+ 131 00a2 0A43     		orr	r2, r1
+ 132 00a4 D2B2     		uxtb	r2, r2
+ 133 00a6 DA70     		strb	r2, [r3, #3]
+  29:../Sources/I2C.c **** 
+  30:../Sources/I2C.c **** 	I2C_Stop();
+ 134              		.loc 1 30 0 is_stmt 1
+ 135 00a8 0A4B     		ldr	r3, .L5
+ 136 00aa 0A4A     		ldr	r2, .L5
+ 137 00ac 9278     		ldrb	r2, [r2, #2]
+ 138 00ae D2B2     		uxtb	r2, r2
+ 139 00b0 2021     		mov	r1, #32
+ 140 00b2 8A43     		bic	r2, r1
+ 141 00b4 D2B2     		uxtb	r2, r2
+ 142 00b6 9A70     		strb	r2, [r3, #2]
+ 143 00b8 064B     		ldr	r3, .L5
+ 144 00ba 064A     		ldr	r2, .L5
+ 145 00bc 9278     		ldrb	r2, [r2, #2]
+ 146 00be D2B2     		uxtb	r2, r2
+ 147 00c0 1021     		mov	r1, #16
+ 148 00c2 8A43     		bic	r2, r1
+ 149 00c4 D2B2     		uxtb	r2, r2
+ 150 00c6 9A70     		strb	r2, [r3, #2]
+  31:../Sources/I2C.c **** 
+  32:../Sources/I2C.c ****     Pause(50);
+ 151              		.loc 1 32 0
+ 152 00c8 3220     		mov	r0, #50
+ 153 00ca FFF7FEFF 		bl	Pause
+  33:../Sources/I2C.c **** }
+ 154              		.loc 1 33 0
+ 155 00ce BD46     		mov	sp, r7
+ 156 00d0 02B0     		add	sp, sp, #8
+ 157              		@ sp needed for prologue
+ 158 00d2 80BD     		pop	{r7, pc}
+ 159              	.L6:
+ 160              		.align	2
+ 161              	.L5:
+ 162 00d4 00600640 		.word	1074159616
+ 163              		.cfi_endproc
+ 164              	.LFE0:
+ 166              		.section	.text.I2C_WriteMultipleRegister,"ax",%progbits
+ 167              		.align	2
+ 168              		.global	I2C_WriteMultipleRegister
+ 169              		.code	16
+ 170              		.thumb_func
+ 172              	I2C_WriteMultipleRegister:
+ 173              	.LFB1:
+  34:../Sources/I2C.c **** 
+  35:../Sources/I2C.c **** void I2C_WriteMultipleRegister(unsigned char u8SlaveAddress, unsigned char u8RegisterAddress, unsig
+  36:../Sources/I2C.c **** {
+ 174              		.loc 1 36 0
+ 175              		.cfi_startproc
+ 176 0000 80B5     		push	{r7, lr}
+ 177              	.LCFI3:
+ 178              		.cfi_def_cfa_offset 8
+ 179              		.cfi_offset 7, -8
+ 180              		.cfi_offset 14, -4
+ 181 0002 84B0     		sub	sp, sp, #16
+ 182              	.LCFI4:
+ 183              		.cfi_def_cfa_offset 24
+ 184 0004 00AF     		add	r7, sp, #0
+ 185              	.LCFI5:
+ 186              		.cfi_def_cfa_register 7
+ 187 0006 3B60     		str	r3, [r7]
+ 188 0008 FB1D     		add	r3, r7, #7
+ 189 000a 1870     		strb	r0, [r3]
+ 190 000c BB1D     		add	r3, r7, #6
+ 191 000e 1970     		strb	r1, [r3]
+ 192 0010 7B1D     		add	r3, r7, #5
+ 193 0012 1A70     		strb	r2, [r3]
+  37:../Sources/I2C.c **** 	uint32_t i;
+  38:../Sources/I2C.c **** 	
+  39:../Sources/I2C.c **** 	I2C_Start();
+ 194              		.loc 1 39 0
+ 195 0014 374B     		ldr	r3, .L13
+ 196 0016 374A     		ldr	r2, .L13
+ 197 0018 9278     		ldrb	r2, [r2, #2]
+ 198 001a D2B2     		uxtb	r2, r2
+ 199 001c 1021     		mov	r1, #16
+ 200 001e 0A43     		orr	r2, r1
+ 201 0020 D2B2     		uxtb	r2, r2
+ 202 0022 9A70     		strb	r2, [r3, #2]
+ 203 0024 334B     		ldr	r3, .L13
+ 204 0026 334A     		ldr	r2, .L13
+ 205 0028 9278     		ldrb	r2, [r2, #2]
+ 206 002a D2B2     		uxtb	r2, r2
+ 207 002c 2021     		mov	r1, #32
+ 208 002e 0A43     		orr	r2, r1
+ 209 0030 D2B2     		uxtb	r2, r2
+ 210 0032 9A70     		strb	r2, [r3, #2]
+  40:../Sources/I2C.c **** 	
+  41:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h	          
+  42:../Sources/I2C.c **** 	I2C0_D = u8SlaveAddress << 1;									/* Send I2C device address with W/R bit = 0 */
+ 211              		.loc 1 42 0
+ 212 0034 2F4B     		ldr	r3, .L13
+ 213 0036 FA1D     		add	r2, r7, #7
+ 214 0038 1278     		ldrb	r2, [r2]
+ 215 003a 5200     		lsl	r2, r2, #1
+ 216 003c D2B2     		uxtb	r2, r2
+ 217 003e 1A71     		strb	r2, [r3, #4]
+ 218              	.L8:
+  43:../Sources/I2C.c **** 	I2C_Wait();
+ 219              		.loc 1 43 0
+ 220 0040 2C4B     		ldr	r3, .L13
+ 221 0042 DB78     		ldrb	r3, [r3, #3]
+ 222 0044 DBB2     		uxtb	r3, r3
+ 223 0046 1A1C     		mov	r2, r3
+ 224 0048 0223     		mov	r3, #2
+ 225 004a 1340     		and	r3, r2
+ 226 004c F8D0     		beq	.L8
+ 227              		.loc 1 43 0 is_stmt 0
+ 228 004e 294B     		ldr	r3, .L13
+ 229 0050 284A     		ldr	r2, .L13
+ 230 0052 D278     		ldrb	r2, [r2, #3]
+ 231 0054 D2B2     		uxtb	r2, r2
+ 232 0056 0221     		mov	r1, #2
+ 233 0058 0A43     		orr	r2, r1
+ 234 005a D2B2     		uxtb	r2, r2
+ 235 005c DA70     		strb	r2, [r3, #3]
+  44:../Sources/I2C.c **** 	
+  45:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h	
+  46:../Sources/I2C.c **** 
+  47:../Sources/I2C.c **** 	I2C0_D = u8RegisterAddress;										/* Send register address */
+ 236              		.loc 1 47 0 is_stmt 1
+ 237 005e 254B     		ldr	r3, .L13
+ 238 0060 BA1D     		add	r2, r7, #6
+ 239 0062 1278     		ldrb	r2, [r2]
+ 240 0064 1A71     		strb	r2, [r3, #4]
+ 241              	.L9:
+  48:../Sources/I2C.c **** 	I2C_Wait();
+ 242              		.loc 1 48 0
+ 243 0066 234B     		ldr	r3, .L13
+ 244 0068 DB78     		ldrb	r3, [r3, #3]
+ 245 006a DBB2     		uxtb	r3, r3
+ 246 006c 1A1C     		mov	r2, r3
+ 247 006e 0223     		mov	r3, #2
+ 248 0070 1340     		and	r3, r2
+ 249 0072 F8D0     		beq	.L9
+ 250              		.loc 1 48 0 is_stmt 0
+ 251 0074 1F4B     		ldr	r3, .L13
+ 252 0076 1F4A     		ldr	r2, .L13
+ 253 0078 D278     		ldrb	r2, [r2, #3]
+ 254 007a D2B2     		uxtb	r2, r2
+ 255 007c 0221     		mov	r1, #2
+ 256 007e 0A43     		orr	r2, r1
+ 257 0080 D2B2     		uxtb	r2, r2
+ 258 0082 DA70     		strb	r2, [r3, #3]
+  49:../Sources/I2C.c **** 	
+  50:../Sources/I2C.c **** 	for(i=0; i<n; i++) {
+ 259              		.loc 1 50 0 is_stmt 1
+ 260 0084 0023     		mov	r3, #0
+ 261 0086 FB60     		str	r3, [r7, #12]
+ 262 0088 18E0     		b	.L10
+ 263              	.L12:
+  51:../Sources/I2C.c **** 		I2C0_D = *w;
+ 264              		.loc 1 51 0
+ 265 008a 1A4B     		ldr	r3, .L13
+ 266 008c 3A68     		ldr	r2, [r7]
+ 267 008e 1278     		ldrb	r2, [r2]
+ 268 0090 1A71     		strb	r2, [r3, #4]
+  52:../Sources/I2C.c **** 		w++;															/* Send the data */
+ 269              		.loc 1 52 0
+ 270 0092 3B68     		ldr	r3, [r7]
+ 271 0094 0133     		add	r3, r3, #1
+ 272 0096 3B60     		str	r3, [r7]
+ 273              	.L11:
+  53:../Sources/I2C.c **** 		I2C_Wait();
+ 274              		.loc 1 53 0
+ 275 0098 164B     		ldr	r3, .L13
+ 276 009a DB78     		ldrb	r3, [r3, #3]
+ 277 009c DBB2     		uxtb	r3, r3
+ 278 009e 1A1C     		mov	r2, r3
+ 279 00a0 0223     		mov	r3, #2
+ 280 00a2 1340     		and	r3, r2
+ 281 00a4 F8D0     		beq	.L11
+ 282              		.loc 1 53 0 is_stmt 0
+ 283 00a6 134B     		ldr	r3, .L13
+ 284 00a8 124A     		ldr	r2, .L13
+ 285 00aa D278     		ldrb	r2, [r2, #3]
+ 286 00ac D2B2     		uxtb	r2, r2
+ 287 00ae 0221     		mov	r1, #2
+ 288 00b0 0A43     		orr	r2, r1
+ 289 00b2 D2B2     		uxtb	r2, r2
+ 290 00b4 DA70     		strb	r2, [r3, #3]
+  50:../Sources/I2C.c **** 	for(i=0; i<n; i++) {
+ 291              		.loc 1 50 0 is_stmt 1
+ 292 00b6 FB68     		ldr	r3, [r7, #12]
+ 293 00b8 0133     		add	r3, r3, #1
+ 294 00ba FB60     		str	r3, [r7, #12]
+ 295              	.L10:
+  50:../Sources/I2C.c **** 	for(i=0; i<n; i++) {
+ 296              		.loc 1 50 0 is_stmt 0
+ 297 00bc 7B1D     		add	r3, r7, #5
+ 298 00be 1A78     		ldrb	r2, [r3]
+ 299 00c0 FB68     		ldr	r3, [r7, #12]
+ 300 00c2 9A42     		cmp	r2, r3
+ 301 00c4 E1D8     		bhi	.L12
+  54:../Sources/I2C.c **** 	}
+  55:../Sources/I2C.c **** 	
+  56:../Sources/I2C.c **** 	I2C_Stop();
+ 302              		.loc 1 56 0 is_stmt 1
+ 303 00c6 0B4B     		ldr	r3, .L13
+ 304 00c8 0A4A     		ldr	r2, .L13
+ 305 00ca 9278     		ldrb	r2, [r2, #2]
+ 306 00cc D2B2     		uxtb	r2, r2
+ 307 00ce 2021     		mov	r1, #32
+ 308 00d0 8A43     		bic	r2, r1
+ 309 00d2 D2B2     		uxtb	r2, r2
+ 310 00d4 9A70     		strb	r2, [r3, #2]
+ 311 00d6 074B     		ldr	r3, .L13
+ 312 00d8 064A     		ldr	r2, .L13
+ 313 00da 9278     		ldrb	r2, [r2, #2]
+ 314 00dc D2B2     		uxtb	r2, r2
+ 315 00de 1021     		mov	r1, #16
+ 316 00e0 8A43     		bic	r2, r1
+ 317 00e2 D2B2     		uxtb	r2, r2
+ 318 00e4 9A70     		strb	r2, [r3, #2]
+  57:../Sources/I2C.c **** 
+  58:../Sources/I2C.c ****     Pause(50);
+ 319              		.loc 1 58 0
+ 320 00e6 3220     		mov	r0, #50
+ 321 00e8 FFF7FEFF 		bl	Pause
+  59:../Sources/I2C.c **** }
+ 322              		.loc 1 59 0
+ 323 00ec BD46     		mov	sp, r7
+ 324 00ee 04B0     		add	sp, sp, #16
+ 325              		@ sp needed for prologue
+ 326 00f0 80BD     		pop	{r7, pc}
+ 327              	.L14:
+ 328 00f2 C046     		.align	2
+ 329              	.L13:
+ 330 00f4 00600640 		.word	1074159616
+ 331              		.cfi_endproc
+ 332              	.LFE1:
+ 334              		.section	.text.I2C_ReadRegister,"ax",%progbits
+ 335              		.align	2
+ 336              		.global	I2C_ReadRegister
+ 337              		.code	16
+ 338              		.thumb_func
+ 340              	I2C_ReadRegister:
+ 341              	.LFB2:
+  60:../Sources/I2C.c **** 
+  61:../Sources/I2C.c **** unsigned char I2C_ReadRegister(unsigned char u8SlaveAddress, unsigned char u8RegisterAddress)
+  62:../Sources/I2C.c **** {
+ 342              		.loc 1 62 0
+ 343              		.cfi_startproc
+ 344 0000 80B5     		push	{r7, lr}
+ 345              	.LCFI6:
+ 346              		.cfi_def_cfa_offset 8
+ 347              		.cfi_offset 7, -8
+ 348              		.cfi_offset 14, -4
+ 349 0002 84B0     		sub	sp, sp, #16
+ 350              	.LCFI7:
+ 351              		.cfi_def_cfa_offset 24
+ 352 0004 00AF     		add	r7, sp, #0
+ 353              	.LCFI8:
+ 354              		.cfi_def_cfa_register 7
+ 355 0006 0A1C     		mov	r2, r1
+ 356 0008 FB1D     		add	r3, r7, #7
+ 357 000a 011C     		add	r1, r0, #0
+ 358 000c 1970     		strb	r1, [r3]
+ 359 000e BB1D     		add	r3, r7, #6
+ 360 0010 1A70     		strb	r2, [r3]
+  63:../Sources/I2C.c **** 	unsigned char result;
+  64:../Sources/I2C.c **** 	  
+  65:../Sources/I2C.c **** 	I2C_Start();
+ 361              		.loc 1 65 0
+ 362 0012 4E4B     		ldr	r3, .L21
+ 363 0014 4D4A     		ldr	r2, .L21
+ 364 0016 9278     		ldrb	r2, [r2, #2]
+ 365 0018 D2B2     		uxtb	r2, r2
+ 366 001a 1021     		mov	r1, #16
+ 367 001c 0A43     		orr	r2, r1
+ 368 001e D2B2     		uxtb	r2, r2
+ 369 0020 9A70     		strb	r2, [r3, #2]
+ 370 0022 4A4B     		ldr	r3, .L21
+ 371 0024 494A     		ldr	r2, .L21
+ 372 0026 9278     		ldrb	r2, [r2, #2]
+ 373 0028 D2B2     		uxtb	r2, r2
+ 374 002a 2021     		mov	r1, #32
+ 375 002c 0A43     		orr	r2, r1
+ 376 002e D2B2     		uxtb	r2, r2
+ 377 0030 9A70     		strb	r2, [r3, #2]
+  66:../Sources/I2C.c **** 	
+  67:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h		          
+  68:../Sources/I2C.c **** 	I2C0_D = u8SlaveAddress << 1;									/* Send I2C device address with W/R bit = 0 */
+ 378              		.loc 1 68 0
+ 379 0032 464B     		ldr	r3, .L21
+ 380 0034 FA1D     		add	r2, r7, #7
+ 381 0036 1278     		ldrb	r2, [r2]
+ 382 0038 5200     		lsl	r2, r2, #1
+ 383 003a D2B2     		uxtb	r2, r2
+ 384 003c 1A71     		strb	r2, [r3, #4]
+ 385              	.L16:
+  69:../Sources/I2C.c **** 	I2C_Wait();
+ 386              		.loc 1 69 0
+ 387 003e 434B     		ldr	r3, .L21
+ 388 0040 DB78     		ldrb	r3, [r3, #3]
+ 389 0042 DBB2     		uxtb	r3, r3
+ 390 0044 1A1C     		mov	r2, r3
+ 391 0046 0223     		mov	r3, #2
+ 392 0048 1340     		and	r3, r2
+ 393 004a F8D0     		beq	.L16
+ 394              		.loc 1 69 0 is_stmt 0
+ 395 004c 3F4B     		ldr	r3, .L21
+ 396 004e 3F4A     		ldr	r2, .L21
+ 397 0050 D278     		ldrb	r2, [r2, #3]
+ 398 0052 D2B2     		uxtb	r2, r2
+ 399 0054 0221     		mov	r1, #2
+ 400 0056 0A43     		orr	r2, r1
+ 401 0058 D2B2     		uxtb	r2, r2
+ 402 005a DA70     		strb	r2, [r3, #3]
+  70:../Sources/I2C.c **** 	
+  71:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h										
+  72:../Sources/I2C.c **** 
+  73:../Sources/I2C.c **** 	I2C0_D = u8RegisterAddress;										/* Send register address */
+ 403              		.loc 1 73 0 is_stmt 1
+ 404 005c 3B4B     		ldr	r3, .L21
+ 405 005e BA1D     		add	r2, r7, #6
+ 406 0060 1278     		ldrb	r2, [r2]
+ 407 0062 1A71     		strb	r2, [r3, #4]
+ 408              	.L17:
+  74:../Sources/I2C.c **** 	I2C_Wait();
+ 409              		.loc 1 74 0
+ 410 0064 394B     		ldr	r3, .L21
+ 411 0066 DB78     		ldrb	r3, [r3, #3]
+ 412 0068 DBB2     		uxtb	r3, r3
+ 413 006a 1A1C     		mov	r2, r3
+ 414 006c 0223     		mov	r3, #2
+ 415 006e 1340     		and	r3, r2
+ 416 0070 F8D0     		beq	.L17
+ 417              		.loc 1 74 0 is_stmt 0
+ 418 0072 364B     		ldr	r3, .L21
+ 419 0074 354A     		ldr	r2, .L21
+ 420 0076 D278     		ldrb	r2, [r2, #3]
+ 421 0078 D2B2     		uxtb	r2, r2
+ 422 007a 0221     		mov	r1, #2
+ 423 007c 0A43     		orr	r2, r1
+ 424 007e D2B2     		uxtb	r2, r2
+ 425 0080 DA70     		strb	r2, [r3, #3]
+  75:../Sources/I2C.c **** 
+  76:../Sources/I2C.c **** 	I2C_RepeatedStart();
+ 426              		.loc 1 76 0 is_stmt 1
+ 427 0082 324B     		ldr	r3, .L21
+ 428 0084 314A     		ldr	r2, .L21
+ 429 0086 9278     		ldrb	r2, [r2, #2]
+ 430 0088 D2B2     		uxtb	r2, r2
+ 431 008a 0421     		mov	r1, #4
+ 432 008c 0A43     		orr	r2, r1
+ 433 008e D2B2     		uxtb	r2, r2
+ 434 0090 9A70     		strb	r2, [r3, #2]
+  77:../Sources/I2C.c **** 	
+  78:../Sources/I2C.c **** 	I2C0_D = (u8SlaveAddress << 1) | 0x01;							/* Send I2C device address this time with W/R bit = 1
+ 435              		.loc 1 78 0
+ 436 0092 2E4B     		ldr	r3, .L21
+ 437 0094 FA1D     		add	r2, r7, #7
+ 438 0096 1278     		ldrb	r2, [r2]
+ 439 0098 5200     		lsl	r2, r2, #1
+ 440 009a D2B2     		uxtb	r2, r2
+ 441 009c 0121     		mov	r1, #1
+ 442 009e 0A43     		orr	r2, r1
+ 443 00a0 D2B2     		uxtb	r2, r2
+ 444 00a2 D2B2     		uxtb	r2, r2
+ 445 00a4 1A71     		strb	r2, [r3, #4]
+ 446              	.L18:
+  79:../Sources/I2C.c **** 	I2C_Wait();	
+ 447              		.loc 1 79 0
+ 448 00a6 294B     		ldr	r3, .L21
+ 449 00a8 DB78     		ldrb	r3, [r3, #3]
+ 450 00aa DBB2     		uxtb	r3, r3
+ 451 00ac 1A1C     		mov	r2, r3
+ 452 00ae 0223     		mov	r3, #2
+ 453 00b0 1340     		and	r3, r2
+ 454 00b2 F8D0     		beq	.L18
+ 455              		.loc 1 79 0 is_stmt 0
+ 456 00b4 254B     		ldr	r3, .L21
+ 457 00b6 254A     		ldr	r2, .L21
+ 458 00b8 D278     		ldrb	r2, [r2, #3]
+ 459 00ba D2B2     		uxtb	r2, r2
+ 460 00bc 0221     		mov	r1, #2
+ 461 00be 0A43     		orr	r2, r1
+ 462 00c0 D2B2     		uxtb	r2, r2
+ 463 00c2 DA70     		strb	r2, [r3, #3]
+  80:../Sources/I2C.c **** 
+  81:../Sources/I2C.c **** 	I2C_EnterRxMode();
+ 464              		.loc 1 81 0 is_stmt 1
+ 465 00c4 214B     		ldr	r3, .L21
+ 466 00c6 214A     		ldr	r2, .L21
+ 467 00c8 9278     		ldrb	r2, [r2, #2]
+ 468 00ca D2B2     		uxtb	r2, r2
+ 469 00cc 1021     		mov	r1, #16
+ 470 00ce 8A43     		bic	r2, r1
+ 471 00d0 D2B2     		uxtb	r2, r2
+ 472 00d2 9A70     		strb	r2, [r3, #2]
+  82:../Sources/I2C.c **** 	I2C_DisableAck();
+ 473              		.loc 1 82 0
+ 474 00d4 1D4B     		ldr	r3, .L21
+ 475 00d6 1D4A     		ldr	r2, .L21
+ 476 00d8 9278     		ldrb	r2, [r2, #2]
+ 477 00da D2B2     		uxtb	r2, r2
+ 478 00dc 0821     		mov	r1, #8
+ 479 00de 0A43     		orr	r2, r1
+ 480 00e0 D2B2     		uxtb	r2, r2
+ 481 00e2 9A70     		strb	r2, [r3, #2]
+  83:../Sources/I2C.c **** 
+  84:../Sources/I2C.c **** 	result = I2C0_D;												
+ 482              		.loc 1 84 0
+ 483 00e4 194A     		ldr	r2, .L21
+ 484 00e6 3B1C     		mov	r3, r7
+ 485 00e8 0F33     		add	r3, r3, #15
+ 486 00ea 1279     		ldrb	r2, [r2, #4]
+ 487 00ec 1A70     		strb	r2, [r3]
+ 488              	.L19:
+  85:../Sources/I2C.c **** 	I2C_Wait();
+ 489              		.loc 1 85 0
+ 490 00ee 174B     		ldr	r3, .L21
+ 491 00f0 DB78     		ldrb	r3, [r3, #3]
+ 492 00f2 DBB2     		uxtb	r3, r3
+ 493 00f4 1A1C     		mov	r2, r3
+ 494 00f6 0223     		mov	r3, #2
+ 495 00f8 1340     		and	r3, r2
+ 496 00fa F8D0     		beq	.L19
+ 497              		.loc 1 85 0 is_stmt 0
+ 498 00fc 134B     		ldr	r3, .L21
+ 499 00fe 134A     		ldr	r2, .L21
+ 500 0100 D278     		ldrb	r2, [r2, #3]
+ 501 0102 D2B2     		uxtb	r2, r2
+ 502 0104 0221     		mov	r1, #2
+ 503 0106 0A43     		orr	r2, r1
+ 504 0108 D2B2     		uxtb	r2, r2
+ 505 010a DA70     		strb	r2, [r3, #3]
+  86:../Sources/I2C.c **** 	I2C_Stop();  
+ 506              		.loc 1 86 0 is_stmt 1
+ 507 010c 0F4B     		ldr	r3, .L21
+ 508 010e 0F4A     		ldr	r2, .L21
+ 509 0110 9278     		ldrb	r2, [r2, #2]
+ 510 0112 D2B2     		uxtb	r2, r2
+ 511 0114 2021     		mov	r1, #32
+ 512 0116 8A43     		bic	r2, r1
+ 513 0118 D2B2     		uxtb	r2, r2
+ 514 011a 9A70     		strb	r2, [r3, #2]
+ 515 011c 0B4B     		ldr	r3, .L21
+ 516 011e 0B4A     		ldr	r2, .L21
+ 517 0120 9278     		ldrb	r2, [r2, #2]
+ 518 0122 D2B2     		uxtb	r2, r2
+ 519 0124 1021     		mov	r1, #16
+ 520 0126 8A43     		bic	r2, r1
+ 521 0128 D2B2     		uxtb	r2, r2
+ 522 012a 9A70     		strb	r2, [r3, #2]
+  87:../Sources/I2C.c **** 	result = I2C0_D;
+ 523              		.loc 1 87 0
+ 524 012c 074A     		ldr	r2, .L21
+ 525 012e 3B1C     		mov	r3, r7
+ 526 0130 0F33     		add	r3, r3, #15
+ 527 0132 1279     		ldrb	r2, [r2, #4]
+ 528 0134 1A70     		strb	r2, [r3]
+  88:../Sources/I2C.c **** 	Pause(50);
+ 529              		.loc 1 88 0
+ 530 0136 3220     		mov	r0, #50
+ 531 0138 FFF7FEFF 		bl	Pause
+  89:../Sources/I2C.c **** 	return result;
+ 532              		.loc 1 89 0
+ 533 013c 3B1C     		mov	r3, r7
+ 534 013e 0F33     		add	r3, r3, #15
+ 535 0140 1B78     		ldrb	r3, [r3]
+  90:../Sources/I2C.c **** }
+ 536              		.loc 1 90 0
+ 537 0142 181C     		mov	r0, r3
+ 538 0144 BD46     		mov	sp, r7
+ 539 0146 04B0     		add	sp, sp, #16
+ 540              		@ sp needed for prologue
+ 541 0148 80BD     		pop	{r7, pc}
+ 542              	.L22:
+ 543 014a C046     		.align	2
+ 544              	.L21:
+ 545 014c 00600640 		.word	1074159616
+ 546              		.cfi_endproc
+ 547              	.LFE2:
+ 549              		.section	.text.I2C_ReadMultiRegisters,"ax",%progbits
+ 550              		.align	2
+ 551              		.global	I2C_ReadMultiRegisters
+ 552              		.code	16
+ 553              		.thumb_func
+ 555              	I2C_ReadMultiRegisters:
+ 556              	.LFB3:
+  91:../Sources/I2C.c **** 
+  92:../Sources/I2C.c **** void I2C_ReadMultiRegisters(unsigned char u8SlaveAddress, unsigned char u8RegisterAddress, unsigned
+  93:../Sources/I2C.c **** {
+ 557              		.loc 1 93 0
+ 558              		.cfi_startproc
+ 559 0000 80B5     		push	{r7, lr}
+ 560              	.LCFI9:
+ 561              		.cfi_def_cfa_offset 8
+ 562              		.cfi_offset 7, -8
+ 563              		.cfi_offset 14, -4
+ 564 0002 84B0     		sub	sp, sp, #16
+ 565              	.LCFI10:
+ 566              		.cfi_def_cfa_offset 24
+ 567 0004 00AF     		add	r7, sp, #0
+ 568              	.LCFI11:
+ 569              		.cfi_def_cfa_register 7
+ 570 0006 3B60     		str	r3, [r7]
+ 571 0008 FB1D     		add	r3, r7, #7
+ 572 000a 1870     		strb	r0, [r3]
+ 573 000c BB1D     		add	r3, r7, #6
+ 574 000e 1970     		strb	r1, [r3]
+ 575 0010 7B1D     		add	r3, r7, #5
+ 576 0012 1A70     		strb	r2, [r3]
+  94:../Sources/I2C.c **** 	char i;
+  95:../Sources/I2C.c **** 	
+  96:../Sources/I2C.c **** 	I2C_Start();
+ 577              		.loc 1 96 0
+ 578 0014 704B     		ldr	r3, .L32
+ 579 0016 704A     		ldr	r2, .L32
+ 580 0018 9278     		ldrb	r2, [r2, #2]
+ 581 001a D2B2     		uxtb	r2, r2
+ 582 001c 1021     		mov	r1, #16
+ 583 001e 0A43     		orr	r2, r1
+ 584 0020 D2B2     		uxtb	r2, r2
+ 585 0022 9A70     		strb	r2, [r3, #2]
+ 586 0024 6C4B     		ldr	r3, .L32
+ 587 0026 6C4A     		ldr	r2, .L32
+ 588 0028 9278     		ldrb	r2, [r2, #2]
+ 589 002a D2B2     		uxtb	r2, r2
+ 590 002c 2021     		mov	r1, #32
+ 591 002e 0A43     		orr	r2, r1
+ 592 0030 D2B2     		uxtb	r2, r2
+ 593 0032 9A70     		strb	r2, [r3, #2]
+  97:../Sources/I2C.c **** 
+  98:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h	          
+  99:../Sources/I2C.c **** 	I2C0_D = u8SlaveAddress << 1;									/* Send I2C device address with W/R bit = 0 */
+ 594              		.loc 1 99 0
+ 595 0034 684B     		ldr	r3, .L32
+ 596 0036 FA1D     		add	r2, r7, #7
+ 597 0038 1278     		ldrb	r2, [r2]
+ 598 003a 5200     		lsl	r2, r2, #1
+ 599 003c D2B2     		uxtb	r2, r2
+ 600 003e 1A71     		strb	r2, [r3, #4]
+ 601              	.L24:
+ 100:../Sources/I2C.c **** 	I2C_Wait();
+ 602              		.loc 1 100 0
+ 603 0040 654B     		ldr	r3, .L32
+ 604 0042 DB78     		ldrb	r3, [r3, #3]
+ 605 0044 DBB2     		uxtb	r3, r3
+ 606 0046 1A1C     		mov	r2, r3
+ 607 0048 0223     		mov	r3, #2
+ 608 004a 1340     		and	r3, r2
+ 609 004c F8D0     		beq	.L24
+ 610              		.loc 1 100 0 is_stmt 0
+ 611 004e 624B     		ldr	r3, .L32
+ 612 0050 614A     		ldr	r2, .L32
+ 613 0052 D278     		ldrb	r2, [r2, #3]
+ 614 0054 D2B2     		uxtb	r2, r2
+ 615 0056 0221     		mov	r1, #2
+ 616 0058 0A43     		orr	r2, r1
+ 617 005a D2B2     		uxtb	r2, r2
+ 618 005c DA70     		strb	r2, [r3, #3]
+ 101:../Sources/I2C.c **** 	
+ 102:../Sources/I2C.c **** 	// TODO afegir operacio. Macros definides a I2C.h									
+ 103:../Sources/I2C.c **** 
+ 104:../Sources/I2C.c **** 	I2C0_D = u8RegisterAddress;										/* Send register address */
+ 619              		.loc 1 104 0 is_stmt 1
+ 620 005e 5E4B     		ldr	r3, .L32
+ 621 0060 BA1D     		add	r2, r7, #6
+ 622 0062 1278     		ldrb	r2, [r2]
+ 623 0064 1A71     		strb	r2, [r3, #4]
+ 624              	.L25:
+ 105:../Sources/I2C.c **** 	I2C_Wait();
+ 625              		.loc 1 105 0
+ 626 0066 5C4B     		ldr	r3, .L32
+ 627 0068 DB78     		ldrb	r3, [r3, #3]
+ 628 006a DBB2     		uxtb	r3, r3
+ 629 006c 1A1C     		mov	r2, r3
+ 630 006e 0223     		mov	r3, #2
+ 631 0070 1340     		and	r3, r2
+ 632 0072 F8D0     		beq	.L25
+ 633              		.loc 1 105 0 is_stmt 0
+ 634 0074 584B     		ldr	r3, .L32
+ 635 0076 584A     		ldr	r2, .L32
+ 636 0078 D278     		ldrb	r2, [r2, #3]
+ 637 007a D2B2     		uxtb	r2, r2
+ 638 007c 0221     		mov	r1, #2
+ 639 007e 0A43     		orr	r2, r1
+ 640 0080 D2B2     		uxtb	r2, r2
+ 641 0082 DA70     		strb	r2, [r3, #3]
+ 106:../Sources/I2C.c **** 
+ 107:../Sources/I2C.c **** 	I2C_RepeatedStart();
+ 642              		.loc 1 107 0 is_stmt 1
+ 643 0084 544B     		ldr	r3, .L32
+ 644 0086 544A     		ldr	r2, .L32
+ 645 0088 9278     		ldrb	r2, [r2, #2]
+ 646 008a D2B2     		uxtb	r2, r2
+ 647 008c 0421     		mov	r1, #4
+ 648 008e 0A43     		orr	r2, r1
+ 649 0090 D2B2     		uxtb	r2, r2
+ 650 0092 9A70     		strb	r2, [r3, #2]
+ 108:../Sources/I2C.c **** 		
+ 109:../Sources/I2C.c **** 	I2C0_D = (u8SlaveAddress << 1) | 0x01;							/* Send I2C device address this time with W/R bit = 1
+ 651              		.loc 1 109 0
+ 652 0094 504B     		ldr	r3, .L32
+ 653 0096 FA1D     		add	r2, r7, #7
+ 654 0098 1278     		ldrb	r2, [r2]
+ 655 009a 5200     		lsl	r2, r2, #1
+ 656 009c D2B2     		uxtb	r2, r2
+ 657 009e 0121     		mov	r1, #1
+ 658 00a0 0A43     		orr	r2, r1
+ 659 00a2 D2B2     		uxtb	r2, r2
+ 660 00a4 D2B2     		uxtb	r2, r2
+ 661 00a6 1A71     		strb	r2, [r3, #4]
+ 662              	.L26:
+ 110:../Sources/I2C.c **** 	I2C_Wait();	
+ 663              		.loc 1 110 0
+ 664 00a8 4B4B     		ldr	r3, .L32
+ 665 00aa DB78     		ldrb	r3, [r3, #3]
+ 666 00ac DBB2     		uxtb	r3, r3
+ 667 00ae 1A1C     		mov	r2, r3
+ 668 00b0 0223     		mov	r3, #2
+ 669 00b2 1340     		and	r3, r2
+ 670 00b4 F8D0     		beq	.L26
+ 671              		.loc 1 110 0 is_stmt 0
+ 672 00b6 484B     		ldr	r3, .L32
+ 673 00b8 474A     		ldr	r2, .L32
+ 674 00ba D278     		ldrb	r2, [r2, #3]
+ 675 00bc D2B2     		uxtb	r2, r2
+ 676 00be 0221     		mov	r1, #2
+ 677 00c0 0A43     		orr	r2, r1
+ 678 00c2 D2B2     		uxtb	r2, r2
+ 679 00c4 DA70     		strb	r2, [r3, #3]
+ 111:../Sources/I2C.c **** 
+ 112:../Sources/I2C.c **** 	I2C_EnterRxMode();
+ 680              		.loc 1 112 0 is_stmt 1
+ 681 00c6 444B     		ldr	r3, .L32
+ 682 00c8 434A     		ldr	r2, .L32
+ 683 00ca 9278     		ldrb	r2, [r2, #2]
+ 684 00cc D2B2     		uxtb	r2, r2
+ 685 00ce 1021     		mov	r1, #16
+ 686 00d0 8A43     		bic	r2, r1
+ 687 00d2 D2B2     		uxtb	r2, r2
+ 688 00d4 9A70     		strb	r2, [r3, #2]
+ 113:../Sources/I2C.c **** 	I2C_EnableAck();
+ 689              		.loc 1 113 0
+ 690 00d6 404B     		ldr	r3, .L32
+ 691 00d8 3F4A     		ldr	r2, .L32
+ 692 00da 9278     		ldrb	r2, [r2, #2]
+ 693 00dc D2B2     		uxtb	r2, r2
+ 694 00de 0821     		mov	r1, #8
+ 695 00e0 8A43     		bic	r2, r1
+ 696 00e2 D2B2     		uxtb	r2, r2
+ 697 00e4 9A70     		strb	r2, [r3, #2]
+ 114:../Sources/I2C.c **** 	
+ 115:../Sources/I2C.c **** 	i = I2C0_D;
+ 698              		.loc 1 115 0
+ 699 00e6 3C4A     		ldr	r2, .L32
+ 700 00e8 3B1C     		mov	r3, r7
+ 701 00ea 0F33     		add	r3, r3, #15
+ 702 00ec 1279     		ldrb	r2, [r2, #4]
+ 703 00ee 1A70     		strb	r2, [r3]
+ 704              	.L27:
+ 116:../Sources/I2C.c **** 	I2C_Wait();
+ 705              		.loc 1 116 0
+ 706 00f0 394B     		ldr	r3, .L32
+ 707 00f2 DB78     		ldrb	r3, [r3, #3]
+ 708 00f4 DBB2     		uxtb	r3, r3
+ 709 00f6 1A1C     		mov	r2, r3
+ 710 00f8 0223     		mov	r3, #2
+ 711 00fa 1340     		and	r3, r2
+ 712 00fc F8D0     		beq	.L27
+ 713              		.loc 1 116 0 is_stmt 0
+ 714 00fe 364B     		ldr	r3, .L32
+ 715 0100 354A     		ldr	r2, .L32
+ 716 0102 D278     		ldrb	r2, [r2, #3]
+ 717 0104 D2B2     		uxtb	r2, r2
+ 718 0106 0221     		mov	r1, #2
+ 719 0108 0A43     		orr	r2, r1
+ 720 010a D2B2     		uxtb	r2, r2
+ 721 010c DA70     		strb	r2, [r3, #3]
+ 117:../Sources/I2C.c **** 	
+ 118:../Sources/I2C.c **** 	for(i=0; i<n-2; i++) 
+ 722              		.loc 1 118 0 is_stmt 1
+ 723 010e 3B1C     		mov	r3, r7
+ 724 0110 0F33     		add	r3, r3, #15
+ 725 0112 0022     		mov	r2, #0
+ 726 0114 1A70     		strb	r2, [r3]
+ 727 0116 1DE0     		b	.L28
+ 728              	.L30:
+ 119:../Sources/I2C.c **** 	{
+ 120:../Sources/I2C.c **** 	    *r = I2C0_D;
+ 729              		.loc 1 120 0
+ 730 0118 2F4B     		ldr	r3, .L32
+ 731 011a 1B79     		ldrb	r3, [r3, #4]
+ 732 011c DAB2     		uxtb	r2, r3
+ 733 011e 3B68     		ldr	r3, [r7]
+ 734 0120 1A70     		strb	r2, [r3]
+ 121:../Sources/I2C.c **** 	    r++;
+ 735              		.loc 1 121 0
+ 736 0122 3B68     		ldr	r3, [r7]
+ 737 0124 0133     		add	r3, r3, #1
+ 738 0126 3B60     		str	r3, [r7]
+ 739              	.L29:
+ 122:../Sources/I2C.c **** 	    I2C_Wait();
+ 740              		.loc 1 122 0
+ 741 0128 2B4B     		ldr	r3, .L32
+ 742 012a DB78     		ldrb	r3, [r3, #3]
+ 743 012c DBB2     		uxtb	r3, r3
+ 744 012e 1A1C     		mov	r2, r3
+ 745 0130 0223     		mov	r3, #2
+ 746 0132 1340     		and	r3, r2
+ 747 0134 F8D0     		beq	.L29
+ 748              		.loc 1 122 0 is_stmt 0
+ 749 0136 284B     		ldr	r3, .L32
+ 750 0138 274A     		ldr	r2, .L32
+ 751 013a D278     		ldrb	r2, [r2, #3]
+ 752 013c D2B2     		uxtb	r2, r2
+ 753 013e 0221     		mov	r1, #2
+ 754 0140 0A43     		orr	r2, r1
+ 755 0142 D2B2     		uxtb	r2, r2
+ 756 0144 DA70     		strb	r2, [r3, #3]
+ 118:../Sources/I2C.c **** 	for(i=0; i<n-2; i++) 
+ 757              		.loc 1 118 0 is_stmt 1
+ 758 0146 3B1C     		mov	r3, r7
+ 759 0148 0F33     		add	r3, r3, #15
+ 760 014a 3A1C     		mov	r2, r7
+ 761 014c 0F32     		add	r2, r2, #15
+ 762 014e 1278     		ldrb	r2, [r2]
+ 763 0150 0132     		add	r2, r2, #1
+ 764 0152 1A70     		strb	r2, [r3]
+ 765              	.L28:
+ 118:../Sources/I2C.c **** 	for(i=0; i<n-2; i++) 
+ 766              		.loc 1 118 0 is_stmt 0
+ 767 0154 3B1C     		mov	r3, r7
+ 768 0156 0F33     		add	r3, r3, #15
+ 769 0158 1A78     		ldrb	r2, [r3]
+ 770 015a 7B1D     		add	r3, r7, #5
+ 771 015c 1B78     		ldrb	r3, [r3]
+ 772 015e 023B     		sub	r3, r3, #2
+ 773 0160 9A42     		cmp	r2, r3
+ 774 0162 D9DB     		blt	.L30
+ 123:../Sources/I2C.c **** 	}
+ 124:../Sources/I2C.c **** 	
+ 125:../Sources/I2C.c **** 	I2C_DisableAck();
+ 775              		.loc 1 125 0 is_stmt 1
+ 776 0164 1C4B     		ldr	r3, .L32
+ 777 0166 1C4A     		ldr	r2, .L32
+ 778 0168 9278     		ldrb	r2, [r2, #2]
+ 779 016a D2B2     		uxtb	r2, r2
+ 780 016c 0821     		mov	r1, #8
+ 781 016e 0A43     		orr	r2, r1
+ 782 0170 D2B2     		uxtb	r2, r2
+ 783 0172 9A70     		strb	r2, [r3, #2]
+ 126:../Sources/I2C.c **** 	*r = I2C0_D;
+ 784              		.loc 1 126 0
+ 785 0174 184B     		ldr	r3, .L32
+ 786 0176 1B79     		ldrb	r3, [r3, #4]
+ 787 0178 DAB2     		uxtb	r2, r3
+ 788 017a 3B68     		ldr	r3, [r7]
+ 789 017c 1A70     		strb	r2, [r3]
+ 127:../Sources/I2C.c **** 	r++;
+ 790              		.loc 1 127 0
+ 791 017e 3B68     		ldr	r3, [r7]
+ 792 0180 0133     		add	r3, r3, #1
+ 793 0182 3B60     		str	r3, [r7]
+ 794              	.L31:
+ 128:../Sources/I2C.c **** 	I2C_Wait();
+ 795              		.loc 1 128 0
+ 796 0184 144B     		ldr	r3, .L32
+ 797 0186 DB78     		ldrb	r3, [r3, #3]
+ 798 0188 DBB2     		uxtb	r3, r3
+ 799 018a 1A1C     		mov	r2, r3
+ 800 018c 0223     		mov	r3, #2
+ 801 018e 1340     		and	r3, r2
+ 802 0190 F8D0     		beq	.L31
+ 803              		.loc 1 128 0 is_stmt 0
+ 804 0192 114B     		ldr	r3, .L32
+ 805 0194 104A     		ldr	r2, .L32
+ 806 0196 D278     		ldrb	r2, [r2, #3]
+ 807 0198 D2B2     		uxtb	r2, r2
+ 808 019a 0221     		mov	r1, #2
+ 809 019c 0A43     		orr	r2, r1
+ 810 019e D2B2     		uxtb	r2, r2
+ 811 01a0 DA70     		strb	r2, [r3, #3]
+ 129:../Sources/I2C.c **** 	I2C_Stop();
+ 812              		.loc 1 129 0 is_stmt 1
+ 813 01a2 0D4B     		ldr	r3, .L32
+ 814 01a4 0C4A     		ldr	r2, .L32
+ 815 01a6 9278     		ldrb	r2, [r2, #2]
+ 816 01a8 D2B2     		uxtb	r2, r2
+ 817 01aa 2021     		mov	r1, #32
+ 818 01ac 8A43     		bic	r2, r1
+ 819 01ae D2B2     		uxtb	r2, r2
+ 820 01b0 9A70     		strb	r2, [r3, #2]
+ 821 01b2 094B     		ldr	r3, .L32
+ 822 01b4 084A     		ldr	r2, .L32
+ 823 01b6 9278     		ldrb	r2, [r2, #2]
+ 824 01b8 D2B2     		uxtb	r2, r2
+ 825 01ba 1021     		mov	r1, #16
+ 826 01bc 8A43     		bic	r2, r1
+ 827 01be D2B2     		uxtb	r2, r2
+ 828 01c0 9A70     		strb	r2, [r3, #2]
+ 130:../Sources/I2C.c **** 	*r = I2C0_D; 
+ 829              		.loc 1 130 0
+ 830 01c2 054B     		ldr	r3, .L32
+ 831 01c4 1B79     		ldrb	r3, [r3, #4]
+ 832 01c6 DAB2     		uxtb	r2, r3
+ 833 01c8 3B68     		ldr	r3, [r7]
+ 834 01ca 1A70     		strb	r2, [r3]
+ 131:../Sources/I2C.c **** 	Pause(50);		
+ 835              		.loc 1 131 0
+ 836 01cc 3220     		mov	r0, #50
+ 837 01ce FFF7FEFF 		bl	Pause
+ 132:../Sources/I2C.c **** }
+ 838              		.loc 1 132 0
+ 839 01d2 BD46     		mov	sp, r7
+ 840 01d4 04B0     		add	sp, sp, #16
+ 841              		@ sp needed for prologue
+ 842 01d6 80BD     		pop	{r7, pc}
+ 843              	.L33:
+ 844              		.align	2
+ 845              	.L32:
+ 846 01d8 00600640 		.word	1074159616
+ 847              		.cfi_endproc
+ 848              	.LFE3:
+ 850              		.section	.text.Pause,"ax",%progbits
+ 851              		.align	2
+ 852              		.global	Pause
+ 853              		.code	16
+ 854              		.thumb_func
+ 856              	Pause:
+ 857              	.LFB4:
+ 133:../Sources/I2C.c **** 
+ 134:../Sources/I2C.c **** void Pause(int number)
+ 135:../Sources/I2C.c **** {
+ 858              		.loc 1 135 0
+ 859              		.cfi_startproc
+ 860 0000 80B5     		push	{r7, lr}
+ 861              	.LCFI12:
+ 862              		.cfi_def_cfa_offset 8
+ 863              		.cfi_offset 7, -8
+ 864              		.cfi_offset 14, -4
+ 865 0002 84B0     		sub	sp, sp, #16
+ 866              	.LCFI13:
+ 867              		.cfi_def_cfa_offset 24
+ 868 0004 00AF     		add	r7, sp, #0
+ 869              	.LCFI14:
+ 870              		.cfi_def_cfa_register 7
+ 871 0006 7860     		str	r0, [r7, #4]
+ 136:../Sources/I2C.c **** 	int cnt;
+ 137:../Sources/I2C.c **** 	for(cnt=0; cnt<number; cnt++)
+ 872              		.loc 1 137 0
+ 873 0008 0023     		mov	r3, #0
+ 874 000a FB60     		str	r3, [r7, #12]
+ 875 000c 03E0     		b	.L35
+ 876              	.L36:
+ 138:../Sources/I2C.c **** 	{
+ 139:../Sources/I2C.c **** 		asm("nop");
+ 877              		.loc 1 139 0
+ 878              	@ 139 "../Sources/I2C.c" 1
+ 879 000e C046     		nop
+ 880              	@ 0 "" 2
+ 137:../Sources/I2C.c **** 	for(cnt=0; cnt<number; cnt++)
+ 881              		.loc 1 137 0
+ 882              		.code	16
+ 883 0010 FB68     		ldr	r3, [r7, #12]
+ 884 0012 0133     		add	r3, r3, #1
+ 885 0014 FB60     		str	r3, [r7, #12]
+ 886              	.L35:
+ 137:../Sources/I2C.c **** 	for(cnt=0; cnt<number; cnt++)
+ 887              		.loc 1 137 0 is_stmt 0
+ 888 0016 FA68     		ldr	r2, [r7, #12]
+ 889 0018 7B68     		ldr	r3, [r7, #4]
+ 890 001a 9A42     		cmp	r2, r3
+ 891 001c F7DB     		blt	.L36
+ 140:../Sources/I2C.c **** 	};
+ 141:../Sources/I2C.c **** }
+ 892              		.loc 1 141 0 is_stmt 1
+ 893 001e BD46     		mov	sp, r7
+ 894 0020 04B0     		add	sp, sp, #16
+ 895              		@ sp needed for prologue
+ 896 0022 80BD     		pop	{r7, pc}
+ 897              		.cfi_endproc
+ 898              	.LFE4:
+ 900              		.text
+ 901              	.Letext0:
+ 902              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+ 903              		.file 3 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
+ 904              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/derivative.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 I2C.c
+                            *COM*:00000001 PrintReady
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:19     .text.I2C_WriteRegister:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:24     .text.I2C_WriteRegister:00000000 I2C_WriteRegister
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:856    .text.Pause:00000000 Pause
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:162    .text.I2C_WriteRegister:000000d4 $d
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:167    .text.I2C_WriteMultipleRegister:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:172    .text.I2C_WriteMultipleRegister:00000000 I2C_WriteMultipleRegister
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:330    .text.I2C_WriteMultipleRegister:000000f4 $d
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:335    .text.I2C_ReadRegister:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:340    .text.I2C_ReadRegister:00000000 I2C_ReadRegister
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:545    .text.I2C_ReadRegister:0000014c $d
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:550    .text.I2C_ReadMultiRegisters:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:555    .text.I2C_ReadMultiRegisters:00000000 I2C_ReadMultiRegisters
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:846    .text.I2C_ReadMultiRegisters:000001d8 $d
+C:\Users\David\AppData\Local\Temp\ccwG1cyd.s:851    .text.Pause:00000000 $t
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

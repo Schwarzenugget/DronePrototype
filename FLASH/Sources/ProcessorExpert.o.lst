@@ -1,0 +1,784 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"ProcessorExpert.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	AccReady,1,1
+  18              		.comm	PrintReady,1,1
+  19              		.comm	AccData,6,4
+  20              		.comm	Xout_14_bit,2,2
+  21              		.comm	Yout_14_bit,2,2
+  22              		.comm	Zout_14_bit,2,2
+  23              		.comm	Zout_g,4,4
+  24              		.comm	Xoffset,1,1
+  25              		.comm	Yoffset,1,1
+  26              		.comm	Zoffset,1,1
+  27              		.comm	cm,2,2
+  28              		.section	.text.Measure_Distance,"ax",%progbits
+  29              		.align	2
+  30              		.global	Measure_Distance
+  31              		.code	16
+  32              		.thumb_func
+  34              	Measure_Distance:
+  35              	.LFB0:
+  36              		.file 1 "../Sources/ProcessorExpert.c"
+   1:../Sources/ProcessorExpert.c **** /* Including needed modules to compile this module/procedure */
+   2:../Sources/ProcessorExpert.c **** #include "global.h"
+   3:../Sources/ProcessorExpert.c **** #include <MKL25Z4.h>
+   4:../Sources/ProcessorExpert.c **** #include "Cpu.h"
+   5:../Sources/ProcessorExpert.c **** #include "Events.h"
+   6:../Sources/ProcessorExpert.c **** #include "WAIT1.h"
+   7:../Sources/ProcessorExpert.c **** #include "TRIG.h"
+   8:../Sources/ProcessorExpert.c **** #include "LEDR.h"
+   9:../Sources/ProcessorExpert.c **** #include "LEDpin1.h"
+  10:../Sources/ProcessorExpert.c **** #include "BitIoLdd1.h"
+  11:../Sources/ProcessorExpert.c **** #include "LEDG.h"
+  12:../Sources/ProcessorExpert.c **** #include "LEDpin2.h"
+  13:../Sources/ProcessorExpert.c **** #include "BitIoLdd2.h"
+  14:../Sources/ProcessorExpert.c **** #include "Acc.h"
+  15:../Sources/ProcessorExpert.c **** #include "ExtIntLdd1.h"
+  16:../Sources/ProcessorExpert.c **** #include "ST1.h"
+  17:../Sources/ProcessorExpert.c **** #include "LEDB.h"
+  18:../Sources/ProcessorExpert.c **** #include "LEDpin3.h"
+  19:../Sources/ProcessorExpert.c **** #include "BitIoLdd3.h"
+  20:../Sources/ProcessorExpert.c **** #include "TU1.h"
+  21:../Sources/ProcessorExpert.c **** #include "MCUC1.h"
+  22:../Sources/ProcessorExpert.c **** #include "UTIL1.h"
+  23:../Sources/ProcessorExpert.c **** 
+  24:../Sources/ProcessorExpert.c **** /* Including shared modules, which are used for whole project */
+  25:../Sources/ProcessorExpert.c **** #include "PE_Types.h"
+  26:../Sources/ProcessorExpert.c **** #include "PE_Error.h"
+  27:../Sources/ProcessorExpert.c **** #include "PE_Const.h"
+  28:../Sources/ProcessorExpert.c **** #include "IO_Map.h"
+  29:../Sources/ProcessorExpert.c **** 
+  30:../Sources/ProcessorExpert.c **** /* User includes (#include below this line is not maintained by Processor Expert) */
+  31:../Sources/ProcessorExpert.c **** #include "Ultrasonic.h"
+  32:../Sources/ProcessorExpert.c **** #include "ConsoleIO.h"
+  33:../Sources/ProcessorExpert.c **** #include "derivative.h" /* include peripheral declarations */
+  34:../Sources/ProcessorExpert.c **** 
+  35:../Sources/ProcessorExpert.c **** #include "pwm.h"
+  36:../Sources/ProcessorExpert.c **** #include "PID.h"
+  37:../Sources/ProcessorExpert.c **** #include "acc.h"
+  38:../Sources/ProcessorExpert.c **** #include <stdio.h>
+  39:../Sources/ProcessorExpert.c **** #include <stdlib.h>
+  40:../Sources/ProcessorExpert.c **** #include <string.h>
+  41:../Sources/ProcessorExpert.c **** 
+  42:../Sources/ProcessorExpert.c **** /******************************************************************************
+  43:../Sources/ProcessorExpert.c **** * Pin assigment MKL25Z128
+  44:../Sources/ProcessorExpert.c **** ******************************************************************************/
+  45:../Sources/ProcessorExpert.c **** 
+  46:../Sources/ProcessorExpert.c **** /*
+  47:../Sources/ProcessorExpert.c **** 	* MOTORS
+  48:../Sources/ProcessorExpert.c **** 	* Y:PWMA - PTB0
+  49:../Sources/ProcessorExpert.c **** 	* Y:PWMB - PTB1
+  50:../Sources/ProcessorExpert.c **** 	* X:PWMA - PTB2
+  51:../Sources/ProcessorExpert.c **** 	* X:PWMB - PTB3
+  52:../Sources/ProcessorExpert.c **** 	* AIN1 - PTC2
+  53:../Sources/ProcessorExpert.c **** 	* AIN2 - PTE29
+  54:../Sources/ProcessorExpert.c **** 	* STBY - PTE20
+  55:../Sources/ProcessorExpert.c **** 	* BIN1 - PTE21
+  56:../Sources/ProcessorExpert.c **** 	* BIN2 - PTE22
+  57:../Sources/ProcessorExpert.c **** 	* 
+  58:../Sources/ProcessorExpert.c **** 	* ACCELEROMETER
+  59:../Sources/ProcessorExpert.c **** 	* PTA14 - Interrupt Acc
+  60:../Sources/ProcessorExpert.c **** 	* PTE24 - I2C Acc
+  61:../Sources/ProcessorExpert.c **** 	* PTE25 - I2C Acc
+  62:../Sources/ProcessorExpert.c **** 	* 
+  63:../Sources/ProcessorExpert.c **** 	* LED
+  64:../Sources/ProcessorExpert.c **** 	* PTB18 - Red LED
+  65:../Sources/ProcessorExpert.c **** 	* PTB19 - Green LED
+  66:../Sources/ProcessorExpert.c **** 	* PTD1 - Blue LED
+  67:../Sources/ProcessorExpert.c **** 	* 
+  68:../Sources/ProcessorExpert.c **** 	* PRINTF
+  69:../Sources/ProcessorExpert.c **** 	* PTA1 - UART 
+  70:../Sources/ProcessorExpert.c **** 	* PTA2 - UART
+  71:../Sources/ProcessorExpert.c **** 	* 
+  72:../Sources/ProcessorExpert.c **** 	* ULTRASONIC SENSOR
+  73:../Sources/ProcessorExpert.c **** 	* PTA12 - TRIGGER 
+  74:../Sources/ProcessorExpert.c **** 	* PTD4 - ECHO
+  75:../Sources/ProcessorExpert.c **** 	*/
+  76:../Sources/ProcessorExpert.c **** 
+  77:../Sources/ProcessorExpert.c **** uint16_t cm;
+  78:../Sources/ProcessorExpert.c **** 
+  79:../Sources/ProcessorExpert.c **** 
+  80:../Sources/ProcessorExpert.c **** 
+  81:../Sources/ProcessorExpert.c **** void Measure_Distance(void) {
+  37              		.loc 1 81 0
+  38              		.cfi_startproc
+  39 0000 90B5     		push	{r4, r7, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 12
+  42              		.cfi_offset 4, -12
+  43              		.cfi_offset 7, -8
+  44              		.cfi_offset 14, -4
+  45 0002 83B0     		sub	sp, sp, #12
+  46              	.LCFI1:
+  47              		.cfi_def_cfa_offset 24
+  48 0004 00AF     		add	r7, sp, #0
+  49              	.LCFI2:
+  50              		.cfi_def_cfa_register 7
+  82:../Sources/ProcessorExpert.c ****   uint16_t us;
+  83:../Sources/ProcessorExpert.c **** 
+  84:../Sources/ProcessorExpert.c ****   us = US_Measure_us();
+  51              		.loc 1 84 0
+  52 0006 BC1D     		add	r4, r7, #6
+  53 0008 FFF7FEFF 		bl	US_Measure_us
+  54 000c 031C     		mov	r3, r0
+  55 000e 2380     		strh	r3, [r4]
+  85:../Sources/ProcessorExpert.c ****   //printf("Distancia en us: %u\r\n", us);
+  86:../Sources/ProcessorExpert.c **** 
+  87:../Sources/ProcessorExpert.c ****   cm = US_usToCentimeters(us, 22);
+  56              		.loc 1 87 0
+  57 0010 BB1D     		add	r3, r7, #6
+  58 0012 1B88     		ldrh	r3, [r3]
+  59 0014 181C     		mov	r0, r3
+  60 0016 1621     		mov	r1, #22
+  61 0018 FFF7FEFF 		bl	US_usToCentimeters
+  62 001c 031C     		mov	r3, r0
+  63 001e 1A1C     		mov	r2, r3
+  64 0020 1A4B     		ldr	r3, .L8
+  65 0022 1A80     		strh	r2, [r3]
+  88:../Sources/ProcessorExpert.c ****   //printf("Distancia en cm: %u\r\n", cm);
+  89:../Sources/ProcessorExpert.c ****   
+  90:../Sources/ProcessorExpert.c ****   LEDR_Put(cm<10); /* red LED if object closer than 10 cm */
+  66              		.loc 1 90 0
+  67 0024 194B     		ldr	r3, .L8
+  68 0026 1B88     		ldrh	r3, [r3]
+  69 0028 092B     		cmp	r3, #9
+  70 002a 05D8     		bhi	.L2
+  71              		.loc 1 90 0 is_stmt 0
+  72 002c 184B     		ldr	r3, .L8+4
+  73 002e 5B69     		ldr	r3, [r3, #20]
+  74 0030 181C     		mov	r0, r3
+  75 0032 FFF7FEFF 		bl	BitIoLdd3_ClrVal
+  76 0036 04E0     		b	.L3
+  77              	.L2:
+  78              		.loc 1 90 0
+  79 0038 154B     		ldr	r3, .L8+4
+  80 003a 5B69     		ldr	r3, [r3, #20]
+  81 003c 181C     		mov	r0, r3
+  82 003e FFF7FEFF 		bl	BitIoLdd3_SetVal
+  83              	.L3:
+  91:../Sources/ProcessorExpert.c ****   LEDB_Put(cm>=10&&cm<=100); /* blue LED if object is in 10..100 cm range */
+  84              		.loc 1 91 0 is_stmt 1
+  85 0042 124B     		ldr	r3, .L8
+  86 0044 1B88     		ldrh	r3, [r3]
+  87 0046 092B     		cmp	r3, #9
+  88 0048 09D9     		bls	.L4
+  89              		.loc 1 91 0 is_stmt 0
+  90 004a 104B     		ldr	r3, .L8
+  91 004c 1B88     		ldrh	r3, [r3]
+  92 004e 642B     		cmp	r3, #100
+  93 0050 05D8     		bhi	.L4
+  94              		.loc 1 91 0
+  95 0052 0F4B     		ldr	r3, .L8+4
+  96 0054 DB68     		ldr	r3, [r3, #12]
+  97 0056 181C     		mov	r0, r3
+  98 0058 FFF7FEFF 		bl	BitIoLdd2_ClrVal
+  99 005c 04E0     		b	.L5
+ 100              	.L4:
+ 101              		.loc 1 91 0
+ 102 005e 0C4B     		ldr	r3, .L8+4
+ 103 0060 DB68     		ldr	r3, [r3, #12]
+ 104 0062 181C     		mov	r0, r3
+ 105 0064 FFF7FEFF 		bl	BitIoLdd2_SetVal
+ 106              	.L5:
+  92:../Sources/ProcessorExpert.c ****   LEDG_Put(cm>100); /* green LED if farther than 100 cm */
+ 107              		.loc 1 92 0 is_stmt 1
+ 108 0068 084B     		ldr	r3, .L8
+ 109 006a 1B88     		ldrh	r3, [r3]
+ 110 006c 642B     		cmp	r3, #100
+ 111 006e 05D9     		bls	.L6
+ 112              		.loc 1 92 0 is_stmt 0
+ 113 0070 074B     		ldr	r3, .L8+4
+ 114 0072 9B68     		ldr	r3, [r3, #8]
+ 115 0074 181C     		mov	r0, r3
+ 116 0076 FFF7FEFF 		bl	BitIoLdd1_ClrVal
+ 117 007a 04E0     		b	.L1
+ 118              	.L6:
+ 119              		.loc 1 92 0
+ 120 007c 044B     		ldr	r3, .L8+4
+ 121 007e 9B68     		ldr	r3, [r3, #8]
+ 122 0080 181C     		mov	r0, r3
+ 123 0082 FFF7FEFF 		bl	BitIoLdd1_SetVal
+ 124              	.L1:
+  93:../Sources/ProcessorExpert.c **** 
+  94:../Sources/ProcessorExpert.c **** }
+ 125              		.loc 1 94 0 is_stmt 1
+ 126 0086 BD46     		mov	sp, r7
+ 127 0088 03B0     		add	sp, sp, #12
+ 128              		@ sp needed for prologue
+ 129 008a 90BD     		pop	{r4, r7, pc}
+ 130              	.L9:
+ 131              		.align	2
+ 132              	.L8:
+ 133 008c 00000000 		.word	cm
+ 134 0090 00000000 		.word	PE_LDD_DeviceDataList
+ 135              		.cfi_endproc
+ 136              	.LFE0:
+ 138              		.global	__aeabi_f2d
+ 139              		.section	.rodata
+ 140              		.align	2
+ 141              	.LC5:
+ 142 0000 25642C25 		.ascii	"%d,%.6f,%.6f, %u\015\012\000"
+ 142      2E36662C 
+ 142      252E3666 
+ 142      2C202575 
+ 142      0D0A00
+ 143 0013 00       		.section	.text.main,"ax",%progbits
+ 144              		.align	2
+ 145              		.global	main
+ 146              		.code	16
+ 147              		.thumb_func
+ 149              	main:
+ 150              	.LFB1:
+  95:../Sources/ProcessorExpert.c **** 
+  96:../Sources/ProcessorExpert.c **** 
+  97:../Sources/ProcessorExpert.c **** int main(void)
+  98:../Sources/ProcessorExpert.c **** {
+ 151              		.loc 1 98 0
+ 152              		.cfi_startproc
+ 153 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 154              	.LCFI3:
+ 155              		.cfi_def_cfa_offset 20
+ 156              		.cfi_offset 4, -20
+ 157              		.cfi_offset 5, -16
+ 158              		.cfi_offset 6, -12
+ 159              		.cfi_offset 7, -8
+ 160              		.cfi_offset 14, -4
+ 161 0002 DDB0     		sub	sp, sp, #372
+ 162              	.LCFI4:
+ 163              		.cfi_def_cfa_offset 392
+ 164 0004 06AF     		add	r7, sp, #24
+ 165              	.LCFI5:
+ 166              		.cfi_def_cfa 7, 368
+  99:../Sources/ProcessorExpert.c ****   /*** Processor Expert internal initialization. DON'T REMOVE THIS CODE!!! ***/
+ 100:../Sources/ProcessorExpert.c ****   PE_low_level_init();
+ 167              		.loc 1 100 0
+ 168 0006 FFF7FEFF 		bl	PE_low_level_init
+ 101:../Sources/ProcessorExpert.c ****   /*** End of Processor Expert internal initialization.                    ***/
+ 102:../Sources/ProcessorExpert.c **** 
+ 103:../Sources/ProcessorExpert.c ****   /* Write your code here */
+ 104:../Sources/ProcessorExpert.c **** 	/**************
+ 105:../Sources/ProcessorExpert.c **** 	* Accelerometer Init
+ 106:../Sources/ProcessorExpert.c **** 	***************/
+ 107:../Sources/ProcessorExpert.c **** 	AccReady = 0;
+ 169              		.loc 1 107 0
+ 170 000a AA4B     		ldr	r3, .L16
+ 171 000c 0022     		mov	r2, #0
+ 172 000e 1A70     		strb	r2, [r3]
+ 108:../Sources/ProcessorExpert.c **** 	MCU_Init();
+ 173              		.loc 1 108 0
+ 174 0010 FFF7FEFF 		bl	MCU_Init
+ 109:../Sources/ProcessorExpert.c **** 	Accelerometer_Init();
+ 175              		.loc 1 109 0
+ 176 0014 FFF7FEFF 		bl	Accelerometer_Init
+ 110:../Sources/ProcessorExpert.c **** 	Calibrate();  
+ 177              		.loc 1 110 0
+ 178 0018 FFF7FEFF 		bl	Calibrate
+ 111:../Sources/ProcessorExpert.c **** 	
+ 112:../Sources/ProcessorExpert.c **** 	/**************
+ 113:../Sources/ProcessorExpert.c **** 	* PWM Init
+ 114:../Sources/ProcessorExpert.c **** 	**************/
+ 115:../Sources/ProcessorExpert.c **** 	PWM_Motors_Init();
+ 179              		.loc 1 115 0
+ 180 001c FFF7FEFF 		bl	PWM_Motors_Init
+ 116:../Sources/ProcessorExpert.c **** 	
+ 117:../Sources/ProcessorExpert.c **** 	/**************
+ 118:../Sources/ProcessorExpert.c **** 	* Ultrasonic sensor
+ 119:../Sources/ProcessorExpert.c **** 	**************/
+ 120:../Sources/ProcessorExpert.c **** 	US_Init();
+ 181              		.loc 1 120 0
+ 182 0020 FFF7FEFF 		bl	US_Init
+ 121:../Sources/ProcessorExpert.c **** 	
+ 122:../Sources/ProcessorExpert.c **** 	/**************
+ 123:../Sources/ProcessorExpert.c **** 	* Serial Communication Init
+ 124:../Sources/ProcessorExpert.c **** 	***************/
+ 125:../Sources/ProcessorExpert.c **** 	PrintReady = 0;
+ 183              		.loc 1 125 0
+ 184 0024 A44B     		ldr	r3, .L16+4
+ 185 0026 0022     		mov	r2, #0
+ 186 0028 1A70     		strb	r2, [r3]
+ 126:../Sources/ProcessorExpert.c **** 	int count = 0;
+ 187              		.loc 1 126 0
+ 188 002a 0023     		mov	r3, #0
+ 189 002c AA21     		mov	r1, #170
+ 190 002e 4900     		lsl	r1, r1, #1
+ 191 0030 C919     		add	r1, r1, r7
+ 192 0032 0B60     		str	r3, [r1]
+ 127:../Sources/ProcessorExpert.c **** 	ConsoleIO_Init();
+ 193              		.loc 1 127 0
+ 194 0034 FFF7FEFF 		bl	ConsoleIO_Init
+ 128:../Sources/ProcessorExpert.c **** 	//SysTick_Init();
+ 129:../Sources/ProcessorExpert.c **** 	
+ 130:../Sources/ProcessorExpert.c **** 	/**************
+ 131:../Sources/ProcessorExpert.c **** 	PID init
+ 132:../Sources/ProcessorExpert.c **** 	**************/
+ 133:../Sources/ProcessorExpert.c **** 	Axis2D Input_g; 
+ 134:../Sources/ProcessorExpert.c **** 	Axis2D Target_g = {0.0,0.0};
+ 195              		.loc 1 134 0
+ 196 0038 9C22     		mov	r2, #156
+ 197 003a 5200     		lsl	r2, r2, #1
+ 198 003c BB18     		add	r3, r7, r2
+ 199 003e 0022     		mov	r2, #0
+ 200 0040 1A60     		str	r2, [r3]
+ 201 0042 9C24     		mov	r4, #156
+ 202 0044 6400     		lsl	r4, r4, #1
+ 203 0046 3B19     		add	r3, r7, r4
+ 204 0048 0022     		mov	r2, #0
+ 205 004a 5A60     		str	r2, [r3, #4]
+ 135:../Sources/ProcessorExpert.c **** 	Motors Output_pwm;
+ 136:../Sources/ProcessorExpert.c **** 	PID XaxisA, XaxisB, YaxisA, YaxisB;
+ 137:../Sources/ProcessorExpert.c **** 	/*Specify initial tuning parameters*/
+ 138:../Sources/ProcessorExpert.c **** 	float Kp=50000, Ki=0, Kd=0; //0,2000,400
+ 206              		.loc 1 138 0
+ 207 004c 9B4B     		ldr	r3, .L16+8
+ 208 004e A825     		mov	r5, #168
+ 209 0050 6D00     		lsl	r5, r5, #1
+ 210 0052 ED19     		add	r5, r5, r7
+ 211 0054 2B60     		str	r3, [r5]
+ 212 0056 0023     		mov	r3, #0
+ 213 0058 A621     		mov	r1, #166
+ 214 005a 4900     		lsl	r1, r1, #1
+ 215 005c C919     		add	r1, r1, r7
+ 216 005e 0B60     		str	r3, [r1]
+ 217 0060 0023     		mov	r3, #0
+ 218 0062 A422     		mov	r2, #164
+ 219 0064 5200     		lsl	r2, r2, #1
+ 220 0066 D219     		add	r2, r2, r7
+ 221 0068 1360     		str	r3, [r2]
+ 139:../Sources/ProcessorExpert.c **** 	/* Init Axis Y PID*/
+ 140:../Sources/ProcessorExpert.c **** 	PID_Init(&XaxisA, &Input_g.X, &Output_pwm.XA, &Target_g.X, Kp, Ki, Kd, P_ON_E,DIRECT);
+ 222              		.loc 1 140 0
+ 223 006a 381C     		mov	r0, r7
+ 224 006c E030     		add	r0, r0, #224
+ 225 006e A023     		mov	r3, #160
+ 226 0070 5B00     		lsl	r3, r3, #1
+ 227 0072 F918     		add	r1, r7, r3
+ 228 0074 9424     		mov	r4, #148
+ 229 0076 6400     		lsl	r4, r4, #1
+ 230 0078 3A19     		add	r2, r7, r4
+ 231 007a 9C25     		mov	r5, #156
+ 232 007c 6D00     		lsl	r5, r5, #1
+ 233 007e 7B19     		add	r3, r7, r5
+ 234 0080 A825     		mov	r5, #168
+ 235 0082 6D00     		lsl	r5, r5, #1
+ 236 0084 ED19     		add	r5, r5, r7
+ 237 0086 2C68     		ldr	r4, [r5]
+ 238 0088 0094     		str	r4, [sp]
+ 239 008a A625     		mov	r5, #166
+ 240 008c 6D00     		lsl	r5, r5, #1
+ 241 008e ED19     		add	r5, r5, r7
+ 242 0090 2C68     		ldr	r4, [r5]
+ 243 0092 0194     		str	r4, [sp, #4]
+ 244 0094 A425     		mov	r5, #164
+ 245 0096 6D00     		lsl	r5, r5, #1
+ 246 0098 ED19     		add	r5, r5, r7
+ 247 009a 2C68     		ldr	r4, [r5]
+ 248 009c 0294     		str	r4, [sp, #8]
+ 249 009e 0124     		mov	r4, #1
+ 250 00a0 0394     		str	r4, [sp, #12]
+ 251 00a2 0024     		mov	r4, #0
+ 252 00a4 0494     		str	r4, [sp, #16]
+ 253 00a6 FFF7FEFF 		bl	PID_Init
+ 141:../Sources/ProcessorExpert.c **** 	PID_Init(&YaxisA, &Input_g.Y, &Output_pwm.YA, &Target_g.Y, Kp, Ki, Kd, P_ON_E,REVERSE);
+ 254              		.loc 1 141 0
+ 255 00aa 381C     		mov	r0, r7
+ 256 00ac 5030     		add	r0, r0, #80
+ 257 00ae A021     		mov	r1, #160
+ 258 00b0 4900     		lsl	r1, r1, #1
+ 259 00b2 7B18     		add	r3, r7, r1
+ 260 00b4 191D     		add	r1, r3, #4
+ 261 00b6 9422     		mov	r2, #148
+ 262 00b8 5200     		lsl	r2, r2, #1
+ 263 00ba BB18     		add	r3, r7, r2
+ 264 00bc 1A1C     		mov	r2, r3
+ 265 00be 0832     		add	r2, r2, #8
+ 266 00c0 9C24     		mov	r4, #156
+ 267 00c2 6400     		lsl	r4, r4, #1
+ 268 00c4 3B19     		add	r3, r7, r4
+ 269 00c6 0433     		add	r3, r3, #4
+ 270 00c8 A825     		mov	r5, #168
+ 271 00ca 6D00     		lsl	r5, r5, #1
+ 272 00cc ED19     		add	r5, r5, r7
+ 273 00ce 2C68     		ldr	r4, [r5]
+ 274 00d0 0094     		str	r4, [sp]
+ 275 00d2 A625     		mov	r5, #166
+ 276 00d4 6D00     		lsl	r5, r5, #1
+ 277 00d6 ED19     		add	r5, r5, r7
+ 278 00d8 2C68     		ldr	r4, [r5]
+ 279 00da 0194     		str	r4, [sp, #4]
+ 280 00dc A425     		mov	r5, #164
+ 281 00de 6D00     		lsl	r5, r5, #1
+ 282 00e0 ED19     		add	r5, r5, r7
+ 283 00e2 2C68     		ldr	r4, [r5]
+ 284 00e4 0294     		str	r4, [sp, #8]
+ 285 00e6 0124     		mov	r4, #1
+ 286 00e8 0394     		str	r4, [sp, #12]
+ 287 00ea 0124     		mov	r4, #1
+ 288 00ec 0494     		str	r4, [sp, #16]
+ 289 00ee FFF7FEFF 		bl	PID_Init
+ 142:../Sources/ProcessorExpert.c **** 	PID_Init(&XaxisB, &Input_g.X, &Output_pwm.XB, &Target_g.X, Kp, Ki, Kd, P_ON_E,REVERSE);
+ 290              		.loc 1 142 0
+ 291 00f2 381C     		mov	r0, r7
+ 292 00f4 9830     		add	r0, r0, #152
+ 293 00f6 A022     		mov	r2, #160
+ 294 00f8 5200     		lsl	r2, r2, #1
+ 295 00fa B918     		add	r1, r7, r2
+ 296 00fc 9424     		mov	r4, #148
+ 297 00fe 6400     		lsl	r4, r4, #1
+ 298 0100 3B19     		add	r3, r7, r4
+ 299 0102 1A1D     		add	r2, r3, #4
+ 300 0104 9C25     		mov	r5, #156
+ 301 0106 6D00     		lsl	r5, r5, #1
+ 302 0108 7B19     		add	r3, r7, r5
+ 303 010a A825     		mov	r5, #168
+ 304 010c 6D00     		lsl	r5, r5, #1
+ 305 010e ED19     		add	r5, r5, r7
+ 306 0110 2C68     		ldr	r4, [r5]
+ 307 0112 0094     		str	r4, [sp]
+ 308 0114 A625     		mov	r5, #166
+ 309 0116 6D00     		lsl	r5, r5, #1
+ 310 0118 ED19     		add	r5, r5, r7
+ 311 011a 2C68     		ldr	r4, [r5]
+ 312 011c 0194     		str	r4, [sp, #4]
+ 313 011e A425     		mov	r5, #164
+ 314 0120 6D00     		lsl	r5, r5, #1
+ 315 0122 ED19     		add	r5, r5, r7
+ 316 0124 2C68     		ldr	r4, [r5]
+ 317 0126 0294     		str	r4, [sp, #8]
+ 318 0128 0124     		mov	r4, #1
+ 319 012a 0394     		str	r4, [sp, #12]
+ 320 012c 0124     		mov	r4, #1
+ 321 012e 0494     		str	r4, [sp, #16]
+ 322 0130 FFF7FEFF 		bl	PID_Init
+ 143:../Sources/ProcessorExpert.c **** 	PID_Init(&YaxisB, &Input_g.Y, &Output_pwm.YB, &Target_g.Y, Kp, Ki, Kd, P_ON_E,DIRECT);
+ 323              		.loc 1 143 0
+ 324 0134 381C     		mov	r0, r7
+ 325 0136 0830     		add	r0, r0, #8
+ 326 0138 A021     		mov	r1, #160
+ 327 013a 4900     		lsl	r1, r1, #1
+ 328 013c 7B18     		add	r3, r7, r1
+ 329 013e 191D     		add	r1, r3, #4
+ 330 0140 9422     		mov	r2, #148
+ 331 0142 5200     		lsl	r2, r2, #1
+ 332 0144 BB18     		add	r3, r7, r2
+ 333 0146 1A1C     		mov	r2, r3
+ 334 0148 0C32     		add	r2, r2, #12
+ 335 014a 9C24     		mov	r4, #156
+ 336 014c 6400     		lsl	r4, r4, #1
+ 337 014e 3B19     		add	r3, r7, r4
+ 338 0150 0433     		add	r3, r3, #4
+ 339 0152 A825     		mov	r5, #168
+ 340 0154 6D00     		lsl	r5, r5, #1
+ 341 0156 ED19     		add	r5, r5, r7
+ 342 0158 2C68     		ldr	r4, [r5]
+ 343 015a 0094     		str	r4, [sp]
+ 344 015c A625     		mov	r5, #166
+ 345 015e 6D00     		lsl	r5, r5, #1
+ 346 0160 ED19     		add	r5, r5, r7
+ 347 0162 2C68     		ldr	r4, [r5]
+ 348 0164 0194     		str	r4, [sp, #4]
+ 349 0166 A425     		mov	r5, #164
+ 350 0168 6D00     		lsl	r5, r5, #1
+ 351 016a ED19     		add	r5, r5, r7
+ 352 016c 2C68     		ldr	r4, [r5]
+ 353 016e 0294     		str	r4, [sp, #8]
+ 354 0170 0124     		mov	r4, #1
+ 355 0172 0394     		str	r4, [sp, #12]
+ 356 0174 0024     		mov	r4, #0
+ 357 0176 0494     		str	r4, [sp, #16]
+ 358 0178 FFF7FEFF 		bl	PID_Init
+ 144:../Sources/ProcessorExpert.c **** 	
+ 145:../Sources/ProcessorExpert.c **** 	while(!AccReady){}; //Read Accelerometer to init PID
+ 359              		.loc 1 145 0
+ 360 017c C046     		mov	r8, r8
+ 361              	.L11:
+ 362              		.loc 1 145 0 is_stmt 0
+ 363 017e 4D4B     		ldr	r3, .L16
+ 364 0180 1B78     		ldrb	r3, [r3]
+ 365 0182 002B     		cmp	r3, #0
+ 366 0184 FBD0     		beq	.L11
+ 146:../Sources/ProcessorExpert.c **** 	AccReadValues(&Input_g.X, &Input_g.Y);
+ 367              		.loc 1 146 0 is_stmt 1
+ 368 0186 A021     		mov	r1, #160
+ 369 0188 4900     		lsl	r1, r1, #1
+ 370 018a 7A18     		add	r2, r7, r1
+ 371 018c A024     		mov	r4, #160
+ 372 018e 6400     		lsl	r4, r4, #1
+ 373 0190 3B19     		add	r3, r7, r4
+ 374 0192 0433     		add	r3, r3, #4
+ 375 0194 101C     		mov	r0, r2
+ 376 0196 191C     		mov	r1, r3
+ 377 0198 FFF7FEFF 		bl	AccReadValues
+ 147:../Sources/ProcessorExpert.c **** 	AccReady = 0;
+ 378              		.loc 1 147 0
+ 379 019c 454B     		ldr	r3, .L16
+ 380 019e 0022     		mov	r2, #0
+ 381 01a0 1A70     		strb	r2, [r3]
+ 148:../Sources/ProcessorExpert.c **** 	
+ 149:../Sources/ProcessorExpert.c **** 	/*Turn On PID*/
+ 150:../Sources/ProcessorExpert.c **** 	PID_SetMode(&XaxisA, AUTOMATIC);
+ 382              		.loc 1 150 0
+ 383 01a2 3B1C     		mov	r3, r7
+ 384 01a4 E033     		add	r3, r3, #224
+ 385 01a6 181C     		mov	r0, r3
+ 386 01a8 0121     		mov	r1, #1
+ 387 01aa FFF7FEFF 		bl	PID_SetMode
+ 151:../Sources/ProcessorExpert.c **** 	PID_SetMode(&XaxisB, AUTOMATIC);
+ 388              		.loc 1 151 0
+ 389 01ae 3B1C     		mov	r3, r7
+ 390 01b0 9833     		add	r3, r3, #152
+ 391 01b2 181C     		mov	r0, r3
+ 392 01b4 0121     		mov	r1, #1
+ 393 01b6 FFF7FEFF 		bl	PID_SetMode
+ 152:../Sources/ProcessorExpert.c **** 	PID_SetMode(&YaxisA, AUTOMATIC);
+ 394              		.loc 1 152 0
+ 395 01ba 3B1C     		mov	r3, r7
+ 396 01bc 5033     		add	r3, r3, #80
+ 397 01be 181C     		mov	r0, r3
+ 398 01c0 0121     		mov	r1, #1
+ 399 01c2 FFF7FEFF 		bl	PID_SetMode
+ 153:../Sources/ProcessorExpert.c **** 	PID_SetMode(&YaxisB, AUTOMATIC);
+ 400              		.loc 1 153 0
+ 401 01c6 3B1C     		mov	r3, r7
+ 402 01c8 0833     		add	r3, r3, #8
+ 403 01ca 181C     		mov	r0, r3
+ 404 01cc 0121     		mov	r1, #1
+ 405 01ce FFF7FEFF 		bl	PID_SetMode
+ 406 01d2 00E0     		b	.L14
+ 407              	.L15:
+ 154:../Sources/ProcessorExpert.c **** 	
+ 155:../Sources/ProcessorExpert.c **** 	
+ 156:../Sources/ProcessorExpert.c **** 	while(1)
+ 157:../Sources/ProcessorExpert.c ****   {
+ 158:../Sources/ProcessorExpert.c **** 
+ 159:../Sources/ProcessorExpert.c **** 		if (AccReady)		// Is a new set of data ready? 
+ 160:../Sources/ProcessorExpert.c **** 		{  		
+ 161:../Sources/ProcessorExpert.c **** 			AccReady = 0;
+ 162:../Sources/ProcessorExpert.c **** 																	
+ 163:../Sources/ProcessorExpert.c **** 			AccReadValues(&Input_g.X, &Input_g.Y);
+ 164:../Sources/ProcessorExpert.c **** 			Measure_Distance();
+ 165:../Sources/ProcessorExpert.c **** 
+ 166:../Sources/ProcessorExpert.c **** 			PID_Compute(&XaxisA); //PID computing
+ 167:../Sources/ProcessorExpert.c **** 			PID_Compute(&YaxisA); //PID computing
+ 168:../Sources/ProcessorExpert.c **** 			PID_Compute(&XaxisB);
+ 169:../Sources/ProcessorExpert.c **** 			PID_Compute(&YaxisB);
+ 170:../Sources/ProcessorExpert.c **** 
+ 171:../Sources/ProcessorExpert.c **** 			PWM_Motor_Duty_Cycle(Output_pwm.XA, Output_pwm.XB, Output_pwm.YA, Output_pwm.YB);
+ 172:../Sources/ProcessorExpert.c **** 						
+ 173:../Sources/ProcessorExpert.c **** 		} 
+ 174:../Sources/ProcessorExpert.c **** 		if (PrintReady){
+ 175:../Sources/ProcessorExpert.c **** 			PrintReady = 0;
+ 176:../Sources/ProcessorExpert.c **** 			count++;
+ 177:../Sources/ProcessorExpert.c **** 			printf("%d,%.6f,%.6f, %u\r\n", count, Input_g.X, Input_g.Y, cm);
+ 178:../Sources/ProcessorExpert.c **** 			
+ 179:../Sources/ProcessorExpert.c **** 		}
+ 180:../Sources/ProcessorExpert.c **** 		
+ 181:../Sources/ProcessorExpert.c **** 	}
+ 408              		.loc 1 181 0
+ 409 01d4 C046     		mov	r8, r8
+ 410              	.L14:
+ 159:../Sources/ProcessorExpert.c **** 		if (AccReady)		// Is a new set of data ready? 
+ 411              		.loc 1 159 0
+ 412 01d6 374B     		ldr	r3, .L16
+ 413 01d8 1B78     		ldrb	r3, [r3]
+ 414 01da 002B     		cmp	r3, #0
+ 415 01dc 35D0     		beq	.L12
+ 161:../Sources/ProcessorExpert.c **** 			AccReady = 0;
+ 416              		.loc 1 161 0
+ 417 01de 354B     		ldr	r3, .L16
+ 418 01e0 0022     		mov	r2, #0
+ 419 01e2 1A70     		strb	r2, [r3]
+ 163:../Sources/ProcessorExpert.c **** 			AccReadValues(&Input_g.X, &Input_g.Y);
+ 420              		.loc 1 163 0
+ 421 01e4 A025     		mov	r5, #160
+ 422 01e6 6D00     		lsl	r5, r5, #1
+ 423 01e8 7A19     		add	r2, r7, r5
+ 424 01ea A021     		mov	r1, #160
+ 425 01ec 4900     		lsl	r1, r1, #1
+ 426 01ee 7B18     		add	r3, r7, r1
+ 427 01f0 0433     		add	r3, r3, #4
+ 428 01f2 101C     		mov	r0, r2
+ 429 01f4 191C     		mov	r1, r3
+ 430 01f6 FFF7FEFF 		bl	AccReadValues
+ 164:../Sources/ProcessorExpert.c **** 			Measure_Distance();
+ 431              		.loc 1 164 0
+ 432 01fa FFF7FEFF 		bl	Measure_Distance
+ 166:../Sources/ProcessorExpert.c **** 			PID_Compute(&XaxisA); //PID computing
+ 433              		.loc 1 166 0
+ 434 01fe 3B1C     		mov	r3, r7
+ 435 0200 E033     		add	r3, r3, #224
+ 436 0202 181C     		mov	r0, r3
+ 437 0204 FFF7FEFF 		bl	PID_Compute
+ 167:../Sources/ProcessorExpert.c **** 			PID_Compute(&YaxisA); //PID computing
+ 438              		.loc 1 167 0
+ 439 0208 3B1C     		mov	r3, r7
+ 440 020a 5033     		add	r3, r3, #80
+ 441 020c 181C     		mov	r0, r3
+ 442 020e FFF7FEFF 		bl	PID_Compute
+ 168:../Sources/ProcessorExpert.c **** 			PID_Compute(&XaxisB);
+ 443              		.loc 1 168 0
+ 444 0212 3B1C     		mov	r3, r7
+ 445 0214 9833     		add	r3, r3, #152
+ 446 0216 181C     		mov	r0, r3
+ 447 0218 FFF7FEFF 		bl	PID_Compute
+ 169:../Sources/ProcessorExpert.c **** 			PID_Compute(&YaxisB);
+ 448              		.loc 1 169 0
+ 449 021c 3B1C     		mov	r3, r7
+ 450 021e 0833     		add	r3, r3, #8
+ 451 0220 181C     		mov	r0, r3
+ 452 0222 FFF7FEFF 		bl	PID_Compute
+ 171:../Sources/ProcessorExpert.c **** 			PWM_Motor_Duty_Cycle(Output_pwm.XA, Output_pwm.XB, Output_pwm.YA, Output_pwm.YB);
+ 453              		.loc 1 171 0
+ 454 0226 9422     		mov	r2, #148
+ 455 0228 5200     		lsl	r2, r2, #1
+ 456 022a BB18     		add	r3, r7, r2
+ 457 022c 1868     		ldr	r0, [r3]
+ 458 022e 9424     		mov	r4, #148
+ 459 0230 6400     		lsl	r4, r4, #1
+ 460 0232 3B19     		add	r3, r7, r4
+ 461 0234 5968     		ldr	r1, [r3, #4]
+ 462 0236 9425     		mov	r5, #148
+ 463 0238 6D00     		lsl	r5, r5, #1
+ 464 023a 7B19     		add	r3, r7, r5
+ 465 023c 9A68     		ldr	r2, [r3, #8]
+ 466 023e 9424     		mov	r4, #148
+ 467 0240 6400     		lsl	r4, r4, #1
+ 468 0242 3B19     		add	r3, r7, r4
+ 469 0244 DB68     		ldr	r3, [r3, #12]
+ 470 0246 FFF7FEFF 		bl	PWM_Motor_Duty_Cycle
+ 471              	.L12:
+ 174:../Sources/ProcessorExpert.c **** 		if (PrintReady){
+ 472              		.loc 1 174 0
+ 473 024a 1B4B     		ldr	r3, .L16+4
+ 474 024c 1B78     		ldrb	r3, [r3]
+ 475 024e 002B     		cmp	r3, #0
+ 476 0250 C0D0     		beq	.L15
+ 175:../Sources/ProcessorExpert.c **** 			PrintReady = 0;
+ 477              		.loc 1 175 0
+ 478 0252 194B     		ldr	r3, .L16+4
+ 479 0254 0022     		mov	r2, #0
+ 480 0256 1A70     		strb	r2, [r3]
+ 176:../Sources/ProcessorExpert.c **** 			count++;
+ 481              		.loc 1 176 0
+ 482 0258 AA25     		mov	r5, #170
+ 483 025a 6D00     		lsl	r5, r5, #1
+ 484 025c ED19     		add	r5, r5, r7
+ 485 025e 2B68     		ldr	r3, [r5]
+ 486 0260 0133     		add	r3, r3, #1
+ 487 0262 AA21     		mov	r1, #170
+ 488 0264 4900     		lsl	r1, r1, #1
+ 489 0266 C919     		add	r1, r1, r7
+ 490 0268 0B60     		str	r3, [r1]
+ 177:../Sources/ProcessorExpert.c **** 			printf("%d,%.6f,%.6f, %u\r\n", count, Input_g.X, Input_g.Y, cm);
+ 491              		.loc 1 177 0
+ 492 026a A022     		mov	r2, #160
+ 493 026c 5200     		lsl	r2, r2, #1
+ 494 026e BB18     		add	r3, r7, r2
+ 495 0270 1B68     		ldr	r3, [r3]
+ 496 0272 181C     		add	r0, r3, #0
+ 497 0274 FFF7FEFF 		bl	__aeabi_f2d
+ 498 0278 041C     		mov	r4, r0
+ 499 027a 0D1C     		mov	r5, r1
+ 500 027c A021     		mov	r1, #160
+ 501 027e 4900     		lsl	r1, r1, #1
+ 502 0280 7B18     		add	r3, r7, r1
+ 503 0282 5B68     		ldr	r3, [r3, #4]
+ 504 0284 181C     		add	r0, r3, #0
+ 505 0286 FFF7FEFF 		bl	__aeabi_f2d
+ 506 028a 3860     		str	r0, [r7]
+ 507 028c 7960     		str	r1, [r7, #4]
+ 508 028e 0C49     		ldr	r1, .L16+12
+ 509 0290 0988     		ldrh	r1, [r1]
+ 510 0292 0E1C     		mov	r6, r1
+ 511 0294 0B48     		ldr	r0, .L16+16
+ 512 0296 AA22     		mov	r2, #170
+ 513 0298 5200     		lsl	r2, r2, #1
+ 514 029a D219     		add	r2, r2, r7
+ 515 029c 1168     		ldr	r1, [r2]
+ 516 029e 3A68     		ldr	r2, [r7]
+ 517 02a0 7B68     		ldr	r3, [r7, #4]
+ 518 02a2 0092     		str	r2, [sp]
+ 519 02a4 0193     		str	r3, [sp, #4]
+ 520 02a6 0296     		str	r6, [sp, #8]
+ 521 02a8 221C     		mov	r2, r4
+ 522 02aa 2B1C     		mov	r3, r5
+ 523 02ac FFF7FEFF 		bl	printf
+ 524              		.loc 1 181 0
+ 525 02b0 90E7     		b	.L15
+ 526              	.L17:
+ 527 02b2 C046     		.align	2
+ 528              	.L16:
+ 529 02b4 00000000 		.word	AccReady
+ 530 02b8 00000000 		.word	PrintReady
+ 531 02bc 00504347 		.word	1195593728
+ 532 02c0 00000000 		.word	cm
+ 533 02c4 00000000 		.word	.LC5
+ 534              		.cfi_endproc
+ 535              	.LFE1:
+ 537              		.text
+ 538              	.Letext0:
+ 539              		.file 2 "C:/Users/David/Desktop/DronePrototype/Project_Headers/derivative.h"
+ 540              		.file 3 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+ 541              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/PID.h"
+ 542              		.file 5 "C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h"
+ 543              		.file 6 "C:/Users/David/Desktop/DronePrototype/Generated_Code/PE_Types.h"
+ 544              		.file 7 "C:/Users/David/Desktop/DronePrototype/Project_Headers/Acc.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 ProcessorExpert.c
+                            *COM*:00000001 AccReady
+                            *COM*:00000001 PrintReady
+                            *COM*:00000006 AccData
+                            *COM*:00000002 Xout_14_bit
+                            *COM*:00000002 Yout_14_bit
+                            *COM*:00000002 Zout_14_bit
+                            *COM*:00000004 Zout_g
+                            *COM*:00000001 Xoffset
+                            *COM*:00000001 Yoffset
+                            *COM*:00000001 Zoffset
+                            *COM*:00000002 cm
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:29     .text.Measure_Distance:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:34     .text.Measure_Distance:00000000 Measure_Distance
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:133    .text.Measure_Distance:0000008c $d
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:140    .rodata:00000000 $d
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:144    .text.main:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:149    .text.main:00000000 main
+C:\Users\David\AppData\Local\Temp\ccI03edI.s:529    .text.main:000002b4 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+US_Measure_us
+US_usToCentimeters
+BitIoLdd3_ClrVal
+BitIoLdd3_SetVal
+BitIoLdd2_ClrVal
+BitIoLdd2_SetVal
+BitIoLdd1_ClrVal
+BitIoLdd1_SetVal
+PE_LDD_DeviceDataList
+__aeabi_f2d
+PE_low_level_init
+MCU_Init
+Accelerometer_Init
+Calibrate
+PWM_Motors_Init
+US_Init
+ConsoleIO_Init
+PID_Init
+AccReadValues
+PID_SetMode
+PID_Compute
+PWM_Motor_Duty_Cycle
+printf

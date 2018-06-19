@@ -1,0 +1,649 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"acc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	AccReady,1,1
+  18              		.comm	PrintReady,1,1
+  19              		.comm	AccData,6,4
+  20              		.comm	Xout_14_bit,2,2
+  21              		.comm	Yout_14_bit,2,2
+  22              		.comm	Zout_14_bit,2,2
+  23              		.comm	Zout_g,4,4
+  24              		.comm	Xoffset,1,1
+  25              		.comm	Yoffset,1,1
+  26              		.comm	Zoffset,1,1
+  27              		.section	.text.MCU_Init,"ax",%progbits
+  28              		.align	2
+  29              		.global	MCU_Init
+  30              		.code	16
+  31              		.thumb_func
+  33              	MCU_Init:
+  34              	.LFB0:
+  35              		.file 1 "../Sources/acc.c"
+   1:../Sources/acc.c **** /*
+   2:../Sources/acc.c ****  * acc.c
+   3:../Sources/acc.c ****  *
+   4:../Sources/acc.c ****  *  Created on: Jun 12, 2018
+   5:../Sources/acc.c ****  *      Author: David
+   6:../Sources/acc.c ****  */
+   7:../Sources/acc.c **** 
+   8:../Sources/acc.c **** 
+   9:../Sources/acc.c **** #include <MKL25Z4.h>
+  10:../Sources/acc.c **** #include "acc.h"
+  11:../Sources/acc.c **** /******************************************************************************
+  12:../Sources/acc.c **** * MCU initialization function
+  13:../Sources/acc.c **** ******************************************************************************/ 
+  14:../Sources/acc.c **** 
+  15:../Sources/acc.c **** void MCU_Init(void)
+  16:../Sources/acc.c **** {
+  36              		.loc 1 16 0
+  37              		.cfi_startproc
+  38 0000 80B5     		push	{r7, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_register 7
+  17:../Sources/acc.c **** 	//I2C0 module initialization
+  18:../Sources/acc.c **** 	SIM_SCGC4 |= SIM_SCGC4_I2C0_MASK;		// Turn on clock to I2C0 module 
+  46              		.loc 1 18 0
+  47 0004 204A     		ldr	r2, .L2
+  48 0006 2049     		ldr	r1, .L2
+  49 0008 204B     		ldr	r3, .L2+4
+  50 000a CB58     		ldr	r3, [r1, r3]
+  51 000c 4021     		mov	r1, #64
+  52 000e 1943     		orr	r1, r3
+  53 0010 1E4B     		ldr	r3, .L2+4
+  54 0012 D150     		str	r1, [r2, r3]
+  19:../Sources/acc.c **** 	SIM_SCGC5 |= SIM_SCGC5_PORTE_MASK;		// Turn on clock to Port E module 
+  55              		.loc 1 19 0
+  56 0014 1C4A     		ldr	r2, .L2
+  57 0016 1C49     		ldr	r1, .L2
+  58 0018 1D4B     		ldr	r3, .L2+8
+  59 001a CB58     		ldr	r3, [r1, r3]
+  60 001c 8021     		mov	r1, #128
+  61 001e 8901     		lsl	r1, r1, #6
+  62 0020 1943     		orr	r1, r3
+  63 0022 1B4B     		ldr	r3, .L2+8
+  64 0024 D150     		str	r1, [r2, r3]
+  20:../Sources/acc.c **** 	PORTE_PCR24 = PORT_PCR_MUX(5);			// especificar mux (PTE24 pin is I2C0 SCL line) 
+  65              		.loc 1 20 0
+  66 0026 1B4B     		ldr	r3, .L2+12
+  67 0028 A022     		mov	r2, #160
+  68 002a D200     		lsl	r2, r2, #3
+  69 002c 1A66     		str	r2, [r3, #96]
+  21:../Sources/acc.c **** 	PORTE_PCR25 = PORT_PCR_MUX(5);			// especificar mux (PTE25 pin is I2C0 SDA line)
+  70              		.loc 1 21 0
+  71 002e 194B     		ldr	r3, .L2+12
+  72 0030 A022     		mov	r2, #160
+  73 0032 D200     		lsl	r2, r2, #3
+  74 0034 5A66     		str	r2, [r3, #100]
+  22:../Sources/acc.c **** 	I2C0_F  = 0x14; 						// SDA hold time = 2.125us, SCL start hold time = 4.25us, SCL stop hold time
+  75              		.loc 1 22 0
+  76 0036 184B     		ldr	r3, .L2+16
+  77 0038 1422     		mov	r2, #20
+  78 003a 5A70     		strb	r2, [r3, #1]
+  23:../Sources/acc.c **** 	I2C0_C1 = I2C_C1_IICEN_MASK;    		// Enable I2C0 module 
+  79              		.loc 1 23 0
+  80 003c 164B     		ldr	r3, .L2+16
+  81 003e 8022     		mov	r2, #128
+  82 0040 9A70     		strb	r2, [r3, #2]
+  24:../Sources/acc.c **** 	
+  25:../Sources/acc.c **** 	//Configure the PTA14 pin (connected to the INT1 of the MMA8451Q) for falling edge interrupts
+  26:../Sources/acc.c **** 	SIM_SCGC5 |= SIM_SCGC5_PORTA_MASK;		// Turn on clock to Port A module 
+  83              		.loc 1 26 0
+  84 0042 114A     		ldr	r2, .L2
+  85 0044 1049     		ldr	r1, .L2
+  86 0046 124B     		ldr	r3, .L2+8
+  87 0048 CB58     		ldr	r3, [r1, r3]
+  88 004a 8021     		mov	r1, #128
+  89 004c 8900     		lsl	r1, r1, #2
+  90 004e 1943     		orr	r1, r3
+  91 0050 0F4B     		ldr	r3, .L2+8
+  92 0052 D150     		str	r1, [r2, r3]
+  27:../Sources/acc.c **** 	PORTA_PCR14 |= (0|PORT_PCR_ISF_MASK|	// Clear the interrupt flag 
+  93              		.loc 1 27 0
+  94 0054 114B     		ldr	r3, .L2+20
+  95 0056 114A     		ldr	r2, .L2+20
+  96 0058 926B     		ldr	r2, [r2, #56]
+  97 005a 1149     		ldr	r1, .L2+24
+  98 005c 0A43     		orr	r2, r1
+  99 005e 9A63     		str	r2, [r3, #56]
+  28:../Sources/acc.c **** 					  PORT_PCR_MUX(0x1)|	// PTA14 is configured as GPIO 
+  29:../Sources/acc.c **** 					  PORT_PCR_IRQC(0xA));	// PTA14 is configured for falling edge interrupts 
+  30:../Sources/acc.c **** 	
+  31:../Sources/acc.c **** 	//Enable PORTA interrupt on NVIC
+  32:../Sources/acc.c **** 	NVIC_ICPR |= 1 << ((INT_PORTA - 16)%32); 
+ 100              		.loc 1 32 0
+ 101 0060 104A     		ldr	r2, .L2+28
+ 102 0062 1049     		ldr	r1, .L2+28
+ 103 0064 C023     		mov	r3, #192
+ 104 0066 5B00     		lsl	r3, r3, #1
+ 105 0068 CB58     		ldr	r3, [r1, r3]
+ 106 006a 8021     		mov	r1, #128
+ 107 006c C905     		lsl	r1, r1, #23
+ 108 006e 1943     		orr	r1, r3
+ 109 0070 C023     		mov	r3, #192
+ 110 0072 5B00     		lsl	r3, r3, #1
+ 111 0074 D150     		str	r1, [r2, r3]
+  33:../Sources/acc.c **** 	NVIC_ISER |= 1 << ((INT_PORTA - 16)%32); 
+ 112              		.loc 1 33 0
+ 113 0076 0B4B     		ldr	r3, .L2+28
+ 114 0078 0A4A     		ldr	r2, .L2+28
+ 115 007a 1268     		ldr	r2, [r2]
+ 116 007c 8021     		mov	r1, #128
+ 117 007e C905     		lsl	r1, r1, #23
+ 118 0080 0A43     		orr	r2, r1
+ 119 0082 1A60     		str	r2, [r3]
+  34:../Sources/acc.c **** }
+ 120              		.loc 1 34 0
+ 121 0084 BD46     		mov	sp, r7
+ 122              		@ sp needed for prologue
+ 123 0086 80BD     		pop	{r7, pc}
+ 124              	.L3:
+ 125              		.align	2
+ 126              	.L2:
+ 127 0088 00700440 		.word	1074032640
+ 128 008c 34100000 		.word	4148
+ 129 0090 38100000 		.word	4152
+ 130 0094 00D00440 		.word	1074057216
+ 131 0098 00600640 		.word	1074159616
+ 132 009c 00900440 		.word	1074040832
+ 133 00a0 00010A01 		.word	17432832
+ 134 00a4 00E100E0 		.word	-536813312
+ 135              		.cfi_endproc
+ 136              	.LFE0:
+ 138              		.section	.text.Accelerometer_Init,"ax",%progbits
+ 139              		.align	2
+ 140              		.global	Accelerometer_Init
+ 141              		.code	16
+ 142              		.thumb_func
+ 144              	Accelerometer_Init:
+ 145              	.LFB1:
+  35:../Sources/acc.c **** 
+  36:../Sources/acc.c **** 
+  37:../Sources/acc.c **** /******************************************************************************
+  38:../Sources/acc.c **** * Accelerometer initialization function
+  39:../Sources/acc.c **** ******************************************************************************/ 
+  40:../Sources/acc.c **** 
+  41:../Sources/acc.c **** void Accelerometer_Init (void)
+  42:../Sources/acc.c **** {
+ 146              		.loc 1 42 0
+ 147              		.cfi_startproc
+ 148 0000 80B5     		push	{r7, lr}
+ 149              	.LCFI2:
+ 150              		.cfi_def_cfa_offset 8
+ 151              		.cfi_offset 7, -8
+ 152              		.cfi_offset 14, -4
+ 153 0002 82B0     		sub	sp, sp, #8
+ 154              	.LCFI3:
+ 155              		.cfi_def_cfa_offset 16
+ 156 0004 00AF     		add	r7, sp, #0
+ 157              	.LCFI4:
+ 158              		.cfi_def_cfa_register 7
+  43:../Sources/acc.c **** 	unsigned char reg_val = 0;  
+ 159              		.loc 1 43 0
+ 160 0006 FB1D     		add	r3, r7, #7
+ 161 0008 0022     		mov	r2, #0
+ 162 000a 1A70     		strb	r2, [r3]
+  44:../Sources/acc.c **** 	
+  45:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG2, 0x40);		// Reset all registers to POR values
+ 163              		.loc 1 45 0
+ 164 000c 1D20     		mov	r0, #29
+ 165 000e 2B21     		mov	r1, #43
+ 166 0010 4022     		mov	r2, #64
+ 167 0012 FFF7FEFF 		bl	I2C_WriteRegister
+ 168              	.L5:
+  46:../Sources/acc.c **** 	
+  47:../Sources/acc.c **** 	do		// Wait for the RST bit to clear 
+  48:../Sources/acc.c **** 	{
+  49:../Sources/acc.c **** 		reg_val = I2C_ReadRegister(MMA845x_I2C_ADDRESS, CTRL_REG2) & 0x40; 
+ 169              		.loc 1 49 0
+ 170 0016 1D20     		mov	r0, #29
+ 171 0018 2B21     		mov	r1, #43
+ 172 001a FFF7FEFF 		bl	I2C_ReadRegister
+ 173 001e 031C     		mov	r3, r0
+ 174 0020 191C     		mov	r1, r3
+ 175 0022 FB1D     		add	r3, r7, #7
+ 176 0024 4022     		mov	r2, #64
+ 177 0026 0A40     		and	r2, r1
+ 178 0028 1A70     		strb	r2, [r3]
+  50:../Sources/acc.c **** 	} 	while (reg_val);
+ 179              		.loc 1 50 0
+ 180 002a FB1D     		add	r3, r7, #7
+ 181 002c 1B78     		ldrb	r3, [r3]
+ 182 002e 002B     		cmp	r3, #0
+ 183 0030 F1D1     		bne	.L5
+  51:../Sources/acc.c **** 	
+  52:../Sources/acc.c **** 	/*
+  53:../Sources/acc.c **** 	 * The measured acceleration data is stored in the OUT_X_MSB, OUT_X_LSB, OUT_Y_MSB, OUT_Y_LSB, OUT
+  54:../Sources/acc.c **** 	 * and OUT_Z_LSB registers as 2’s complement 14-bit numbers. The most significant 8-bits of each a
+  55:../Sources/acc.c **** 	 * stored in OUT_X (Y, Z)_MSB, so applications needing only 8-bit results can use these 3 register
+  56:../Sources/acc.c **** 	 * OUT_X,Y, Z_LSB. To do this, the F_READ bit in CTRL_REG1 must be set. When the F_READ bit is cle
+  57:../Sources/acc.c **** 	 * read mode is disabled. 
+  58:../Sources/acc.c **** 	 */
+  59:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, XYZ_DATA_CFG_REG, 0x00);		// +/-2g range -> 1g = 16384/4 = 
+ 184              		.loc 1 59 0
+ 185 0032 1D20     		mov	r0, #29
+ 186 0034 0E21     		mov	r1, #14
+ 187 0036 0022     		mov	r2, #0
+ 188 0038 FFF7FEFF 		bl	I2C_WriteRegister
+  60:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG2, 0x02);		// High Resolution mode 
+ 189              		.loc 1 60 0
+ 190 003c 1D20     		mov	r0, #29
+ 191 003e 2B21     		mov	r1, #43
+ 192 0040 0222     		mov	r2, #2
+ 193 0042 FFF7FEFF 		bl	I2C_WriteRegister
+  61:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x25);	// 0x5 ODR = 800Hz Fast mode , Reduced no
+ 194              		.loc 1 61 0
+ 195 0046 1D20     		mov	r0, #29
+ 196 0048 2A21     		mov	r1, #42
+ 197 004a 2522     		mov	r2, #37
+ 198 004c FFF7FEFF 		bl	I2C_WriteRegister
+  62:../Sources/acc.c **** }
+ 199              		.loc 1 62 0
+ 200 0050 BD46     		mov	sp, r7
+ 201 0052 02B0     		add	sp, sp, #8
+ 202              		@ sp needed for prologue
+ 203 0054 80BD     		pop	{r7, pc}
+ 204              		.cfi_endproc
+ 205              	.LFE1:
+ 207 0056 C046     		.section	.text.Calibrate,"ax",%progbits
+ 208              		.align	2
+ 209              		.global	Calibrate
+ 210              		.code	16
+ 211              		.thumb_func
+ 213              	Calibrate:
+ 214              	.LFB2:
+  63:../Sources/acc.c **** 
+  64:../Sources/acc.c **** /******************************************************************************
+  65:../Sources/acc.c **** * Simple offset calibration
+  66:../Sources/acc.c **** ******************************************************************************/ 
+  67:../Sources/acc.c **** 
+  68:../Sources/acc.c **** void Calibrate (void)
+  69:../Sources/acc.c **** {
+ 215              		.loc 1 69 0
+ 216              		.cfi_startproc
+ 217 0000 80B5     		push	{r7, lr}
+ 218              	.LCFI5:
+ 219              		.cfi_def_cfa_offset 8
+ 220              		.cfi_offset 7, -8
+ 221              		.cfi_offset 14, -4
+ 222 0002 82B0     		sub	sp, sp, #8
+ 223              	.LCFI6:
+ 224              		.cfi_def_cfa_offset 16
+ 225 0004 00AF     		add	r7, sp, #0
+ 226              	.LCFI7:
+ 227              		.cfi_def_cfa_register 7
+  70:../Sources/acc.c **** 	unsigned char reg_val = 0;
+ 228              		.loc 1 70 0
+ 229 0006 FB1D     		add	r3, r7, #7
+ 230 0008 0022     		mov	r2, #0
+ 231 000a 1A70     		strb	r2, [r3]
+  71:../Sources/acc.c **** 	
+  72:../Sources/acc.c **** 	while (!reg_val)		// Wait for a first set of data		 
+ 232              		.loc 1 72 0
+ 233 000c 09E0     		b	.L7
+ 234              	.L8:
+  73:../Sources/acc.c **** 	{
+  74:../Sources/acc.c **** 		reg_val = I2C_ReadRegister(MMA845x_I2C_ADDRESS, STATUS_REG) & 0x08; 
+ 235              		.loc 1 74 0
+ 236 000e 1D20     		mov	r0, #29
+ 237 0010 0021     		mov	r1, #0
+ 238 0012 FFF7FEFF 		bl	I2C_ReadRegister
+ 239 0016 031C     		mov	r3, r0
+ 240 0018 191C     		mov	r1, r3
+ 241 001a FB1D     		add	r3, r7, #7
+ 242 001c 0822     		mov	r2, #8
+ 243 001e 0A40     		and	r2, r1
+ 244 0020 1A70     		strb	r2, [r3]
+ 245              	.L7:
+  72:../Sources/acc.c **** 	while (!reg_val)		// Wait for a first set of data		 
+ 246              		.loc 1 72 0
+ 247 0022 FB1D     		add	r3, r7, #7
+ 248 0024 1B78     		ldrb	r3, [r3]
+ 249 0026 002B     		cmp	r3, #0
+ 250 0028 F1D0     		beq	.L8
+  75:../Sources/acc.c **** 	} 	
+  76:../Sources/acc.c **** 	  	
+  77:../Sources/acc.c **** 	I2C_ReadMultiRegisters(MMA845x_I2C_ADDRESS, OUT_X_MSB_REG, 6, AccData);		// Read data output regis
+ 251              		.loc 1 77 0
+ 252 002a 434B     		ldr	r3, .L12
+ 253 002c 1D20     		mov	r0, #29
+ 254 002e 0121     		mov	r1, #1
+ 255 0030 0622     		mov	r2, #6
+ 256 0032 FFF7FEFF 		bl	I2C_ReadMultiRegisters
+  78:../Sources/acc.c **** 	  						
+  79:../Sources/acc.c **** 	Xout_14_bit = ((short) (AccData[0]<<8 | AccData[1])) >> 2;		// Compute 14-bit X-axis output value
+ 257              		.loc 1 79 0
+ 258 0036 404B     		ldr	r3, .L12
+ 259 0038 1B78     		ldrb	r3, [r3]
+ 260 003a 1B02     		lsl	r3, r3, #8
+ 261 003c 9AB2     		uxth	r2, r3
+ 262 003e 3E4B     		ldr	r3, .L12
+ 263 0040 5B78     		ldrb	r3, [r3, #1]
+ 264 0042 1343     		orr	r3, r2
+ 265 0044 9BB2     		uxth	r3, r3
+ 266 0046 1BB2     		sxth	r3, r3
+ 267 0048 9B10     		asr	r3, r3, #2
+ 268 004a 9AB2     		uxth	r2, r3
+ 269 004c 3B4B     		ldr	r3, .L12+4
+ 270 004e 1A80     		strh	r2, [r3]
+  80:../Sources/acc.c **** 	Yout_14_bit = ((short) (AccData[2]<<8 | AccData[3])) >> 2;		// Compute 14-bit Y-axis output value
+ 271              		.loc 1 80 0
+ 272 0050 394B     		ldr	r3, .L12
+ 273 0052 9B78     		ldrb	r3, [r3, #2]
+ 274 0054 1B02     		lsl	r3, r3, #8
+ 275 0056 9AB2     		uxth	r2, r3
+ 276 0058 374B     		ldr	r3, .L12
+ 277 005a DB78     		ldrb	r3, [r3, #3]
+ 278 005c 1343     		orr	r3, r2
+ 279 005e 9BB2     		uxth	r3, r3
+ 280 0060 1BB2     		sxth	r3, r3
+ 281 0062 9B10     		asr	r3, r3, #2
+ 282 0064 9AB2     		uxth	r2, r3
+ 283 0066 364B     		ldr	r3, .L12+8
+ 284 0068 1A80     		strh	r2, [r3]
+  81:../Sources/acc.c **** 	Zout_14_bit = ((short) (AccData[4]<<8 | AccData[5])) >> 2;		// Compute 14-bit Z-axis output value
+ 285              		.loc 1 81 0
+ 286 006a 334B     		ldr	r3, .L12
+ 287 006c 1B79     		ldrb	r3, [r3, #4]
+ 288 006e 1B02     		lsl	r3, r3, #8
+ 289 0070 9AB2     		uxth	r2, r3
+ 290 0072 314B     		ldr	r3, .L12
+ 291 0074 5B79     		ldrb	r3, [r3, #5]
+ 292 0076 1343     		orr	r3, r2
+ 293 0078 9BB2     		uxth	r3, r3
+ 294 007a 1BB2     		sxth	r3, r3
+ 295 007c 9B10     		asr	r3, r3, #2
+ 296 007e 9AB2     		uxth	r2, r3
+ 297 0080 304B     		ldr	r3, .L12+12
+ 298 0082 1A80     		strh	r2, [r3]
+  82:../Sources/acc.c **** 	  					
+  83:../Sources/acc.c **** 	Xoffset = Xout_14_bit / 8 * (-1);		// Compute X-axis offset correction value
+ 299              		.loc 1 83 0
+ 300 0084 2D4B     		ldr	r3, .L12+4
+ 301 0086 1B88     		ldrh	r3, [r3]
+ 302 0088 1BB2     		sxth	r3, r3
+ 303 008a 002B     		cmp	r3, #0
+ 304 008c 00DA     		bge	.L9
+ 305 008e 0733     		add	r3, r3, #7
+ 306              	.L9:
+ 307 0090 DB10     		asr	r3, r3, #3
+ 308 0092 9BB2     		uxth	r3, r3
+ 309 0094 DBB2     		uxtb	r3, r3
+ 310 0096 5B42     		neg	r3, r3
+ 311 0098 DAB2     		uxtb	r2, r3
+ 312 009a 2B4B     		ldr	r3, .L12+16
+ 313 009c 1A70     		strb	r2, [r3]
+  84:../Sources/acc.c **** 	Yoffset = Yout_14_bit / 8 * (-1);		// Compute Y-axis offset correction value
+ 314              		.loc 1 84 0
+ 315 009e 284B     		ldr	r3, .L12+8
+ 316 00a0 1B88     		ldrh	r3, [r3]
+ 317 00a2 1BB2     		sxth	r3, r3
+ 318 00a4 002B     		cmp	r3, #0
+ 319 00a6 00DA     		bge	.L10
+ 320 00a8 0733     		add	r3, r3, #7
+ 321              	.L10:
+ 322 00aa DB10     		asr	r3, r3, #3
+ 323 00ac 9BB2     		uxth	r3, r3
+ 324 00ae DBB2     		uxtb	r3, r3
+ 325 00b0 5B42     		neg	r3, r3
+ 326 00b2 DAB2     		uxtb	r2, r3
+ 327 00b4 254B     		ldr	r3, .L12+20
+ 328 00b6 1A70     		strb	r2, [r3]
+  85:../Sources/acc.c **** 	Zoffset = (Zout_14_bit - SENSITIVITY_2G) / 8 * (-1);		// Compute Z-axis offset correction value
+ 329              		.loc 1 85 0
+ 330 00b8 224B     		ldr	r3, .L12+12
+ 331 00ba 1B88     		ldrh	r3, [r3]
+ 332 00bc 1BB2     		sxth	r3, r3
+ 333 00be 244A     		ldr	r2, .L12+24
+ 334 00c0 9B18     		add	r3, r3, r2
+ 335 00c2 002B     		cmp	r3, #0
+ 336 00c4 00DA     		bge	.L11
+ 337 00c6 0733     		add	r3, r3, #7
+ 338              	.L11:
+ 339 00c8 DB10     		asr	r3, r3, #3
+ 340 00ca DBB2     		uxtb	r3, r3
+ 341 00cc 5B42     		neg	r3, r3
+ 342 00ce DAB2     		uxtb	r2, r3
+ 343 00d0 204B     		ldr	r3, .L12+28
+ 344 00d2 1A70     		strb	r2, [r3]
+  86:../Sources/acc.c **** 	  					
+  87:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x00);		// Standby mode to allow writing to the 
+ 345              		.loc 1 87 0
+ 346 00d4 1D20     		mov	r0, #29
+ 347 00d6 2A21     		mov	r1, #42
+ 348 00d8 0022     		mov	r2, #0
+ 349 00da FFF7FEFF 		bl	I2C_WriteRegister
+  88:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, OFF_X_REG, Xoffset);		
+ 350              		.loc 1 88 0
+ 351 00de 1A4B     		ldr	r3, .L12+16
+ 352 00e0 1B78     		ldrb	r3, [r3]
+ 353 00e2 1D20     		mov	r0, #29
+ 354 00e4 2F21     		mov	r1, #47
+ 355 00e6 1A1C     		mov	r2, r3
+ 356 00e8 FFF7FEFF 		bl	I2C_WriteRegister
+  89:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, OFF_Y_REG, Yoffset);	
+ 357              		.loc 1 89 0
+ 358 00ec 174B     		ldr	r3, .L12+20
+ 359 00ee 1B78     		ldrb	r3, [r3]
+ 360 00f0 1D20     		mov	r0, #29
+ 361 00f2 3021     		mov	r1, #48
+ 362 00f4 1A1C     		mov	r2, r3
+ 363 00f6 FFF7FEFF 		bl	I2C_WriteRegister
+  90:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, OFF_Z_REG, Zoffset);	
+ 364              		.loc 1 90 0
+ 365 00fa 164B     		ldr	r3, .L12+28
+ 366 00fc 1B78     		ldrb	r3, [r3]
+ 367 00fe 1D20     		mov	r0, #29
+ 368 0100 3121     		mov	r1, #49
+ 369 0102 1A1C     		mov	r2, r3
+ 370 0104 FFF7FEFF 		bl	I2C_WriteRegister
+  91:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG3, 0x00);		// Push-pull, active low interrupt 
+ 371              		.loc 1 91 0
+ 372 0108 1D20     		mov	r0, #29
+ 373 010a 2C21     		mov	r1, #44
+ 374 010c 0022     		mov	r2, #0
+ 375 010e FFF7FEFF 		bl	I2C_WriteRegister
+  92:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG4, 0x01);		// Enable DRDY interrupt 
+ 376              		.loc 1 92 0
+ 377 0112 1D20     		mov	r0, #29
+ 378 0114 2D21     		mov	r1, #45
+ 379 0116 0122     		mov	r2, #1
+ 380 0118 FFF7FEFF 		bl	I2C_WriteRegister
+  93:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG5, 0x01);		// DRDY interrupt routed to INT1 - PTA14
+ 381              		.loc 1 93 0
+ 382 011c 1D20     		mov	r0, #29
+ 383 011e 2E21     		mov	r1, #46
+ 384 0120 0122     		mov	r2, #1
+ 385 0122 FFF7FEFF 		bl	I2C_WriteRegister
+  94:../Sources/acc.c **** 	I2C_WriteRegister(MMA845x_I2C_ADDRESS, CTRL_REG1, 0x25);		// ODR = 800Hz Fast mode , Reduced noise
+ 386              		.loc 1 94 0
+ 387 0126 1D20     		mov	r0, #29
+ 388 0128 2A21     		mov	r1, #42
+ 389 012a 2522     		mov	r2, #37
+ 390 012c FFF7FEFF 		bl	I2C_WriteRegister
+  95:../Sources/acc.c **** }
+ 391              		.loc 1 95 0
+ 392 0130 BD46     		mov	sp, r7
+ 393 0132 02B0     		add	sp, sp, #8
+ 394              		@ sp needed for prologue
+ 395 0134 80BD     		pop	{r7, pc}
+ 396              	.L13:
+ 397 0136 C046     		.align	2
+ 398              	.L12:
+ 399 0138 00000000 		.word	AccData
+ 400 013c 00000000 		.word	Xout_14_bit
+ 401 0140 00000000 		.word	Yout_14_bit
+ 402 0144 00000000 		.word	Zout_14_bit
+ 403 0148 00000000 		.word	Xoffset
+ 404 014c 00000000 		.word	Yoffset
+ 405 0150 00F0FFFF 		.word	-4096
+ 406 0154 00000000 		.word	Zoffset
+ 407              		.cfi_endproc
+ 408              	.LFE2:
+ 410              		.global	__aeabi_i2f
+ 411              		.global	__aeabi_fdiv
+ 412              		.section	.text.AccReadValues,"ax",%progbits
+ 413              		.align	2
+ 414              		.global	AccReadValues
+ 415              		.code	16
+ 416              		.thumb_func
+ 418              	AccReadValues:
+ 419              	.LFB3:
+  96:../Sources/acc.c **** 
+  97:../Sources/acc.c **** void AccReadValues(float* Xout_g, float* Yout_g){
+ 420              		.loc 1 97 0
+ 421              		.cfi_startproc
+ 422 0000 80B5     		push	{r7, lr}
+ 423              	.LCFI8:
+ 424              		.cfi_def_cfa_offset 8
+ 425              		.cfi_offset 7, -8
+ 426              		.cfi_offset 14, -4
+ 427 0002 82B0     		sub	sp, sp, #8
+ 428              	.LCFI9:
+ 429              		.cfi_def_cfa_offset 16
+ 430 0004 00AF     		add	r7, sp, #0
+ 431              	.LCFI10:
+ 432              		.cfi_def_cfa_register 7
+ 433 0006 7860     		str	r0, [r7, #4]
+ 434 0008 3960     		str	r1, [r7]
+  98:../Sources/acc.c **** 	I2C_ReadMultiRegisters(MMA845x_I2C_ADDRESS, OUT_X_MSB_REG, 6, AccData);		// Read data output regis
+ 435              		.loc 1 98 0
+ 436 000a 214B     		ldr	r3, .L15
+ 437 000c 1D20     		mov	r0, #29
+ 438 000e 0121     		mov	r1, #1
+ 439 0010 0622     		mov	r2, #6
+ 440 0012 FFF7FEFF 		bl	I2C_ReadMultiRegisters
+  99:../Sources/acc.c **** 	            
+ 100:../Sources/acc.c **** 	Xout_14_bit = ((short) (AccData[0]<<8 | AccData[1])) >> 2;		// Compute 14-bit X-axis output value
+ 441              		.loc 1 100 0
+ 442 0016 1E4B     		ldr	r3, .L15
+ 443 0018 1B78     		ldrb	r3, [r3]
+ 444 001a 1B02     		lsl	r3, r3, #8
+ 445 001c 9AB2     		uxth	r2, r3
+ 446 001e 1C4B     		ldr	r3, .L15
+ 447 0020 5B78     		ldrb	r3, [r3, #1]
+ 448 0022 1343     		orr	r3, r2
+ 449 0024 9BB2     		uxth	r3, r3
+ 450 0026 1BB2     		sxth	r3, r3
+ 451 0028 9B10     		asr	r3, r3, #2
+ 452 002a 9AB2     		uxth	r2, r3
+ 453 002c 194B     		ldr	r3, .L15+4
+ 454 002e 1A80     		strh	r2, [r3]
+ 101:../Sources/acc.c **** 	Yout_14_bit = ((short) (AccData[2]<<8 | AccData[3])) >> 2;		// Compute 14-bit Y-axis output value
+ 455              		.loc 1 101 0
+ 456 0030 174B     		ldr	r3, .L15
+ 457 0032 9B78     		ldrb	r3, [r3, #2]
+ 458 0034 1B02     		lsl	r3, r3, #8
+ 459 0036 9AB2     		uxth	r2, r3
+ 460 0038 154B     		ldr	r3, .L15
+ 461 003a DB78     		ldrb	r3, [r3, #3]
+ 462 003c 1343     		orr	r3, r2
+ 463 003e 9BB2     		uxth	r3, r3
+ 464 0040 1BB2     		sxth	r3, r3
+ 465 0042 9B10     		asr	r3, r3, #2
+ 466 0044 9AB2     		uxth	r2, r3
+ 467 0046 144B     		ldr	r3, .L15+8
+ 468 0048 1A80     		strh	r2, [r3]
+ 102:../Sources/acc.c **** 	//Zout_14_bit = ((short) (AccData[4]<<8 | AccData[5])) >> 2;		// Compute 14-bit Z-axis output valu
+ 103:../Sources/acc.c **** 	
+ 104:../Sources/acc.c **** 	*Xout_g = ((float) Xout_14_bit) / SENSITIVITY_2G;		// Compute X-axis output value in g's
+ 469              		.loc 1 104 0
+ 470 004a 124B     		ldr	r3, .L15+4
+ 471 004c 1B88     		ldrh	r3, [r3]
+ 472 004e 1BB2     		sxth	r3, r3
+ 473 0050 181C     		mov	r0, r3
+ 474 0052 FFF7FEFF 		bl	__aeabi_i2f
+ 475 0056 031C     		add	r3, r0, #0
+ 476 0058 181C     		add	r0, r3, #0
+ 477 005a 8B21     		mov	r1, #139
+ 478 005c C905     		lsl	r1, r1, #23
+ 479 005e FFF7FEFF 		bl	__aeabi_fdiv
+ 480 0062 031C     		add	r3, r0, #0
+ 481 0064 1A1C     		add	r2, r3, #0
+ 482 0066 7B68     		ldr	r3, [r7, #4]
+ 483 0068 1A60     		str	r2, [r3]
+ 105:../Sources/acc.c **** 	*Yout_g = ((float) Yout_14_bit) / SENSITIVITY_2G;		// Compute Y-axis output value in g's
+ 484              		.loc 1 105 0
+ 485 006a 0B4B     		ldr	r3, .L15+8
+ 486 006c 1B88     		ldrh	r3, [r3]
+ 487 006e 1BB2     		sxth	r3, r3
+ 488 0070 181C     		mov	r0, r3
+ 489 0072 FFF7FEFF 		bl	__aeabi_i2f
+ 490 0076 031C     		add	r3, r0, #0
+ 491 0078 181C     		add	r0, r3, #0
+ 492 007a 8B21     		mov	r1, #139
+ 493 007c C905     		lsl	r1, r1, #23
+ 494 007e FFF7FEFF 		bl	__aeabi_fdiv
+ 495 0082 031C     		add	r3, r0, #0
+ 496 0084 1A1C     		add	r2, r3, #0
+ 497 0086 3B68     		ldr	r3, [r7]
+ 498 0088 1A60     		str	r2, [r3]
+ 106:../Sources/acc.c **** 	//Zout_g = ((float) Zout_14_bit) / SENSITIVITY_2G;		// Compute Z-axis output value in g's
+ 107:../Sources/acc.c **** }
+ 499              		.loc 1 107 0
+ 500 008a BD46     		mov	sp, r7
+ 501 008c 02B0     		add	sp, sp, #8
+ 502              		@ sp needed for prologue
+ 503 008e 80BD     		pop	{r7, pc}
+ 504              	.L16:
+ 505              		.align	2
+ 506              	.L15:
+ 507 0090 00000000 		.word	AccData
+ 508 0094 00000000 		.word	Xout_14_bit
+ 509 0098 00000000 		.word	Yout_14_bit
+ 510              		.cfi_endproc
+ 511              	.LFE3:
+ 513              		.text
+ 514              	.Letext0:
+ 515              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+ 516              		.file 3 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
+ 517              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h"
+ 518              		.file 5 "C:/Users/David/Desktop/DronePrototype/Project_Headers/acc.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 acc.c
+                            *COM*:00000001 AccReady
+                            *COM*:00000001 PrintReady
+                            *COM*:00000006 AccData
+                            *COM*:00000002 Xout_14_bit
+                            *COM*:00000002 Yout_14_bit
+                            *COM*:00000002 Zout_14_bit
+                            *COM*:00000004 Zout_g
+                            *COM*:00000001 Xoffset
+                            *COM*:00000001 Yoffset
+                            *COM*:00000001 Zoffset
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:28     .text.MCU_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:33     .text.MCU_Init:00000000 MCU_Init
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:127    .text.MCU_Init:00000088 $d
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:139    .text.Accelerometer_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:144    .text.Accelerometer_Init:00000000 Accelerometer_Init
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:208    .text.Calibrate:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:213    .text.Calibrate:00000000 Calibrate
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:399    .text.Calibrate:00000138 $d
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:413    .text.AccReadValues:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:418    .text.AccReadValues:00000000 AccReadValues
+C:\Users\David\AppData\Local\Temp\ccmX1B1v.s:507    .text.AccReadValues:00000090 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+I2C_WriteRegister
+I2C_ReadRegister
+I2C_ReadMultiRegisters
+__aeabi_i2f
+__aeabi_fdiv

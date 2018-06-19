@@ -1,0 +1,621 @@
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"pwm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.PWM_Motors_Init,"ax",%progbits
+  18              		.align	2
+  19              		.global	PWM_Motors_Init
+  20              		.code	16
+  21              		.thumb_func
+  23              	PWM_Motors_Init:
+  24              	.LFB0:
+  25              		.file 1 "../Sources/pwm.c"
+   1:../Sources/pwm.c **** /*
+   2:../Sources/pwm.c ****  * pwm_led.c
+   3:../Sources/pwm.c ****  *
+   4:../Sources/pwm.c ****  *  Created on: Apr 29, 2018
+   5:../Sources/pwm.c ****  *      Author: David
+   6:../Sources/pwm.c ****  */
+   7:../Sources/pwm.c **** 
+   8:../Sources/pwm.c **** #include <MKL25Z4.h>
+   9:../Sources/pwm.c **** #include <pwm.h>
+  10:../Sources/pwm.c **** 
+  11:../Sources/pwm.c **** void PWM_Motors_Init(){
+  26              		.loc 1 11 0
+  27              		.cfi_startproc
+  28 0000 80B5     		push	{r7, lr}
+  29              	.LCFI0:
+  30              		.cfi_def_cfa_offset 8
+  31              		.cfi_offset 7, -8
+  32              		.cfi_offset 14, -4
+  33 0002 00AF     		add	r7, sp, #0
+  34              	.LCFI1:
+  35              		.cfi_def_cfa_register 7
+  12:../Sources/pwm.c **** 	/*
+  13:../Sources/pwm.c **** 		* X:PWMA - PTB0
+  14:../Sources/pwm.c **** 		* Y:PWMA - PTB1
+  15:../Sources/pwm.c **** 		* X:PWMB - PTB2
+  16:../Sources/pwm.c **** 		* Y:PWMB - PTB3
+  17:../Sources/pwm.c **** 		* AIN2(A&B) - PTC2
+  18:../Sources/pwm.c **** 		* AIN1(A&B) - PTE29 (PTC1 is not properly soldered)
+  19:../Sources/pwm.c **** 		* STBY(A&B) - PTE20
+  20:../Sources/pwm.c **** 		* BIN1(A&B) - PTE21
+  21:../Sources/pwm.c **** 		* BIN2(A&B) - PTE22
+  22:../Sources/pwm.c **** 		*/
+  23:../Sources/pwm.c **** 	
+  24:../Sources/pwm.c **** 	/*Init Pins*/
+  25:../Sources/pwm.c **** 	SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
+  36              		.loc 1 25 0
+  37 0004 684A     		ldr	r2, .L2
+  38 0006 6849     		ldr	r1, .L2
+  39 0008 684B     		ldr	r3, .L2+4
+  40 000a CB58     		ldr	r3, [r1, r3]
+  41 000c 8021     		mov	r1, #128
+  42 000e C900     		lsl	r1, r1, #3
+  43 0010 1943     		orr	r1, r3
+  44 0012 664B     		ldr	r3, .L2+4
+  45 0014 D150     		str	r1, [r2, r3]
+  26:../Sources/pwm.c **** 	SIM_SCGC5 |= SIM_SCGC5_PORTE_MASK;
+  46              		.loc 1 26 0
+  47 0016 644A     		ldr	r2, .L2
+  48 0018 6349     		ldr	r1, .L2
+  49 001a 644B     		ldr	r3, .L2+4
+  50 001c CB58     		ldr	r3, [r1, r3]
+  51 001e 8021     		mov	r1, #128
+  52 0020 8901     		lsl	r1, r1, #6
+  53 0022 1943     		orr	r1, r3
+  54 0024 614B     		ldr	r3, .L2+4
+  55 0026 D150     		str	r1, [r2, r3]
+  27:../Sources/pwm.c **** 	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
+  56              		.loc 1 27 0
+  57 0028 5F4A     		ldr	r2, .L2
+  58 002a 5F49     		ldr	r1, .L2
+  59 002c 5F4B     		ldr	r3, .L2+4
+  60 002e CB58     		ldr	r3, [r1, r3]
+  61 0030 8021     		mov	r1, #128
+  62 0032 0901     		lsl	r1, r1, #4
+  63 0034 1943     		orr	r1, r3
+  64 0036 5D4B     		ldr	r3, .L2+4
+  65 0038 D150     		str	r1, [r2, r3]
+  28:../Sources/pwm.c **** 	PORTB_PCR0 |= PORT_PCR_MUX(3); //PWM TPM1 CH0
+  66              		.loc 1 28 0
+  67 003a 5D4B     		ldr	r3, .L2+8
+  68 003c 5C4A     		ldr	r2, .L2+8
+  69 003e 1268     		ldr	r2, [r2]
+  70 0040 C021     		mov	r1, #192
+  71 0042 8900     		lsl	r1, r1, #2
+  72 0044 0A43     		orr	r2, r1
+  73 0046 1A60     		str	r2, [r3]
+  29:../Sources/pwm.c **** 	PORTB_PCR1 |= PORT_PCR_MUX(3); //PWM TPM1 CH1
+  74              		.loc 1 29 0
+  75 0048 594B     		ldr	r3, .L2+8
+  76 004a 594A     		ldr	r2, .L2+8
+  77 004c 5268     		ldr	r2, [r2, #4]
+  78 004e C021     		mov	r1, #192
+  79 0050 8900     		lsl	r1, r1, #2
+  80 0052 0A43     		orr	r2, r1
+  81 0054 5A60     		str	r2, [r3, #4]
+  30:../Sources/pwm.c **** 	PORTB_PCR2 |= PORT_PCR_MUX(3); //PWM TPM2 CH0
+  82              		.loc 1 30 0
+  83 0056 564B     		ldr	r3, .L2+8
+  84 0058 554A     		ldr	r2, .L2+8
+  85 005a 9268     		ldr	r2, [r2, #8]
+  86 005c C021     		mov	r1, #192
+  87 005e 8900     		lsl	r1, r1, #2
+  88 0060 0A43     		orr	r2, r1
+  89 0062 9A60     		str	r2, [r3, #8]
+  31:../Sources/pwm.c **** 	PORTB_PCR3 |= PORT_PCR_MUX(3); //PWM TPM2 CH1
+  90              		.loc 1 31 0
+  91 0064 524B     		ldr	r3, .L2+8
+  92 0066 524A     		ldr	r2, .L2+8
+  93 0068 D268     		ldr	r2, [r2, #12]
+  94 006a C021     		mov	r1, #192
+  95 006c 8900     		lsl	r1, r1, #2
+  96 006e 0A43     		orr	r2, r1
+  97 0070 DA60     		str	r2, [r3, #12]
+  32:../Sources/pwm.c **** 	PORTC_PCR2 |= PORT_PCR_MUX(1);//GPIO
+  98              		.loc 1 32 0
+  99 0072 504B     		ldr	r3, .L2+12
+ 100 0074 4F4A     		ldr	r2, .L2+12
+ 101 0076 9268     		ldr	r2, [r2, #8]
+ 102 0078 8021     		mov	r1, #128
+ 103 007a 4900     		lsl	r1, r1, #1
+ 104 007c 0A43     		orr	r2, r1
+ 105 007e 9A60     		str	r2, [r3, #8]
+  33:../Sources/pwm.c **** 	PORTE_PCR29 |= PORT_PCR_MUX(1);//GPIO
+ 106              		.loc 1 33 0
+ 107 0080 4D4B     		ldr	r3, .L2+16
+ 108 0082 4D4A     		ldr	r2, .L2+16
+ 109 0084 526F     		ldr	r2, [r2, #116]
+ 110 0086 8021     		mov	r1, #128
+ 111 0088 4900     		lsl	r1, r1, #1
+ 112 008a 0A43     		orr	r2, r1
+ 113 008c 5A67     		str	r2, [r3, #116]
+  34:../Sources/pwm.c **** 	PORTE_PCR20 |= PORT_PCR_MUX(1);//GPIO
+ 114              		.loc 1 34 0
+ 115 008e 4A4B     		ldr	r3, .L2+16
+ 116 0090 494A     		ldr	r2, .L2+16
+ 117 0092 126D     		ldr	r2, [r2, #80]
+ 118 0094 8021     		mov	r1, #128
+ 119 0096 4900     		lsl	r1, r1, #1
+ 120 0098 0A43     		orr	r2, r1
+ 121 009a 1A65     		str	r2, [r3, #80]
+  35:../Sources/pwm.c **** 	PORTE_PCR21 |= PORT_PCR_MUX(1);//GPIO
+ 122              		.loc 1 35 0
+ 123 009c 464B     		ldr	r3, .L2+16
+ 124 009e 464A     		ldr	r2, .L2+16
+ 125 00a0 526D     		ldr	r2, [r2, #84]
+ 126 00a2 8021     		mov	r1, #128
+ 127 00a4 4900     		lsl	r1, r1, #1
+ 128 00a6 0A43     		orr	r2, r1
+ 129 00a8 5A65     		str	r2, [r3, #84]
+  36:../Sources/pwm.c **** 	PORTE_PCR22 |= PORT_PCR_MUX(1);//GPIO
+ 130              		.loc 1 36 0
+ 131 00aa 434B     		ldr	r3, .L2+16
+ 132 00ac 424A     		ldr	r2, .L2+16
+ 133 00ae 926D     		ldr	r2, [r2, #88]
+ 134 00b0 8021     		mov	r1, #128
+ 135 00b2 4900     		lsl	r1, r1, #1
+ 136 00b4 0A43     		orr	r2, r1
+ 137 00b6 9A65     		str	r2, [r3, #88]
+  37:../Sources/pwm.c **** 	
+  38:../Sources/pwm.c **** 	/*Init PWM signals*/
+  39:../Sources/pwm.c **** 	/*Enable clock con TPM0/2*/
+  40:../Sources/pwm.c **** 	SIM_SCGC6 |= SIM_SCGC6_TPM1_MASK;
+ 138              		.loc 1 40 0
+ 139 00b8 3B4A     		ldr	r2, .L2
+ 140 00ba 3B49     		ldr	r1, .L2
+ 141 00bc 3F4B     		ldr	r3, .L2+20
+ 142 00be CB58     		ldr	r3, [r1, r3]
+ 143 00c0 8021     		mov	r1, #128
+ 144 00c2 8904     		lsl	r1, r1, #18
+ 145 00c4 1943     		orr	r1, r3
+ 146 00c6 3D4B     		ldr	r3, .L2+20
+ 147 00c8 D150     		str	r1, [r2, r3]
+  41:../Sources/pwm.c **** 	SIM_SCGC6 |= SIM_SCGC6_TPM2_MASK;
+ 148              		.loc 1 41 0
+ 149 00ca 374A     		ldr	r2, .L2
+ 150 00cc 3649     		ldr	r1, .L2
+ 151 00ce 3B4B     		ldr	r3, .L2+20
+ 152 00d0 CB58     		ldr	r3, [r1, r3]
+ 153 00d2 8021     		mov	r1, #128
+ 154 00d4 C904     		lsl	r1, r1, #19
+ 155 00d6 1943     		orr	r1, r3
+ 156 00d8 384B     		ldr	r3, .L2+20
+ 157 00da D150     		str	r1, [r2, r3]
+  42:../Sources/pwm.c **** 	/*Select clock source*/
+  43:../Sources/pwm.c **** 	SIM_SOPT2 |= 0x01 << SIM_SOPT2_TPMSRC_SHIFT; //MCGFLLCLK clock
+ 158              		.loc 1 43 0
+ 159 00dc 324A     		ldr	r2, .L2
+ 160 00de 3249     		ldr	r1, .L2
+ 161 00e0 374B     		ldr	r3, .L2+24
+ 162 00e2 CB58     		ldr	r3, [r1, r3]
+ 163 00e4 8021     		mov	r1, #128
+ 164 00e6 4904     		lsl	r1, r1, #17
+ 165 00e8 1943     		orr	r1, r3
+ 166 00ea 354B     		ldr	r3, .L2+24
+ 167 00ec D150     		str	r1, [r2, r3]
+  44:../Sources/pwm.c **** 	/*Disable TPM while configuring it*/
+  45:../Sources/pwm.c **** 	TPM1_SC = TPM_SC_CMOD(0);
+ 168              		.loc 1 45 0
+ 169 00ee 354B     		ldr	r3, .L2+28
+ 170 00f0 0022     		mov	r2, #0
+ 171 00f2 1A60     		str	r2, [r3]
+  46:../Sources/pwm.c **** 	TPM2_SC = TPM_SC_CMOD(0);
+ 172              		.loc 1 46 0
+ 173 00f4 344B     		ldr	r3, .L2+32
+ 174 00f6 0022     		mov	r2, #0
+ 175 00f8 1A60     		str	r2, [r3]
+  47:../Sources/pwm.c **** 	/*TPM Modulo Register */
+  48:../Sources/pwm.c **** 	TPM1_MOD = 8000; 
+ 176              		.loc 1 48 0
+ 177 00fa 324B     		ldr	r3, .L2+28
+ 178 00fc FA22     		mov	r2, #250
+ 179 00fe 5201     		lsl	r2, r2, #5
+ 180 0100 9A60     		str	r2, [r3, #8]
+  49:../Sources/pwm.c **** 	TPM2_MOD = 8000; 
+ 181              		.loc 1 49 0
+ 182 0102 314B     		ldr	r3, .L2+32
+ 183 0104 FA22     		mov	r2, #250
+ 184 0106 5201     		lsl	r2, r2, #5
+ 185 0108 9A60     		str	r2, [r3, #8]
+  50:../Sources/pwm.c **** 	/*Divide Clock by 2^n*/
+  51:../Sources/pwm.c **** 	TPM1_SC |= TPM_SC_PS(0);
+ 186              		.loc 1 51 0
+ 187 010a 2E4B     		ldr	r3, .L2+28
+ 188 010c 2D4A     		ldr	r2, .L2+28
+ 189 010e 1268     		ldr	r2, [r2]
+ 190 0110 1A60     		str	r2, [r3]
+  52:../Sources/pwm.c **** 	TPM2_SC |= TPM_SC_PS(0);
+ 191              		.loc 1 52 0
+ 192 0112 2D4B     		ldr	r3, .L2+32
+ 193 0114 2C4A     		ldr	r2, .L2+32
+ 194 0116 1268     		ldr	r2, [r2]
+ 195 0118 1A60     		str	r2, [r3]
+  53:../Sources/pwm.c **** 	/*OC toogle mode*/
+  54:../Sources/pwm.c **** 	TPM1_C0SC = TPM_CnSC_MSB_MASK | TPM_CnSC_ELSB_MASK; //PWM and Make signal low on match
+ 196              		.loc 1 54 0
+ 197 011a 2A4B     		ldr	r3, .L2+28
+ 198 011c 2822     		mov	r2, #40
+ 199 011e DA60     		str	r2, [r3, #12]
+  55:../Sources/pwm.c **** 	TPM1_C1SC = TPM_CnSC_MSB_MASK | TPM_CnSC_ELSB_MASK; //PWM and Make signal low on match
+ 200              		.loc 1 55 0
+ 201 0120 284B     		ldr	r3, .L2+28
+ 202 0122 2822     		mov	r2, #40
+ 203 0124 5A61     		str	r2, [r3, #20]
+  56:../Sources/pwm.c **** 	TPM2_C0SC = TPM_CnSC_MSB_MASK | TPM_CnSC_ELSB_MASK; //PWM and Make signal low on match
+ 204              		.loc 1 56 0
+ 205 0126 284B     		ldr	r3, .L2+32
+ 206 0128 2822     		mov	r2, #40
+ 207 012a DA60     		str	r2, [r3, #12]
+  57:../Sources/pwm.c **** 	TPM2_C1SC = TPM_CnSC_MSB_MASK | TPM_CnSC_ELSB_MASK; //PWM and Make signal low on match
+ 208              		.loc 1 57 0
+ 209 012c 264B     		ldr	r3, .L2+32
+ 210 012e 2822     		mov	r2, #40
+ 211 0130 5A61     		str	r2, [r3, #20]
+  58:../Sources/pwm.c **** 	/*schedule next transition*/
+  59:../Sources/pwm.c **** 	TPM1_C0V = 0; //Duty Cycle XA
+ 212              		.loc 1 59 0
+ 213 0132 244B     		ldr	r3, .L2+28
+ 214 0134 0022     		mov	r2, #0
+ 215 0136 1A61     		str	r2, [r3, #16]
+  60:../Sources/pwm.c **** 	TPM1_C1V = 0; //Duty Cycle YA
+ 216              		.loc 1 60 0
+ 217 0138 224B     		ldr	r3, .L2+28
+ 218 013a 0022     		mov	r2, #0
+ 219 013c 9A61     		str	r2, [r3, #24]
+  61:../Sources/pwm.c **** 	TPM2_C0V = 0; //Duty Cycle XB
+ 220              		.loc 1 61 0
+ 221 013e 224B     		ldr	r3, .L2+32
+ 222 0140 0022     		mov	r2, #0
+ 223 0142 1A61     		str	r2, [r3, #16]
+  62:../Sources/pwm.c **** 	TPM2_C1V = 0; //Duty Cycle YB
+ 224              		.loc 1 62 0
+ 225 0144 204B     		ldr	r3, .L2+32
+ 226 0146 0022     		mov	r2, #0
+ 227 0148 9A61     		str	r2, [r3, #24]
+  63:../Sources/pwm.c **** 	/*Enable timer mode*/
+  64:../Sources/pwm.c **** 	TPM1_SC |= TPM_SC_CMOD(1);
+ 228              		.loc 1 64 0
+ 229 014a 1E4B     		ldr	r3, .L2+28
+ 230 014c 1D4A     		ldr	r2, .L2+28
+ 231 014e 1268     		ldr	r2, [r2]
+ 232 0150 0821     		mov	r1, #8
+ 233 0152 0A43     		orr	r2, r1
+ 234 0154 1A60     		str	r2, [r3]
+  65:../Sources/pwm.c **** 	TPM2_SC |= TPM_SC_CMOD(1);
+ 235              		.loc 1 65 0
+ 236 0156 1C4B     		ldr	r3, .L2+32
+ 237 0158 1B4A     		ldr	r2, .L2+32
+ 238 015a 1268     		ldr	r2, [r2]
+ 239 015c 0821     		mov	r1, #8
+ 240 015e 0A43     		orr	r2, r1
+ 241 0160 1A60     		str	r2, [r3]
+  66:../Sources/pwm.c **** 	
+  67:../Sources/pwm.c **** 	/*Set GPIO signals as Outputs*/
+  68:../Sources/pwm.c **** 	GPIOC_PDDR |= 1<<2;
+ 242              		.loc 1 68 0
+ 243 0162 1A4B     		ldr	r3, .L2+36
+ 244 0164 194A     		ldr	r2, .L2+36
+ 245 0166 5269     		ldr	r2, [r2, #20]
+ 246 0168 0421     		mov	r1, #4
+ 247 016a 0A43     		orr	r2, r1
+ 248 016c 5A61     		str	r2, [r3, #20]
+  69:../Sources/pwm.c **** 	GPIOE_PDDR |= (1<< 29 | 1<<20 | 1<<21 | 1<<22);
+ 249              		.loc 1 69 0
+ 250 016e 184B     		ldr	r3, .L2+40
+ 251 0170 174A     		ldr	r2, .L2+40
+ 252 0172 5269     		ldr	r2, [r2, #20]
+ 253 0174 1749     		ldr	r1, .L2+44
+ 254 0176 0A43     		orr	r2, r1
+ 255 0178 5A61     		str	r2, [r3, #20]
+  70:../Sources/pwm.c **** 	
+  71:../Sources/pwm.c **** 	/*Set STBY AIN1 BIN1 as HIGH and AIN2 BIN2 as LOW*/
+  72:../Sources/pwm.c **** 	GPIOE_PDOR |= (1<<29); //AIN1 HIGH
+ 256              		.loc 1 72 0
+ 257 017a 154B     		ldr	r3, .L2+40
+ 258 017c 144A     		ldr	r2, .L2+40
+ 259 017e 1268     		ldr	r2, [r2]
+ 260 0180 8021     		mov	r1, #128
+ 261 0182 8905     		lsl	r1, r1, #22
+ 262 0184 0A43     		orr	r2, r1
+ 263 0186 1A60     		str	r2, [r3]
+  73:../Sources/pwm.c **** 	GPIOE_PDOR |= (1<<21); //BIN1 HIGH
+ 264              		.loc 1 73 0
+ 265 0188 114B     		ldr	r3, .L2+40
+ 266 018a 114A     		ldr	r2, .L2+40
+ 267 018c 1268     		ldr	r2, [r2]
+ 268 018e 8021     		mov	r1, #128
+ 269 0190 8903     		lsl	r1, r1, #14
+ 270 0192 0A43     		orr	r2, r1
+ 271 0194 1A60     		str	r2, [r3]
+  74:../Sources/pwm.c **** 	GPIOE_PDOR |= (1<<20); //STBY HIGH
+ 272              		.loc 1 74 0
+ 273 0196 0E4B     		ldr	r3, .L2+40
+ 274 0198 0D4A     		ldr	r2, .L2+40
+ 275 019a 1268     		ldr	r2, [r2]
+ 276 019c 8021     		mov	r1, #128
+ 277 019e 4903     		lsl	r1, r1, #13
+ 278 01a0 0A43     		orr	r2, r1
+ 279 01a2 1A60     		str	r2, [r3]
+  75:../Sources/pwm.c **** 	
+  76:../Sources/pwm.c **** 	
+  77:../Sources/pwm.c **** 	
+  78:../Sources/pwm.c **** }
+ 280              		.loc 1 78 0
+ 281 01a4 BD46     		mov	sp, r7
+ 282              		@ sp needed for prologue
+ 283 01a6 80BD     		pop	{r7, pc}
+ 284              	.L3:
+ 285              		.align	2
+ 286              	.L2:
+ 287 01a8 00700440 		.word	1074032640
+ 288 01ac 38100000 		.word	4152
+ 289 01b0 00A00440 		.word	1074044928
+ 290 01b4 00B00440 		.word	1074049024
+ 291 01b8 00D00440 		.word	1074057216
+ 292 01bc 3C100000 		.word	4156
+ 293 01c0 04100000 		.word	4100
+ 294 01c4 00900340 		.word	1073975296
+ 295 01c8 00A00340 		.word	1073979392
+ 296 01cc 80F00F40 		.word	1074786432
+ 297 01d0 00F10F40 		.word	1074786560
+ 298 01d4 00007020 		.word	544210944
+ 299              		.cfi_endproc
+ 300              	.LFE0:
+ 302              		.section	.text.PWM_Motor_Duty_Cycle,"ax",%progbits
+ 303              		.align	2
+ 304              		.global	PWM_Motor_Duty_Cycle
+ 305              		.code	16
+ 306              		.thumb_func
+ 308              	PWM_Motor_Duty_Cycle:
+ 309              	.LFB1:
+  79:../Sources/pwm.c **** 
+  80:../Sources/pwm.c **** void PWM_Motor_Duty_Cycle(float xA, float xB, float yA, float yB){
+ 310              		.loc 1 80 0
+ 311              		.cfi_startproc
+ 312 0000 80B5     		push	{r7, lr}
+ 313              	.LCFI2:
+ 314              		.cfi_def_cfa_offset 8
+ 315              		.cfi_offset 7, -8
+ 316              		.cfi_offset 14, -4
+ 317 0002 84B0     		sub	sp, sp, #16
+ 318              	.LCFI3:
+ 319              		.cfi_def_cfa_offset 24
+ 320 0004 00AF     		add	r7, sp, #0
+ 321              	.LCFI4:
+ 322              		.cfi_def_cfa_register 7
+ 323 0006 F860     		str	r0, [r7, #12]
+ 324 0008 B960     		str	r1, [r7, #8]
+ 325 000a 7A60     		str	r2, [r7, #4]
+ 326 000c 3B60     		str	r3, [r7]
+  81:../Sources/pwm.c **** 	TPM1_C0V = 4000;//xA;
+ 327              		.loc 1 81 0
+ 328 000e 094B     		ldr	r3, .L5
+ 329 0010 FA22     		mov	r2, #250
+ 330 0012 1201     		lsl	r2, r2, #4
+ 331 0014 1A61     		str	r2, [r3, #16]
+  82:../Sources/pwm.c **** 	TPM1_C1V = 4000;//yA;
+ 332              		.loc 1 82 0
+ 333 0016 074B     		ldr	r3, .L5
+ 334 0018 FA22     		mov	r2, #250
+ 335 001a 1201     		lsl	r2, r2, #4
+ 336 001c 9A61     		str	r2, [r3, #24]
+  83:../Sources/pwm.c **** 	TPM2_C0V = 4000;//xB;
+ 337              		.loc 1 83 0
+ 338 001e 064B     		ldr	r3, .L5+4
+ 339 0020 FA22     		mov	r2, #250
+ 340 0022 1201     		lsl	r2, r2, #4
+ 341 0024 1A61     		str	r2, [r3, #16]
+  84:../Sources/pwm.c **** 	TPM2_C1V = 4000;//yB;
+ 342              		.loc 1 84 0
+ 343 0026 044B     		ldr	r3, .L5+4
+ 344 0028 FA22     		mov	r2, #250
+ 345 002a 1201     		lsl	r2, r2, #4
+ 346 002c 9A61     		str	r2, [r3, #24]
+  85:../Sources/pwm.c **** 	
+  86:../Sources/pwm.c **** }
+ 347              		.loc 1 86 0
+ 348 002e BD46     		mov	sp, r7
+ 349 0030 04B0     		add	sp, sp, #16
+ 350              		@ sp needed for prologue
+ 351 0032 80BD     		pop	{r7, pc}
+ 352              	.L6:
+ 353              		.align	2
+ 354              	.L5:
+ 355 0034 00900340 		.word	1073975296
+ 356 0038 00A00340 		.word	1073979392
+ 357              		.cfi_endproc
+ 358              	.LFE1:
+ 360              		.global	__aeabi_fcmplt
+ 361              		.global	__aeabi_fcmpgt
+ 362              		.global	__aeabi_ui2f
+ 363              		.global	__aeabi_fsub
+ 364              		.global	__aeabi_fmul
+ 365              		.global	__aeabi_f2uiz
+ 366              		.section	.text.PWM_LED_Duty_Cycle,"ax",%progbits
+ 367              		.align	2
+ 368              		.global	PWM_LED_Duty_Cycle
+ 369              		.code	16
+ 370              		.thumb_func
+ 372              	PWM_LED_Duty_Cycle:
+ 373              	.LFB2:
+  87:../Sources/pwm.c **** 
+  88:../Sources/pwm.c **** void PWM_LED_Duty_Cycle(float axis){
+ 374              		.loc 1 88 0
+ 375              		.cfi_startproc
+ 376 0000 B0B5     		push	{r4, r5, r7, lr}
+ 377              	.LCFI5:
+ 378              		.cfi_def_cfa_offset 16
+ 379              		.cfi_offset 4, -16
+ 380              		.cfi_offset 5, -12
+ 381              		.cfi_offset 7, -8
+ 382              		.cfi_offset 14, -4
+ 383 0002 84B0     		sub	sp, sp, #16
+ 384              	.LCFI6:
+ 385              		.cfi_def_cfa_offset 32
+ 386 0004 00AF     		add	r7, sp, #0
+ 387              	.LCFI7:
+ 388              		.cfi_def_cfa_register 7
+ 389 0006 7860     		str	r0, [r7, #4]
+  89:../Sources/pwm.c **** 	short negative_flag = 0;
+ 390              		.loc 1 89 0
+ 391 0008 3B1C     		mov	r3, r7
+ 392 000a 0E33     		add	r3, r3, #14
+ 393 000c 0022     		mov	r2, #0
+ 394 000e 1A80     		strh	r2, [r3]
+  90:../Sources/pwm.c **** 	if(axis <0){
+ 395              		.loc 1 90 0
+ 396 0010 7868     		ldr	r0, [r7, #4]
+ 397 0012 0021     		mov	r1, #0
+ 398 0014 FFF7FEFF 		bl	__aeabi_fcmplt
+ 399 0018 031C     		mov	r3, r0
+ 400 001a 002B     		cmp	r3, #0
+ 401 001c 08D0     		beq	.L8
+ 402              	.L14:
+  91:../Sources/pwm.c **** 		axis = -axis;
+ 403              		.loc 1 91 0
+ 404 001e 7B68     		ldr	r3, [r7, #4]
+ 405 0020 8022     		mov	r2, #128
+ 406 0022 1206     		lsl	r2, r2, #24
+ 407 0024 5340     		eor	r3, r2
+ 408 0026 7B60     		str	r3, [r7, #4]
+  92:../Sources/pwm.c **** 		negative_flag = 1;
+ 409              		.loc 1 92 0
+ 410 0028 3B1C     		mov	r3, r7
+ 411 002a 0E33     		add	r3, r3, #14
+ 412 002c 0122     		mov	r2, #1
+ 413 002e 1A80     		strh	r2, [r3]
+ 414              	.L8:
+  93:../Sources/pwm.c **** 	}
+  94:../Sources/pwm.c **** 	if(axis>1)axis=1;
+ 415              		.loc 1 94 0
+ 416 0030 7868     		ldr	r0, [r7, #4]
+ 417 0032 FE21     		mov	r1, #254
+ 418 0034 8905     		lsl	r1, r1, #22
+ 419 0036 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 420 003a 031C     		mov	r3, r0
+ 421 003c 002B     		cmp	r3, #0
+ 422 003e 02D0     		beq	.L10
+ 423              	.L15:
+ 424              		.loc 1 94 0 is_stmt 0
+ 425 0040 FE23     		mov	r3, #254
+ 426 0042 9B05     		lsl	r3, r3, #22
+ 427 0044 7B60     		str	r3, [r7, #4]
+ 428              	.L10:
+  95:../Sources/pwm.c **** 	
+  96:../Sources/pwm.c **** 	if(negative_flag){
+ 429              		.loc 1 96 0 is_stmt 1
+ 430 0046 3B1C     		mov	r3, r7
+ 431 0048 0E33     		add	r3, r3, #14
+ 432 004a 0022     		mov	r2, #0
+ 433 004c 9B5E     		ldrsh	r3, [r3, r2]
+ 434 004e 002B     		cmp	r3, #0
+ 435 0050 1BD0     		beq	.L12
+  97:../Sources/pwm.c **** 		TPM2_C0V = TPM2_MOD;
+ 436              		.loc 1 97 0
+ 437 0052 1D4B     		ldr	r3, .L16
+ 438 0054 1C4A     		ldr	r2, .L16
+ 439 0056 9268     		ldr	r2, [r2, #8]
+ 440 0058 1A61     		str	r2, [r3, #16]
+  98:../Sources/pwm.c **** 		TPM2_C1V = TPM2_MOD*(1-axis);
+ 441              		.loc 1 98 0
+ 442 005a 1B4C     		ldr	r4, .L16
+ 443 005c 1A4B     		ldr	r3, .L16
+ 444 005e 9B68     		ldr	r3, [r3, #8]
+ 445 0060 181C     		mov	r0, r3
+ 446 0062 FFF7FEFF 		bl	__aeabi_ui2f
+ 447 0066 051C     		add	r5, r0, #0
+ 448 0068 FE20     		mov	r0, #254
+ 449 006a 8005     		lsl	r0, r0, #22
+ 450 006c 7968     		ldr	r1, [r7, #4]
+ 451 006e FFF7FEFF 		bl	__aeabi_fsub
+ 452 0072 031C     		add	r3, r0, #0
+ 453 0074 281C     		add	r0, r5, #0
+ 454 0076 191C     		add	r1, r3, #0
+ 455 0078 FFF7FEFF 		bl	__aeabi_fmul
+ 456 007c 031C     		add	r3, r0, #0
+ 457 007e 181C     		add	r0, r3, #0
+ 458 0080 FFF7FEFF 		bl	__aeabi_f2uiz
+ 459 0084 031C     		mov	r3, r0
+ 460 0086 A361     		str	r3, [r4, #24]
+ 461 0088 1AE0     		b	.L7
+ 462              	.L12:
+  99:../Sources/pwm.c **** 	}else{
+ 100:../Sources/pwm.c **** 		TPM2_C0V = TPM2_MOD*(1-axis);
+ 463              		.loc 1 100 0
+ 464 008a 0F4C     		ldr	r4, .L16
+ 465 008c 0E4B     		ldr	r3, .L16
+ 466 008e 9B68     		ldr	r3, [r3, #8]
+ 467 0090 181C     		mov	r0, r3
+ 468 0092 FFF7FEFF 		bl	__aeabi_ui2f
+ 469 0096 051C     		add	r5, r0, #0
+ 470 0098 FE20     		mov	r0, #254
+ 471 009a 8005     		lsl	r0, r0, #22
+ 472 009c 7968     		ldr	r1, [r7, #4]
+ 473 009e FFF7FEFF 		bl	__aeabi_fsub
+ 474 00a2 031C     		add	r3, r0, #0
+ 475 00a4 281C     		add	r0, r5, #0
+ 476 00a6 191C     		add	r1, r3, #0
+ 477 00a8 FFF7FEFF 		bl	__aeabi_fmul
+ 478 00ac 031C     		add	r3, r0, #0
+ 479 00ae 181C     		add	r0, r3, #0
+ 480 00b0 FFF7FEFF 		bl	__aeabi_f2uiz
+ 481 00b4 031C     		mov	r3, r0
+ 482 00b6 2361     		str	r3, [r4, #16]
+ 101:../Sources/pwm.c **** 		TPM2_C1V = TPM2_MOD;
+ 483              		.loc 1 101 0
+ 484 00b8 034B     		ldr	r3, .L16
+ 485 00ba 034A     		ldr	r2, .L16
+ 486 00bc 9268     		ldr	r2, [r2, #8]
+ 487 00be 9A61     		str	r2, [r3, #24]
+ 488              	.L7:
+ 102:../Sources/pwm.c **** 	}
+ 103:../Sources/pwm.c **** }
+ 489              		.loc 1 103 0
+ 490 00c0 BD46     		mov	sp, r7
+ 491 00c2 04B0     		add	sp, sp, #16
+ 492              		@ sp needed for prologue
+ 493 00c4 B0BD     		pop	{r4, r5, r7, pc}
+ 494              	.L17:
+ 495 00c6 C046     		.align	2
+ 496              	.L16:
+ 497 00c8 00A00340 		.word	1073979392
+ 498              		.cfi_endproc
+ 499              	.LFE2:
+ 501              		.text
+ 502              	.Letext0:
+ 503              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+ 504              		.file 3 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 pwm.c
+C:\Users\David\AppData\Local\Temp\ccowct25.s:18     .text.PWM_Motors_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccowct25.s:23     .text.PWM_Motors_Init:00000000 PWM_Motors_Init
+C:\Users\David\AppData\Local\Temp\ccowct25.s:287    .text.PWM_Motors_Init:000001a8 $d
+C:\Users\David\AppData\Local\Temp\ccowct25.s:303    .text.PWM_Motor_Duty_Cycle:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccowct25.s:308    .text.PWM_Motor_Duty_Cycle:00000000 PWM_Motor_Duty_Cycle
+C:\Users\David\AppData\Local\Temp\ccowct25.s:355    .text.PWM_Motor_Duty_Cycle:00000034 $d
+C:\Users\David\AppData\Local\Temp\ccowct25.s:367    .text.PWM_LED_Duty_Cycle:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccowct25.s:372    .text.PWM_LED_Duty_Cycle:00000000 PWM_LED_Duty_Cycle
+C:\Users\David\AppData\Local\Temp\ccowct25.s:497    .text.PWM_LED_Duty_Cycle:000000c8 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fcmplt
+__aeabi_fcmpgt
+__aeabi_ui2f
+__aeabi_fsub
+__aeabi_fmul
+__aeabi_f2uiz
