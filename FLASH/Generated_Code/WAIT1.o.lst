@@ -30,7 +30,7 @@
    6:../Generated_Code/WAIT1.c **** **     Component   : Wait
    7:../Generated_Code/WAIT1.c **** **     Version     : Component 01.082, Driver 01.00, CPU db: 3.00.000
    8:../Generated_Code/WAIT1.c **** **     Compiler    : GNU C Compiler
-   9:../Generated_Code/WAIT1.c **** **     Date/Time   : 2018-06-06, 15:30, # CodeGen: 52
+   9:../Generated_Code/WAIT1.c **** **     Date/Time   : 2018-06-19, 13:19, # CodeGen: 79
   10:../Generated_Code/WAIT1.c **** **     Abstract    :
   11:../Generated_Code/WAIT1.c **** **          Implements busy waiting routines.
   12:../Generated_Code/WAIT1.c **** **     Settings    :
@@ -617,23 +617,23 @@
  313              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
 DEFINED SYMBOLS
                             *ABS*:00000000 WAIT1.c
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:18     .text.WAIT1_Wait10Cycles:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:23     .text.WAIT1_Wait10Cycles:00000000 WAIT1_Wait10Cycles
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:42     .text.WAIT1_Wait100Cycles:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:47     .text.WAIT1_Wait100Cycles:00000000 WAIT1_Wait100Cycles
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:55     .text.WAIT1_Wait100Cycles:00000004 loop
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:80     .text.WAIT1_WaitCycles:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:85     .text.WAIT1_WaitCycles:00000000 WAIT1_WaitCycles
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:146    .text.WAIT1_WaitLongCycles:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:151    .text.WAIT1_WaitLongCycles:00000000 WAIT1_WaitLongCycles
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:198    .text.WAIT1_WaitLongCycles:00000034 $d
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:204    .text.WAIT1_Waitms:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:209    .text.WAIT1_Waitms:00000000 WAIT1_Waitms
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:257    .text.WAIT1_Waitms:00000034 $d
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:262    .text.WAIT1_Init:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:267    .text.WAIT1_Init:00000000 WAIT1_Init
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:287    .text.WAIT1_DeInit:00000000 $t
-C:\Users\David\AppData\Local\Temp\cctRksMd.s:292    .text.WAIT1_DeInit:00000000 WAIT1_DeInit
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:18     .text.WAIT1_Wait10Cycles:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:23     .text.WAIT1_Wait10Cycles:00000000 WAIT1_Wait10Cycles
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:42     .text.WAIT1_Wait100Cycles:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:47     .text.WAIT1_Wait100Cycles:00000000 WAIT1_Wait100Cycles
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:55     .text.WAIT1_Wait100Cycles:00000004 loop
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:80     .text.WAIT1_WaitCycles:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:85     .text.WAIT1_WaitCycles:00000000 WAIT1_WaitCycles
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:146    .text.WAIT1_WaitLongCycles:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:151    .text.WAIT1_WaitLongCycles:00000000 WAIT1_WaitLongCycles
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:198    .text.WAIT1_WaitLongCycles:00000034 $d
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:204    .text.WAIT1_Waitms:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:209    .text.WAIT1_Waitms:00000000 WAIT1_Waitms
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:257    .text.WAIT1_Waitms:00000034 $d
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:262    .text.WAIT1_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:267    .text.WAIT1_Init:00000000 WAIT1_Init
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:287    .text.WAIT1_DeInit:00000000 $t
+C:\Users\David\AppData\Local\Temp\cccvXuWX.s:292    .text.WAIT1_DeInit:00000000 WAIT1_DeInit
                      .debug_frame:00000010 $d
 
 NO UNDEFINED SYMBOLS

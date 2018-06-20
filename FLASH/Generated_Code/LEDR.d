@@ -14,9 +14,9 @@ Generated_Code/LEDR.o: ../Generated_Code/LEDR.c \
  D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/ewl_lib_ext1.h \
  ../Generated_Code/PE_Error.h ../Generated_Code/PE_Const.h \
  ../Generated_Code/IO_Map.h \
- C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h \
- ../Generated_Code/Cpu.h ../Generated_Code/LEDRconfig.h \
- ../Generated_Code/LEDpin1.h ../Generated_Code/BitIoLdd3.h \
+ D:/Git/DronePrototype/Project_Headers/MKL25Z4.h ../Generated_Code/Cpu.h \
+ ../Generated_Code/LEDRconfig.h ../Generated_Code/LEDpin1.h \
+ ../Generated_Code/BitIoLdd3.h \
  D:/Freescale/CodeWarrior11/MCU/ProcessorExpert/lib/Kinetis/pdd/inc/GPIO_PDD.h \
  D:/Freescale/CodeWarrior11/MCU/ProcessorExpert/lib/Kinetis/pdd/inc/PDD_Types.h
 
@@ -56,7 +56,7 @@ D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/ewl_lib_ext1.h:
 
 ../Generated_Code/IO_Map.h:
 
-C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h:
+D:/Git/DronePrototype/Project_Headers/MKL25Z4.h:
 
 ../Generated_Code/Cpu.h:
 

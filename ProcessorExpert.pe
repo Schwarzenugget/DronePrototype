@@ -4,7 +4,7 @@
     <Name>ProcessorExpert</Name>
     <SavedBy>David</SavedBy>
     <ModificationStamp>48</ModificationStamp>
-    <Date>2018-06-19</Date>
+    <Date>2018-06-20</Date>
     <IDE>Eclipse IDE</IDE>
     <PEversion>1.9.2.RT6_b1446-0504</PEversion>
   </Header>
@@ -9132,7 +9132,7 @@
     <Name>ST1</Name>
     <CompNumb>141</CompNumb>
     <CompEnabled>true</CompEnabled>
-    <GenCodeMode>ALWAYS_WRITE</GenCodeMode>
+    <GenCodeMode>DONT_WRITE</GenCodeMode>
     <IconName>PERIPHINSP</IconName>
     <UserFolderName />
     <Comment lines_count="0" />

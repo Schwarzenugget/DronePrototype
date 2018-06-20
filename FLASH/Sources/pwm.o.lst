@@ -375,247 +375,270 @@
  298 01d4 00007020 		.word	544210944
  299              		.cfi_endproc
  300              	.LFE0:
- 302              		.section	.text.PWM_Motor_Duty_Cycle,"ax",%progbits
- 303              		.align	2
- 304              		.global	PWM_Motor_Duty_Cycle
- 305              		.code	16
- 306              		.thumb_func
- 308              	PWM_Motor_Duty_Cycle:
- 309              	.LFB1:
+ 302              		.global	__aeabi_fadd
+ 303              		.global	__aeabi_f2uiz
+ 304              		.section	.text.PWM_Motor_Duty_Cycle,"ax",%progbits
+ 305              		.align	2
+ 306              		.global	PWM_Motor_Duty_Cycle
+ 307              		.code	16
+ 308              		.thumb_func
+ 310              	PWM_Motor_Duty_Cycle:
+ 311              	.LFB1:
   79:../Sources/pwm.c **** 
-  80:../Sources/pwm.c **** void PWM_Motor_Duty_Cycle(float xA, float xB, float yA, float yB){
- 310              		.loc 1 80 0
- 311              		.cfi_startproc
- 312 0000 80B5     		push	{r7, lr}
- 313              	.LCFI2:
- 314              		.cfi_def_cfa_offset 8
- 315              		.cfi_offset 7, -8
- 316              		.cfi_offset 14, -4
- 317 0002 84B0     		sub	sp, sp, #16
- 318              	.LCFI3:
- 319              		.cfi_def_cfa_offset 24
- 320 0004 00AF     		add	r7, sp, #0
- 321              	.LCFI4:
- 322              		.cfi_def_cfa_register 7
- 323 0006 F860     		str	r0, [r7, #12]
- 324 0008 B960     		str	r1, [r7, #8]
- 325 000a 7A60     		str	r2, [r7, #4]
- 326 000c 3B60     		str	r3, [r7]
-  81:../Sources/pwm.c **** 	TPM1_C0V = 4000;//xA;
- 327              		.loc 1 81 0
- 328 000e 094B     		ldr	r3, .L5
- 329 0010 FA22     		mov	r2, #250
- 330 0012 1201     		lsl	r2, r2, #4
- 331 0014 1A61     		str	r2, [r3, #16]
-  82:../Sources/pwm.c **** 	TPM1_C1V = 4000;//yA;
- 332              		.loc 1 82 0
- 333 0016 074B     		ldr	r3, .L5
- 334 0018 FA22     		mov	r2, #250
- 335 001a 1201     		lsl	r2, r2, #4
- 336 001c 9A61     		str	r2, [r3, #24]
-  83:../Sources/pwm.c **** 	TPM2_C0V = 4000;//xB;
- 337              		.loc 1 83 0
- 338 001e 064B     		ldr	r3, .L5+4
- 339 0020 FA22     		mov	r2, #250
- 340 0022 1201     		lsl	r2, r2, #4
- 341 0024 1A61     		str	r2, [r3, #16]
-  84:../Sources/pwm.c **** 	TPM2_C1V = 4000;//yB;
- 342              		.loc 1 84 0
- 343 0026 044B     		ldr	r3, .L5+4
- 344 0028 FA22     		mov	r2, #250
- 345 002a 1201     		lsl	r2, r2, #4
- 346 002c 9A61     		str	r2, [r3, #24]
+  80:../Sources/pwm.c **** void PWM_Motor_Duty_Cycle(float xA, float xB, float yA, float yB, float h){
+ 312              		.loc 1 80 0
+ 313              		.cfi_startproc
+ 314 0000 90B5     		push	{r4, r7, lr}
+ 315              	.LCFI2:
+ 316              		.cfi_def_cfa_offset 12
+ 317              		.cfi_offset 4, -12
+ 318              		.cfi_offset 7, -8
+ 319              		.cfi_offset 14, -4
+ 320 0002 85B0     		sub	sp, sp, #20
+ 321              	.LCFI3:
+ 322              		.cfi_def_cfa_offset 32
+ 323 0004 00AF     		add	r7, sp, #0
+ 324              	.LCFI4:
+ 325              		.cfi_def_cfa_register 7
+ 326 0006 F860     		str	r0, [r7, #12]
+ 327 0008 B960     		str	r1, [r7, #8]
+ 328 000a 7A60     		str	r2, [r7, #4]
+ 329 000c 3B60     		str	r3, [r7]
+  81:../Sources/pwm.c **** 	TPM1_C0V = xA+h;
+ 330              		.loc 1 81 0
+ 331 000e 174C     		ldr	r4, .L5
+ 332 0010 F868     		ldr	r0, [r7, #12]
+ 333 0012 396A     		ldr	r1, [r7, #32]
+ 334 0014 FFF7FEFF 		bl	__aeabi_fadd
+ 335 0018 031C     		add	r3, r0, #0
+ 336 001a 181C     		add	r0, r3, #0
+ 337 001c FFF7FEFF 		bl	__aeabi_f2uiz
+ 338 0020 031C     		mov	r3, r0
+ 339 0022 2361     		str	r3, [r4, #16]
+  82:../Sources/pwm.c **** 	TPM1_C1V = yA+h;
+ 340              		.loc 1 82 0
+ 341 0024 114C     		ldr	r4, .L5
+ 342 0026 7868     		ldr	r0, [r7, #4]
+ 343 0028 396A     		ldr	r1, [r7, #32]
+ 344 002a FFF7FEFF 		bl	__aeabi_fadd
+ 345 002e 031C     		add	r3, r0, #0
+ 346 0030 181C     		add	r0, r3, #0
+ 347 0032 FFF7FEFF 		bl	__aeabi_f2uiz
+ 348 0036 031C     		mov	r3, r0
+ 349 0038 A361     		str	r3, [r4, #24]
+  83:../Sources/pwm.c **** 	TPM2_C0V = xB+h;
+ 350              		.loc 1 83 0
+ 351 003a 0D4C     		ldr	r4, .L5+4
+ 352 003c B868     		ldr	r0, [r7, #8]
+ 353 003e 396A     		ldr	r1, [r7, #32]
+ 354 0040 FFF7FEFF 		bl	__aeabi_fadd
+ 355 0044 031C     		add	r3, r0, #0
+ 356 0046 181C     		add	r0, r3, #0
+ 357 0048 FFF7FEFF 		bl	__aeabi_f2uiz
+ 358 004c 031C     		mov	r3, r0
+ 359 004e 2361     		str	r3, [r4, #16]
+  84:../Sources/pwm.c **** 	TPM2_C1V = yB+h;
+ 360              		.loc 1 84 0
+ 361 0050 074C     		ldr	r4, .L5+4
+ 362 0052 3868     		ldr	r0, [r7]
+ 363 0054 396A     		ldr	r1, [r7, #32]
+ 364 0056 FFF7FEFF 		bl	__aeabi_fadd
+ 365 005a 031C     		add	r3, r0, #0
+ 366 005c 181C     		add	r0, r3, #0
+ 367 005e FFF7FEFF 		bl	__aeabi_f2uiz
+ 368 0062 031C     		mov	r3, r0
+ 369 0064 A361     		str	r3, [r4, #24]
   85:../Sources/pwm.c **** 	
   86:../Sources/pwm.c **** }
- 347              		.loc 1 86 0
- 348 002e BD46     		mov	sp, r7
- 349 0030 04B0     		add	sp, sp, #16
- 350              		@ sp needed for prologue
- 351 0032 80BD     		pop	{r7, pc}
- 352              	.L6:
- 353              		.align	2
- 354              	.L5:
- 355 0034 00900340 		.word	1073975296
- 356 0038 00A00340 		.word	1073979392
- 357              		.cfi_endproc
- 358              	.LFE1:
- 360              		.global	__aeabi_fcmplt
- 361              		.global	__aeabi_fcmpgt
- 362              		.global	__aeabi_ui2f
- 363              		.global	__aeabi_fsub
- 364              		.global	__aeabi_fmul
- 365              		.global	__aeabi_f2uiz
- 366              		.section	.text.PWM_LED_Duty_Cycle,"ax",%progbits
- 367              		.align	2
- 368              		.global	PWM_LED_Duty_Cycle
- 369              		.code	16
- 370              		.thumb_func
- 372              	PWM_LED_Duty_Cycle:
- 373              	.LFB2:
+ 370              		.loc 1 86 0
+ 371 0066 BD46     		mov	sp, r7
+ 372 0068 05B0     		add	sp, sp, #20
+ 373              		@ sp needed for prologue
+ 374 006a 90BD     		pop	{r4, r7, pc}
+ 375              	.L6:
+ 376              		.align	2
+ 377              	.L5:
+ 378 006c 00900340 		.word	1073975296
+ 379 0070 00A00340 		.word	1073979392
+ 380              		.cfi_endproc
+ 381              	.LFE1:
+ 383              		.global	__aeabi_fcmplt
+ 384              		.global	__aeabi_fcmpgt
+ 385              		.global	__aeabi_ui2f
+ 386              		.global	__aeabi_fsub
+ 387              		.global	__aeabi_fmul
+ 388              		.section	.text.PWM_LED_Duty_Cycle,"ax",%progbits
+ 389              		.align	2
+ 390              		.global	PWM_LED_Duty_Cycle
+ 391              		.code	16
+ 392              		.thumb_func
+ 394              	PWM_LED_Duty_Cycle:
+ 395              	.LFB2:
   87:../Sources/pwm.c **** 
   88:../Sources/pwm.c **** void PWM_LED_Duty_Cycle(float axis){
- 374              		.loc 1 88 0
- 375              		.cfi_startproc
- 376 0000 B0B5     		push	{r4, r5, r7, lr}
- 377              	.LCFI5:
- 378              		.cfi_def_cfa_offset 16
- 379              		.cfi_offset 4, -16
- 380              		.cfi_offset 5, -12
- 381              		.cfi_offset 7, -8
- 382              		.cfi_offset 14, -4
- 383 0002 84B0     		sub	sp, sp, #16
- 384              	.LCFI6:
- 385              		.cfi_def_cfa_offset 32
- 386 0004 00AF     		add	r7, sp, #0
- 387              	.LCFI7:
- 388              		.cfi_def_cfa_register 7
- 389 0006 7860     		str	r0, [r7, #4]
+ 396              		.loc 1 88 0
+ 397              		.cfi_startproc
+ 398 0000 B0B5     		push	{r4, r5, r7, lr}
+ 399              	.LCFI5:
+ 400              		.cfi_def_cfa_offset 16
+ 401              		.cfi_offset 4, -16
+ 402              		.cfi_offset 5, -12
+ 403              		.cfi_offset 7, -8
+ 404              		.cfi_offset 14, -4
+ 405 0002 84B0     		sub	sp, sp, #16
+ 406              	.LCFI6:
+ 407              		.cfi_def_cfa_offset 32
+ 408 0004 00AF     		add	r7, sp, #0
+ 409              	.LCFI7:
+ 410              		.cfi_def_cfa_register 7
+ 411 0006 7860     		str	r0, [r7, #4]
   89:../Sources/pwm.c **** 	short negative_flag = 0;
- 390              		.loc 1 89 0
- 391 0008 3B1C     		mov	r3, r7
- 392 000a 0E33     		add	r3, r3, #14
- 393 000c 0022     		mov	r2, #0
- 394 000e 1A80     		strh	r2, [r3]
+ 412              		.loc 1 89 0
+ 413 0008 3B1C     		mov	r3, r7
+ 414 000a 0E33     		add	r3, r3, #14
+ 415 000c 0022     		mov	r2, #0
+ 416 000e 1A80     		strh	r2, [r3]
   90:../Sources/pwm.c **** 	if(axis <0){
- 395              		.loc 1 90 0
- 396 0010 7868     		ldr	r0, [r7, #4]
- 397 0012 0021     		mov	r1, #0
- 398 0014 FFF7FEFF 		bl	__aeabi_fcmplt
- 399 0018 031C     		mov	r3, r0
- 400 001a 002B     		cmp	r3, #0
- 401 001c 08D0     		beq	.L8
- 402              	.L14:
+ 417              		.loc 1 90 0
+ 418 0010 7868     		ldr	r0, [r7, #4]
+ 419 0012 0021     		mov	r1, #0
+ 420 0014 FFF7FEFF 		bl	__aeabi_fcmplt
+ 421 0018 031C     		mov	r3, r0
+ 422 001a 002B     		cmp	r3, #0
+ 423 001c 08D0     		beq	.L8
+ 424              	.L14:
   91:../Sources/pwm.c **** 		axis = -axis;
- 403              		.loc 1 91 0
- 404 001e 7B68     		ldr	r3, [r7, #4]
- 405 0020 8022     		mov	r2, #128
- 406 0022 1206     		lsl	r2, r2, #24
- 407 0024 5340     		eor	r3, r2
- 408 0026 7B60     		str	r3, [r7, #4]
+ 425              		.loc 1 91 0
+ 426 001e 7B68     		ldr	r3, [r7, #4]
+ 427 0020 8022     		mov	r2, #128
+ 428 0022 1206     		lsl	r2, r2, #24
+ 429 0024 5340     		eor	r3, r2
+ 430 0026 7B60     		str	r3, [r7, #4]
   92:../Sources/pwm.c **** 		negative_flag = 1;
- 409              		.loc 1 92 0
- 410 0028 3B1C     		mov	r3, r7
- 411 002a 0E33     		add	r3, r3, #14
- 412 002c 0122     		mov	r2, #1
- 413 002e 1A80     		strh	r2, [r3]
- 414              	.L8:
+ 431              		.loc 1 92 0
+ 432 0028 3B1C     		mov	r3, r7
+ 433 002a 0E33     		add	r3, r3, #14
+ 434 002c 0122     		mov	r2, #1
+ 435 002e 1A80     		strh	r2, [r3]
+ 436              	.L8:
   93:../Sources/pwm.c **** 	}
   94:../Sources/pwm.c **** 	if(axis>1)axis=1;
- 415              		.loc 1 94 0
- 416 0030 7868     		ldr	r0, [r7, #4]
- 417 0032 FE21     		mov	r1, #254
- 418 0034 8905     		lsl	r1, r1, #22
- 419 0036 FFF7FEFF 		bl	__aeabi_fcmpgt
- 420 003a 031C     		mov	r3, r0
- 421 003c 002B     		cmp	r3, #0
- 422 003e 02D0     		beq	.L10
- 423              	.L15:
- 424              		.loc 1 94 0 is_stmt 0
- 425 0040 FE23     		mov	r3, #254
- 426 0042 9B05     		lsl	r3, r3, #22
- 427 0044 7B60     		str	r3, [r7, #4]
- 428              	.L10:
+ 437              		.loc 1 94 0
+ 438 0030 7868     		ldr	r0, [r7, #4]
+ 439 0032 FE21     		mov	r1, #254
+ 440 0034 8905     		lsl	r1, r1, #22
+ 441 0036 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 442 003a 031C     		mov	r3, r0
+ 443 003c 002B     		cmp	r3, #0
+ 444 003e 02D0     		beq	.L10
+ 445              	.L15:
+ 446              		.loc 1 94 0 is_stmt 0
+ 447 0040 FE23     		mov	r3, #254
+ 448 0042 9B05     		lsl	r3, r3, #22
+ 449 0044 7B60     		str	r3, [r7, #4]
+ 450              	.L10:
   95:../Sources/pwm.c **** 	
   96:../Sources/pwm.c **** 	if(negative_flag){
- 429              		.loc 1 96 0 is_stmt 1
- 430 0046 3B1C     		mov	r3, r7
- 431 0048 0E33     		add	r3, r3, #14
- 432 004a 0022     		mov	r2, #0
- 433 004c 9B5E     		ldrsh	r3, [r3, r2]
- 434 004e 002B     		cmp	r3, #0
- 435 0050 1BD0     		beq	.L12
+ 451              		.loc 1 96 0 is_stmt 1
+ 452 0046 3B1C     		mov	r3, r7
+ 453 0048 0E33     		add	r3, r3, #14
+ 454 004a 0022     		mov	r2, #0
+ 455 004c 9B5E     		ldrsh	r3, [r3, r2]
+ 456 004e 002B     		cmp	r3, #0
+ 457 0050 1BD0     		beq	.L12
   97:../Sources/pwm.c **** 		TPM2_C0V = TPM2_MOD;
- 436              		.loc 1 97 0
- 437 0052 1D4B     		ldr	r3, .L16
- 438 0054 1C4A     		ldr	r2, .L16
- 439 0056 9268     		ldr	r2, [r2, #8]
- 440 0058 1A61     		str	r2, [r3, #16]
+ 458              		.loc 1 97 0
+ 459 0052 1D4B     		ldr	r3, .L16
+ 460 0054 1C4A     		ldr	r2, .L16
+ 461 0056 9268     		ldr	r2, [r2, #8]
+ 462 0058 1A61     		str	r2, [r3, #16]
   98:../Sources/pwm.c **** 		TPM2_C1V = TPM2_MOD*(1-axis);
- 441              		.loc 1 98 0
- 442 005a 1B4C     		ldr	r4, .L16
- 443 005c 1A4B     		ldr	r3, .L16
- 444 005e 9B68     		ldr	r3, [r3, #8]
- 445 0060 181C     		mov	r0, r3
- 446 0062 FFF7FEFF 		bl	__aeabi_ui2f
- 447 0066 051C     		add	r5, r0, #0
- 448 0068 FE20     		mov	r0, #254
- 449 006a 8005     		lsl	r0, r0, #22
- 450 006c 7968     		ldr	r1, [r7, #4]
- 451 006e FFF7FEFF 		bl	__aeabi_fsub
- 452 0072 031C     		add	r3, r0, #0
- 453 0074 281C     		add	r0, r5, #0
- 454 0076 191C     		add	r1, r3, #0
- 455 0078 FFF7FEFF 		bl	__aeabi_fmul
- 456 007c 031C     		add	r3, r0, #0
- 457 007e 181C     		add	r0, r3, #0
- 458 0080 FFF7FEFF 		bl	__aeabi_f2uiz
- 459 0084 031C     		mov	r3, r0
- 460 0086 A361     		str	r3, [r4, #24]
- 461 0088 1AE0     		b	.L7
- 462              	.L12:
+ 463              		.loc 1 98 0
+ 464 005a 1B4C     		ldr	r4, .L16
+ 465 005c 1A4B     		ldr	r3, .L16
+ 466 005e 9B68     		ldr	r3, [r3, #8]
+ 467 0060 181C     		mov	r0, r3
+ 468 0062 FFF7FEFF 		bl	__aeabi_ui2f
+ 469 0066 051C     		add	r5, r0, #0
+ 470 0068 FE20     		mov	r0, #254
+ 471 006a 8005     		lsl	r0, r0, #22
+ 472 006c 7968     		ldr	r1, [r7, #4]
+ 473 006e FFF7FEFF 		bl	__aeabi_fsub
+ 474 0072 031C     		add	r3, r0, #0
+ 475 0074 281C     		add	r0, r5, #0
+ 476 0076 191C     		add	r1, r3, #0
+ 477 0078 FFF7FEFF 		bl	__aeabi_fmul
+ 478 007c 031C     		add	r3, r0, #0
+ 479 007e 181C     		add	r0, r3, #0
+ 480 0080 FFF7FEFF 		bl	__aeabi_f2uiz
+ 481 0084 031C     		mov	r3, r0
+ 482 0086 A361     		str	r3, [r4, #24]
+ 483 0088 1AE0     		b	.L7
+ 484              	.L12:
   99:../Sources/pwm.c **** 	}else{
  100:../Sources/pwm.c **** 		TPM2_C0V = TPM2_MOD*(1-axis);
- 463              		.loc 1 100 0
- 464 008a 0F4C     		ldr	r4, .L16
- 465 008c 0E4B     		ldr	r3, .L16
- 466 008e 9B68     		ldr	r3, [r3, #8]
- 467 0090 181C     		mov	r0, r3
- 468 0092 FFF7FEFF 		bl	__aeabi_ui2f
- 469 0096 051C     		add	r5, r0, #0
- 470 0098 FE20     		mov	r0, #254
- 471 009a 8005     		lsl	r0, r0, #22
- 472 009c 7968     		ldr	r1, [r7, #4]
- 473 009e FFF7FEFF 		bl	__aeabi_fsub
- 474 00a2 031C     		add	r3, r0, #0
- 475 00a4 281C     		add	r0, r5, #0
- 476 00a6 191C     		add	r1, r3, #0
- 477 00a8 FFF7FEFF 		bl	__aeabi_fmul
- 478 00ac 031C     		add	r3, r0, #0
- 479 00ae 181C     		add	r0, r3, #0
- 480 00b0 FFF7FEFF 		bl	__aeabi_f2uiz
- 481 00b4 031C     		mov	r3, r0
- 482 00b6 2361     		str	r3, [r4, #16]
+ 485              		.loc 1 100 0
+ 486 008a 0F4C     		ldr	r4, .L16
+ 487 008c 0E4B     		ldr	r3, .L16
+ 488 008e 9B68     		ldr	r3, [r3, #8]
+ 489 0090 181C     		mov	r0, r3
+ 490 0092 FFF7FEFF 		bl	__aeabi_ui2f
+ 491 0096 051C     		add	r5, r0, #0
+ 492 0098 FE20     		mov	r0, #254
+ 493 009a 8005     		lsl	r0, r0, #22
+ 494 009c 7968     		ldr	r1, [r7, #4]
+ 495 009e FFF7FEFF 		bl	__aeabi_fsub
+ 496 00a2 031C     		add	r3, r0, #0
+ 497 00a4 281C     		add	r0, r5, #0
+ 498 00a6 191C     		add	r1, r3, #0
+ 499 00a8 FFF7FEFF 		bl	__aeabi_fmul
+ 500 00ac 031C     		add	r3, r0, #0
+ 501 00ae 181C     		add	r0, r3, #0
+ 502 00b0 FFF7FEFF 		bl	__aeabi_f2uiz
+ 503 00b4 031C     		mov	r3, r0
+ 504 00b6 2361     		str	r3, [r4, #16]
  101:../Sources/pwm.c **** 		TPM2_C1V = TPM2_MOD;
- 483              		.loc 1 101 0
- 484 00b8 034B     		ldr	r3, .L16
- 485 00ba 034A     		ldr	r2, .L16
- 486 00bc 9268     		ldr	r2, [r2, #8]
- 487 00be 9A61     		str	r2, [r3, #24]
- 488              	.L7:
+ 505              		.loc 1 101 0
+ 506 00b8 034B     		ldr	r3, .L16
+ 507 00ba 034A     		ldr	r2, .L16
+ 508 00bc 9268     		ldr	r2, [r2, #8]
+ 509 00be 9A61     		str	r2, [r3, #24]
+ 510              	.L7:
  102:../Sources/pwm.c **** 	}
  103:../Sources/pwm.c **** }
- 489              		.loc 1 103 0
- 490 00c0 BD46     		mov	sp, r7
- 491 00c2 04B0     		add	sp, sp, #16
- 492              		@ sp needed for prologue
- 493 00c4 B0BD     		pop	{r4, r5, r7, pc}
- 494              	.L17:
- 495 00c6 C046     		.align	2
- 496              	.L16:
- 497 00c8 00A00340 		.word	1073979392
- 498              		.cfi_endproc
- 499              	.LFE2:
- 501              		.text
- 502              	.Letext0:
- 503              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
- 504              		.file 3 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
+ 511              		.loc 1 103 0
+ 512 00c0 BD46     		mov	sp, r7
+ 513 00c2 04B0     		add	sp, sp, #16
+ 514              		@ sp needed for prologue
+ 515 00c4 B0BD     		pop	{r4, r5, r7, pc}
+ 516              	.L17:
+ 517 00c6 C046     		.align	2
+ 518              	.L16:
+ 519 00c8 00A00340 		.word	1073979392
+ 520              		.cfi_endproc
+ 521              	.LFE2:
+ 523              		.text
+ 524              	.Letext0:
+ 525              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
+ 526              		.file 3 "D:/Git/DronePrototype/Project_Headers/MKL25Z4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 pwm.c
-C:\Users\David\AppData\Local\Temp\ccowct25.s:18     .text.PWM_Motors_Init:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccowct25.s:23     .text.PWM_Motors_Init:00000000 PWM_Motors_Init
-C:\Users\David\AppData\Local\Temp\ccowct25.s:287    .text.PWM_Motors_Init:000001a8 $d
-C:\Users\David\AppData\Local\Temp\ccowct25.s:303    .text.PWM_Motor_Duty_Cycle:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccowct25.s:308    .text.PWM_Motor_Duty_Cycle:00000000 PWM_Motor_Duty_Cycle
-C:\Users\David\AppData\Local\Temp\ccowct25.s:355    .text.PWM_Motor_Duty_Cycle:00000034 $d
-C:\Users\David\AppData\Local\Temp\ccowct25.s:367    .text.PWM_LED_Duty_Cycle:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccowct25.s:372    .text.PWM_LED_Duty_Cycle:00000000 PWM_LED_Duty_Cycle
-C:\Users\David\AppData\Local\Temp\ccowct25.s:497    .text.PWM_LED_Duty_Cycle:000000c8 $d
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:18     .text.PWM_Motors_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:23     .text.PWM_Motors_Init:00000000 PWM_Motors_Init
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:287    .text.PWM_Motors_Init:000001a8 $d
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:305    .text.PWM_Motor_Duty_Cycle:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:310    .text.PWM_Motor_Duty_Cycle:00000000 PWM_Motor_Duty_Cycle
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:378    .text.PWM_Motor_Duty_Cycle:0000006c $d
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:389    .text.PWM_LED_Duty_Cycle:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:394    .text.PWM_LED_Duty_Cycle:00000000 PWM_LED_Duty_Cycle
+C:\Users\David\AppData\Local\Temp\ccmfSXXP.s:519    .text.PWM_LED_Duty_Cycle:000000c8 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
+__aeabi_fadd
+__aeabi_f2uiz
 __aeabi_fcmplt
 __aeabi_fcmpgt
 __aeabi_ui2f
 __aeabi_fsub
 __aeabi_fmul
-__aeabi_f2uiz

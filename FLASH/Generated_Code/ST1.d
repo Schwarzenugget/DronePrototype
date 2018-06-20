@@ -13,9 +13,8 @@ Generated_Code/ST1.o: ../Generated_Code/ST1.c \
  D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/ewl_lib_ext1.h \
  ../Generated_Code/PE_Error.h ../Generated_Code/PE_Const.h \
  ../Generated_Code/IO_Map.h \
- C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h \
- ../Generated_Code/Cpu.h \
- C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h
+ D:/Git/DronePrototype/Project_Headers/MKL25Z4.h ../Generated_Code/Cpu.h \
+ D:/Git/DronePrototype/Project_Headers/global.h
 
 D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/lib_ewl.prefix:
 
@@ -49,8 +48,8 @@ D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/ewl_lib_ext1.h:
 
 ../Generated_Code/IO_Map.h:
 
-C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h:
+D:/Git/DronePrototype/Project_Headers/MKL25Z4.h:
 
 ../Generated_Code/Cpu.h:
 
-C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h:
+D:/Git/DronePrototype/Project_Headers/global.h:

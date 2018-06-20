@@ -34,7 +34,7 @@
    6:../Generated_Code/BitIoLdd2.c **** **     Component   : BitIO_LDD
    7:../Generated_Code/BitIoLdd2.c **** **     Version     : Component 01.033, Driver 01.03, CPU db: 3.00.000
    8:../Generated_Code/BitIoLdd2.c **** **     Compiler    : GNU C Compiler
-   9:../Generated_Code/BitIoLdd2.c **** **     Date/Time   : 2018-06-19, 12:44, # CodeGen: 78
+   9:../Generated_Code/BitIoLdd2.c **** **     Date/Time   : 2018-06-19, 13:19, # CodeGen: 79
   10:../Generated_Code/BitIoLdd2.c **** **     Abstract    :
   11:../Generated_Code/BitIoLdd2.c **** **         The HAL BitIO component provides a low level API for unified
   12:../Generated_Code/BitIoLdd2.c **** **         access to general purpose digital input/output pins across
@@ -482,26 +482,26 @@
  261              	.Letext0:
  262              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
  263              		.file 3 "../Generated_Code/PE_Types.h"
- 264              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
+ 264              		.file 4 "D:/Git/DronePrototype/Project_Headers/MKL25Z4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 BitIoLdd2.c
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:18     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 $d
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:21     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 DeviceDataPrv__DEFAULT_RTOS_ALLOC
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:24     .text.BitIoLdd2_Init:00000000 $t
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:29     .text.BitIoLdd2_Init:00000000 BitIoLdd2_Init
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:92     .text.BitIoLdd2_Init:0000004c $d
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:101    .text.BitIoLdd2_GetVal:00000000 $t
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:106    .text.BitIoLdd2_GetVal:00000000 BitIoLdd2_GetVal
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:142    .text.BitIoLdd2_GetVal:00000024 $d
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:147    .text.BitIoLdd2_ClrVal:00000000 $t
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:152    .text.BitIoLdd2_ClrVal:00000000 BitIoLdd2_ClrVal
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:180    .text.BitIoLdd2_ClrVal:00000014 $d
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:185    .text.BitIoLdd2_SetVal:00000000 $t
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:190    .text.BitIoLdd2_SetVal:00000000 BitIoLdd2_SetVal
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:218    .text.BitIoLdd2_SetVal:00000014 $d
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:223    .text.BitIoLdd2_NegVal:00000000 $t
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:228    .text.BitIoLdd2_NegVal:00000000 BitIoLdd2_NegVal
-C:\Users\David\AppData\Local\Temp\cc2kyHXS.s:256    .text.BitIoLdd2_NegVal:00000014 $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:18     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:21     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 DeviceDataPrv__DEFAULT_RTOS_ALLOC
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:24     .text.BitIoLdd2_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:29     .text.BitIoLdd2_Init:00000000 BitIoLdd2_Init
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:92     .text.BitIoLdd2_Init:0000004c $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:101    .text.BitIoLdd2_GetVal:00000000 $t
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:106    .text.BitIoLdd2_GetVal:00000000 BitIoLdd2_GetVal
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:142    .text.BitIoLdd2_GetVal:00000024 $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:147    .text.BitIoLdd2_ClrVal:00000000 $t
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:152    .text.BitIoLdd2_ClrVal:00000000 BitIoLdd2_ClrVal
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:180    .text.BitIoLdd2_ClrVal:00000014 $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:185    .text.BitIoLdd2_SetVal:00000000 $t
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:190    .text.BitIoLdd2_SetVal:00000000 BitIoLdd2_SetVal
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:218    .text.BitIoLdd2_SetVal:00000014 $d
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:223    .text.BitIoLdd2_NegVal:00000000 $t
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:228    .text.BitIoLdd2_NegVal:00000000 BitIoLdd2_NegVal
+C:\Users\David\AppData\Local\Temp\cckUGDAe.s:256    .text.BitIoLdd2_NegVal:00000014 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS

@@ -30,7 +30,7 @@
    6:../Generated_Code/LEDG.c **** **     Component   : LED
    7:../Generated_Code/LEDG.c **** **     Version     : Component 01.074, Driver 01.00, CPU db: 3.00.000
    8:../Generated_Code/LEDG.c **** **     Compiler    : GNU C Compiler
-   9:../Generated_Code/LEDG.c **** **     Date/Time   : 2018-06-06, 15:30, # CodeGen: 52
+   9:../Generated_Code/LEDG.c **** **     Date/Time   : 2018-06-19, 13:19, # CodeGen: 79
   10:../Generated_Code/LEDG.c **** **     Abstract    :
   11:../Generated_Code/LEDG.c **** **          This component implements a universal driver for a single LED.
   12:../Generated_Code/LEDG.c **** **     Settings    :
@@ -342,14 +342,14 @@
  136              		.file 3 "../Generated_Code/PE_Types.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 LEDG.c
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:18     .text.LEDG_Init:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:23     .text.LEDG_Init:00000000 LEDG_Init
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:48     .text.LEDG_Init:00000014 $d
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:53     .text.LEDG_Deinit:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:58     .text.LEDG_Deinit:00000000 LEDG_Deinit
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:78     .text.LEDG_SetRatio16:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:83     .text.LEDG_SetRatio16:00000000 LEDG_SetRatio16
-C:\Users\David\AppData\Local\Temp\ccLktNYh.s:128    .text.LEDG_SetRatio16:00000034 $d
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:18     .text.LEDG_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:23     .text.LEDG_Init:00000000 LEDG_Init
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:48     .text.LEDG_Init:00000014 $d
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:53     .text.LEDG_Deinit:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:58     .text.LEDG_Deinit:00000000 LEDG_Deinit
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:78     .text.LEDG_SetRatio16:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:83     .text.LEDG_SetRatio16:00000000 LEDG_SetRatio16
+C:\Users\David\AppData\Local\Temp\ccyh3wH0.s:128    .text.LEDG_SetRatio16:00000034 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS

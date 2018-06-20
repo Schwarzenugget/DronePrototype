@@ -57,7 +57,7 @@
    6:../Generated_Code/TU1.c **** **     Component   : TimerUnit_LDD
    7:../Generated_Code/TU1.c **** **     Version     : Component 01.164, Driver 01.11, CPU db: 3.00.000
    8:../Generated_Code/TU1.c **** **     Compiler    : GNU C Compiler
-   9:../Generated_Code/TU1.c **** **     Date/Time   : 2018-06-06, 15:30, # CodeGen: 52
+   9:../Generated_Code/TU1.c **** **     Date/Time   : 2018-06-19, 13:19, # CodeGen: 79
   10:../Generated_Code/TU1.c **** **     Abstract    :
   11:../Generated_Code/TU1.c **** **          This TimerUnit component provides a low level API for unified hardware access across
   12:../Generated_Code/TU1.c **** **          various timer devices using the Prescaler-Counter-Compare-Capture timer structure.
@@ -838,11 +838,11 @@
  501              		.text
  502              	.Letext0:
  503              		.file 2 "D:/Freescale/CodeWarrior11/MCU/ARM_GCC_Support/ewl/EWL_C/include/cstdint"
- 504              		.file 3 "C:/Users/David/Desktop/DronePrototype/Generated_Code/PE_Types.h"
- 505              		.file 4 "C:/Users/David/Desktop/DronePrototype/Project_Headers/MKL25Z4.h"
- 506              		.file 5 "C:/Users/David/Desktop/DronePrototype/Generated_Code/TU1.h"
- 507              		.file 6 "C:/Users/David/Desktop/DronePrototype/Project_Headers/global.h"
- 508              		.file 7 "C:/Users/David/Desktop/DronePrototype/Project_Headers/Acc.h"
+ 504              		.file 3 "D:/Git/DronePrototype/Generated_Code/PE_Types.h"
+ 505              		.file 4 "D:/Git/DronePrototype/Project_Headers/MKL25Z4.h"
+ 506              		.file 5 "D:/Git/DronePrototype/Generated_Code/TU1.h"
+ 507              		.file 6 "D:/Git/DronePrototype/Project_Headers/global.h"
+ 508              		.file 7 "D:/Git/DronePrototype/Project_Headers/Acc.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 TU1.c
                             *COM*:00000001 AccReady
@@ -855,29 +855,29 @@ DEFINED SYMBOLS
                             *COM*:00000001 Xoffset
                             *COM*:00000001 Yoffset
                             *COM*:00000001 Zoffset
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:28     .rodata.ChannelDevice:00000000 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:31     .rodata.ChannelDevice:00000000 ChannelDevice
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:34     .rodata.ChannelMode:00000000 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:37     .rodata.ChannelMode:00000000 ChannelMode
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:40     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:43     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 DeviceDataPrv__DEFAULT_RTOS_ALLOC
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:46     .bss.INT_TPM0__DEFAULT_RTOS_ISRPARAM:00000000 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:49     .bss.INT_TPM0__DEFAULT_RTOS_ISRPARAM:00000000 INT_TPM0__DEFAULT_RTOS_ISRPARAM
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:52     .text.TU1_Init:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:57     .text.TU1_Init:00000000 TU1_Init
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:190    .text.TU1_Init:000000bc $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:206    .text.TU1_Deinit:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:211    .text.TU1_Deinit:00000000 TU1_Deinit
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:249    .text.TU1_Deinit:00000024 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:255    .text.TU1_ResetCounter:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:260    .text.TU1_ResetCounter:00000000 TU1_ResetCounter
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:291    .text.TU1_ResetCounter:00000018 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:296    .text.TU1_GetCaptureValue:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:301    .text.TU1_GetCaptureValue:00000000 TU1_GetCaptureValue
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:369    .text.TU1_GetCaptureValue:00000054 $d
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:376    .text.TU1_Interrupt:00000000 $t
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:381    .text.TU1_Interrupt:00000000 TU1_Interrupt
-C:\Users\David\AppData\Local\Temp\ccBDThXw.s:495    .text.TU1_Interrupt:000000a4 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:28     .rodata.ChannelDevice:00000000 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:31     .rodata.ChannelDevice:00000000 ChannelDevice
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:34     .rodata.ChannelMode:00000000 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:37     .rodata.ChannelMode:00000000 ChannelMode
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:40     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:43     .bss.DeviceDataPrv__DEFAULT_RTOS_ALLOC:00000000 DeviceDataPrv__DEFAULT_RTOS_ALLOC
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:46     .bss.INT_TPM0__DEFAULT_RTOS_ISRPARAM:00000000 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:49     .bss.INT_TPM0__DEFAULT_RTOS_ISRPARAM:00000000 INT_TPM0__DEFAULT_RTOS_ISRPARAM
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:52     .text.TU1_Init:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:57     .text.TU1_Init:00000000 TU1_Init
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:190    .text.TU1_Init:000000bc $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:206    .text.TU1_Deinit:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:211    .text.TU1_Deinit:00000000 TU1_Deinit
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:249    .text.TU1_Deinit:00000024 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:255    .text.TU1_ResetCounter:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:260    .text.TU1_ResetCounter:00000000 TU1_ResetCounter
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:291    .text.TU1_ResetCounter:00000018 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:296    .text.TU1_GetCaptureValue:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:301    .text.TU1_GetCaptureValue:00000000 TU1_GetCaptureValue
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:369    .text.TU1_GetCaptureValue:00000054 $d
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:376    .text.TU1_Interrupt:00000000 $t
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:381    .text.TU1_Interrupt:00000000 TU1_Interrupt
+C:\Users\David\AppData\Local\Temp\ccoYPxXl.s:495    .text.TU1_Interrupt:000000a4 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS

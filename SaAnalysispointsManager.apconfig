@@ -1,6 +1,6 @@
 <Analysispoints>
 	<Name>AnalysispointsManager</Name>
-	<ProjectPath>C:/Users/David/Desktop/Freedom_HC-SR04/SaAnalysispointsManager.apconfig</ProjectPath>
+	<ProjectPath>D:/Git/DronePrototype/SaAnalysispointsManager.apconfig</ProjectPath>
 	<MaxNumberOfCores>1</MaxNumberOfCores>
 	<Comments>Analysispoints Manager</Comments>
 	<IgnoreAll>false</IgnoreAll>

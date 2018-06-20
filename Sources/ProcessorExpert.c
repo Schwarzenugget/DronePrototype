@@ -74,7 +74,13 @@
 	* PTD4 - ECHO
 	*/
 
+Axis2D Input_g; 
+Axis2D Target_g = {0.0,0.0};
+Motors Output_pwm;
+PID XaxisA, XaxisB, YaxisA, YaxisB;
+
 uint16_t cm;
+uint16_t cm_to_pwm = 2000/400;
 
 
 
@@ -130,17 +136,13 @@ int main(void)
 	/**************
 	PID init
 	**************/
-	Axis2D Input_g; 
-	Axis2D Target_g = {0.0,0.0};
-	Motors Output_pwm;
-	PID XaxisA, XaxisB, YaxisA, YaxisB;
 	/*Specify initial tuning parameters*/
-	float Kp=50000, Ki=0, Kd=0; //0,2000,400
+	float Kp=8000, Ki=0, Kd=0; //0,2000,400
 	/* Init Axis Y PID*/
-	PID_Init(&XaxisA, &Input_g.X, &Output_pwm.XA, &Target_g.X, Kp, Ki, Kd, P_ON_E,DIRECT);
-	PID_Init(&YaxisA, &Input_g.Y, &Output_pwm.YA, &Target_g.Y, Kp, Ki, Kd, P_ON_E,REVERSE);
-	PID_Init(&XaxisB, &Input_g.X, &Output_pwm.XB, &Target_g.X, Kp, Ki, Kd, P_ON_E,REVERSE);
-	PID_Init(&YaxisB, &Input_g.Y, &Output_pwm.YB, &Target_g.Y, Kp, Ki, Kd, P_ON_E,DIRECT);
+	PID_Init(&XaxisA, &Input_g.X, &Output_pwm.XA, &Target_g.X, Kp, Ki, Kd, P_ON_E,REVERSE);
+	PID_Init(&YaxisA, &Input_g.Y, &Output_pwm.YA, &Target_g.Y, Kp, Ki, Kd, P_ON_E,DIRECT);
+	PID_Init(&XaxisB, &Input_g.X, &Output_pwm.XB, &Target_g.X, Kp, Ki, Kd, P_ON_E,DIRECT);
+	PID_Init(&YaxisB, &Input_g.Y, &Output_pwm.YB, &Target_g.Y, Kp, Ki, Kd, P_ON_E,REVERSE);
 	
 	while(!AccReady){}; //Read Accelerometer to init PID
 	AccReadValues(&Input_g.X, &Input_g.Y);
@@ -168,7 +170,8 @@ int main(void)
 			PID_Compute(&XaxisB);
 			PID_Compute(&YaxisB);
 
-			PWM_Motor_Duty_Cycle(Output_pwm.XA, Output_pwm.XB, Output_pwm.YA, Output_pwm.YB);
+			PWM_Motor_Duty_Cycle(Output_pwm.YA, Output_pwm.XA, Output_pwm.YB, Output_pwm.XB, 0);
+			//PWM_Motor_Duty_Cycle(0, 0, 0, 0, (400-cm)*cm_to_pwm*0);
 						
 		} 
 		if (PrintReady){
